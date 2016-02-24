@@ -3,7 +3,7 @@ module Sklearn
 using PyCall
 using Utils
 
-include("utils.jl")
+include("sk_utils.jl")
 
 # API
 export fit!, transform, fit_transform!, predict, score_samples, sample, score
@@ -37,12 +37,11 @@ type Pipeline <: BaseEstimator
     end
 end
 
-get_models(pip::Pipeline) = map(second, pip)
+get_models(pip::Pipeline) = map(second, pip.steps)
 get_transforms(pip::Pipeline) = get_models(pip)[1:end-1]
 get_estimator(pip::Pipeline) = get_models(pip)[end]
 
-function fit!(pip::Pipeline, X0, y=None)
-    X = X0
+function fit!(pip::Pipeline, X, y=None)
     for tr in get_transforms(pip)
         # sklearn passes the y target to the transforms, and I'm not sure
         # why, but some of the rationale is here:
@@ -57,12 +56,21 @@ function fit!(pip::Pipeline, X0, y=None)
     pip
 end
 
+function predict(pip::Pipeline, X)
+    Xt = X
+    for transf in get_transforms(pip)
+        Xt = transform(transf, Xt)
+    end
+    return predict(get_estimator(pip), Xt)
+end
+
 ################################################################################
 
 api_map = Dict(:fit! => :fit,
                :predict => :predict,
                :decision_function => :decision_function,
                :fit_transform! => :fit_transform,
+               :transform => :transform, 
                :score_samples => :score_samples,
                :sample => :sample,
                :score => :score)
