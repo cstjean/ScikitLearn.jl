@@ -2,10 +2,11 @@ module Sklearn
 
 using PyCall
 
+include("utils.jl")
+
 # API
 export fit!, transform, fit_transform!, predict, score_samples, sample, score
 export decision_function
-
 
 abstract BaseEstimator
 

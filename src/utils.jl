@@ -1,4 +1,7 @@
 using MacroTools
+using PyCall
+
+export @pyimport2
 
 
 """
@@ -17,13 +20,13 @@ macro pyimport2(expr)
             @assert @capture(what, ((members__),)) "Bad @pyimport2 statement"
         end
         gensyms = [gensym() for _ in members]
-        m = members[1]
-        g = gensyms[1]
         expansion(m, g) =
-           :(try
+            :(try
+                # If it's a module
                 @pyimport $mod.$m as $g
                 global $m = $g
             catch e
+                # If it's a variable/function
                 if isa(e, PyCall.PyError)
                     @pyimport $mod as $g
                     global $m = $g.$m
@@ -31,8 +34,9 @@ macro pyimport2(expr)
                     rethrow()
                 end
             end)
-        esc(:(begin $([expansion(m, g) for (m, g) in zip(members, gensyms)]...) end))
+        esc(:(begin $([expansion(m, g) for (m, g) in zip(members, gensyms)]...)
+            end))
     else
-        :(@pyimport $expr)
+        esc(:(@pyimport $expr))
     end
 end
