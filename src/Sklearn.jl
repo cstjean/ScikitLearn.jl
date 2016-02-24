@@ -1,6 +1,7 @@
 module Sklearn
 
 using PyCall
+using Utils
 
 include("utils.jl")
 
@@ -28,12 +29,11 @@ abstract BaseEstimator
         chained, in the order in which they are chained, with the last object
         an estimator. """
 type Pipeline <: BaseEstimator
-    fitted::Bool
     steps::Vector # of tuples(string, model)
     function Pipeline(steps)
         @assert(nunique(map(first, steps)) == length(steps),
                 "Pipeline's models' names must all be unique")
-        new(false, steps)
+        new(steps)
     end
 end
 

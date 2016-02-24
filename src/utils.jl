@@ -5,11 +5,11 @@ export @pyimport2
 
 
 """
-    @pyimport2 sklearn:(decomposition, clone)
+    @pyimport2 sklearn: (decomposition, clone)
 
 is the same as the Python code:
 
-import sklearn: decomposition, clone
+from sklearn import decomposition, clone
 
 """
 macro pyimport2(expr)
@@ -40,3 +40,6 @@ macro pyimport2(expr)
         esc(:(@pyimport $expr))
     end
 end
+
+
+nunique(iter) = length(Set(iter)) # slow definition
