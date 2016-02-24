@@ -1,7 +1,7 @@
 using MacroTools
 using PyCall
 
-export @pyimport2
+export @pyimport2, check_consistent_length
 
 
 """
@@ -41,5 +41,21 @@ macro pyimport2(expr)
     end
 end
 
-
 nunique(iter) = length(Set(iter)) # slow definition
+
+
+"""Check that all arrays have consistent first dimensions.
+
+Checks whether all objects in arrays have the same shape or length.
+
+Parameters
+----------
+*arrays : list or tuple of input objects.
+    Objects that will be checked for consistent length.
+"""
+function check_consistent_length(arrays...)
+    nuni = nunique([size(X, 1) for X in collect(filter(x->x!=nothing, arrays))])
+    if nuni > 1
+        throw(ArgumentError("Found arrays with inconsistent numbers of samples: $nuni"))
+    end
+end

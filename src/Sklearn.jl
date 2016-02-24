@@ -14,7 +14,6 @@ abstract BaseEstimator
 include("pipeline.jl")
 
 
-
 ################################################################################
 
 api_map = Dict(:fit! => :fit,
