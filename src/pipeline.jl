@@ -28,6 +28,10 @@ get_models(pip::Pipeline) = map(second, pip.steps)
 get_transforms(pip::Pipeline) = get_models(pip)[1:end-1]
 get_estimator(pip::Pipeline) = get_models(pip)[end]
 
+is_classifier(pip::Pipeline) = is_classifier(get_estimator(pip))
+clone(pip::Pipeline) =
+    Pipeline([(name, clone(model)) for (name, model) in pip.steps])
+
 function fit!(pip::Pipeline, X, y=None)
     for tr in get_transforms(pip)
         # sklearn passes the y target to the transforms, and I'm not sure
