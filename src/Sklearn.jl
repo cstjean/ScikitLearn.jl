@@ -21,6 +21,10 @@ include("cross_validation.jl")
 clone(py_model::PyObject) = sklearn.clone(py_model, safe=true)
 is_classifier(py_model::PyObject) = sk_base.is_classifier(py_model)
 
+is_pairwise(py_model) = false # global default - override for specific models
+is_pairwise(py_model::PyObject) =
+    haskey(py_model, "_pairwise") ? py_model[:_pairwise] : false
+
 ################################################################################
 
 api_map = Dict(:decision_function => :decision_function,

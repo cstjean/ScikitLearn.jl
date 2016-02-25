@@ -1,9 +1,19 @@
 # TODO: cross_val_predict
 
-@pyimport2 sklearn.cross_validation: (_check_cv, check_cv, _safe_split,
+@pyimport2 sklearn.cross_validation: (_check_cv, check_cv, 
                                       _index_param_value)
 @pyimport2 sklearn.metrics: get_scorer
 
+
+# Python indices are 0-based, so we need to increase the cross-validation
+# iterators by adding 1. 
+# This code is rather dangerous, since if the caller had called `collect` on
+# `cv`, the +1 would not be applied.
+# I think the best option going forward would be to wrap the Python CV iterators
+# to add the +1 near the source.
+fix_cv_iter_indices(cv) = cv
+fix_cv_iter_indices(cv::PyObject) =
+    [(train .+ 1, test .+ 1) for (train, test) in cv]
 
 
 """Evaluate a score by cross-validation
@@ -53,7 +63,8 @@ function cross_val_score(estimator, X, y=nothing; scoring=nothing, cv=nothing,
 
     check_consistent_length(X, y)
 
-    cv = _check_cv(cv, X, y, classifier=is_classifier(estimator))
+    cv = fix_cv_iter_indices(_check_cv(cv, X, y,
+                                       classifier=is_classifier(estimator)))
 
     scorer = check_scoring(estimator, scoring)
     # We clone the estimator to make sure that all the folds are independent
@@ -226,36 +237,46 @@ function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
 end
 
 
-## def _safe_split(estimator, X, y, indices, train_indices=None):
-##     """Create subset of dataset and properly handle kernels."""
-##     if hasattr(estimator, 'kernel') and callable(estimator.kernel):
-##         # cannot compute the kernel values with custom function
-##         raise ValueError("Cannot use a custom kernel function. "
-##                          "Precompute the kernel matrix instead.")
+"""Create subset of dataset and properly handle kernels."""
+function _safe_split(estimator, X, y, indices, train_indices=None)
+    # Julia note: I don't get what they mean here. FIXME
+    ## if hasattr(estimator, 'kernel') and callable(estimator.kernel)
+    ##     # cannot compute the kernel values with custom function
+    ##     raise ValueError("Cannot use a custom kernel function. "
+    ##                      "Precompute the kernel matrix instead.")
 
-##     if not hasattr(X, "shape"):
-##         if getattr(estimator, "_pairwise", False):
-##             raise ValueError("Precomputed kernels or affinity matrices have "
-##                              "to be passed as arrays or sparse matrices.")
-##         X_subset = [X[idx] for idx in indices]
-##     else:
-##         if getattr(estimator, "_pairwise", False):
-##             # X is a precomputed square kernel matrix
-##             if X.shape[0] != X.shape[1]:
-##                 raise ValueError("X should be a square kernel matrix")
-##             if train_indices is None:
-##                 X_subset = X[np.ix_(indices, indices)]
-##             else:
-##                 X_subset = X[np.ix_(indices, train_indices)]
-##         else:
-##             X_subset = safe_indexing(X, indices)
+    # Julia note: not sure how to translate this either. It might be how
+    # sklearn detects kernels?
+    ## if not hasattr(X, "shape"):
+    ##     if getattr(estimator, "_pairwise", False):
+    ##         raise ValueError("Precomputed kernels or affinity matrices have "
+    ##                          "to be passed as arrays or sparse matrices.")
+    ##     X_subset = [X[idx] for idx in indices]
+    ## else:
+    if is_pairwise(estimator)
+        # X is a precomputed square kernel matrix
+        if size(X, 1) != size(X, 2)
+            throw(ArgumentError("X should be a square kernel matrix"))
+        end
+        # Julia TODO: I want a test case before trying to translate
+        # this indexing code
+        TODO()
+        ## if train_indices === nothing
+        ##     X_subset = X[np.ix_(indices, indices)]
+    ## else:
+        ##     X_subset = X[np.ix_(indices, train_indices)]
+    else
+        X_subset = X[indices, :]
+    end
 
-##     if y is not None:
-##         y_subset = safe_indexing(y, indices)
-##     else:
-##         y_subset = None
+    if y !== nothing
+        y_subset = y[indices]
+    else
+        y_subset = nothing
+    end
 
-##     return X_subset, y_subset
+    return X_subset, y_subset
+end
 
 
 """Compute the score of an estimator on a given test set."""
