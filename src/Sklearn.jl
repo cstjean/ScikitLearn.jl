@@ -47,5 +47,15 @@ for (jl_fun, py_fun) in api_map
         py_model[$(Expr(:quote, py_fun))](args...; kwargs...)
 end
 
+################################################################################
+
+imported_python_modules =
+    Dict(:LinearModels => :linear_model,
+         :Datasets => :datasets,
+         :Preprocessing => :preprocessing)
+
+for (jl_module, py_module) in imported_python_modules
+    @eval @pyimport sklearn.$py_module as $jl_module
+end
 
 end

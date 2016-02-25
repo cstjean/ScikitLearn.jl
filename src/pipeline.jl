@@ -1,3 +1,16 @@
+# Original Python authors: Edouard Duchesnay
+#                          Gael Varoquaux
+#                          Virgile Fritsch
+#                          Alexandre Gramfort
+#                          Lars Buitinck
+# Julia translation: Cedric St-Jean
+# Licence: BSD
+
+
+## The :mod:`sklearn.pipeline` module implements utilities to build a composite
+## estimator, as a chain of transforms and estimators.
+
+
 """Pipeline of transforms with a final estimator.
 
     Sequentially apply a list of transforms and a final estimator.
@@ -77,7 +90,7 @@ function set_params!(pip::Pipeline; params...)
 
     valid_params = get_params(pip, deep=true)
     for (key, value) in params
-        sp = split(string(key), "__", 2)
+        sp = split(string(key), "__"; limit=2)
         if length(sp) > 1
             name, sub_name = sp
             if !haskey(valid_params, name::AbstractString)
@@ -113,3 +126,5 @@ function score(pip::Pipeline, X, y=nothing)
     end
     return score(get_estimator(pip), Xt, y)
 end
+
+
