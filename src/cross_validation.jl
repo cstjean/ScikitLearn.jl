@@ -103,7 +103,7 @@ scoring : callable
     A scorer callable object / function with signature
     ``scorer(estimator, X, y)``.
 """
-function check_scoring{T}(estimator::T, scoring=nothing; allow_none=false):
+function check_scoring{T}(estimator::T, scoring=nothing; allow_none=false)
     @assert !allow_none "TODO: allow_none=true"
     # sklearn asserts that estimator has a `fit` method. We should do that too.
     if scoring !== nothing
@@ -203,7 +203,7 @@ function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
                        for (k, v) in fit_params])
 
     if parameters !== nothing
-        set_params(estimator; parameters...)
+        set_params!(estimator; parameters...)
     end
 
     start_time = time()

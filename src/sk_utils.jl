@@ -59,3 +59,9 @@ function check_consistent_length(arrays...)
         throw(ArgumentError("Found arrays with inconsistent numbers of samples: $nuni"))
     end
 end
+
+
+""" Turns `Dict("x"=>10, "y"=>40)` into `Dict(:x=>10, :y=>40)` """
+kwargify(assoc::Associative) =
+    Dict([Symbol(k)=>v for (k, v) in assoc])
+

@@ -8,8 +8,8 @@ abstract BaseScorer
 Parameters
 ----------
 estimator : object
-Trained estimator to use for scoring. Must have a predict_proba
-method; the output of that is used to compute the score.
+Trained estimator to use for scoring. Must implement the `predict`
+method. The output of that is used to compute the score.
 
 X : array-like or sparse matrix
 Test data that will be fed to estimator.predict.
