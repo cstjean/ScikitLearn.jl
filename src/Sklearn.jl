@@ -10,7 +10,7 @@ include("sk_utils.jl")
 
 # API
 export fit!, transform, fit_transform!, predict, score_samples, sample, score
-export decision_function, score, clone, is_classifier 
+export decision_function, clone
 
 abstract BaseEstimator
 

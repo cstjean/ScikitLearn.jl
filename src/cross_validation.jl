@@ -1,6 +1,7 @@
 # TODO: cross_val_predict
 
-@pyimport2 sklearn.cross_validation: (_check_cv, check_cv, _fit_and_score)
+@pyimport2 sklearn.cross_validation: (_check_cv, check_cv, _safe_split,
+                                      _index_param_value, _score)
 @pyimport2 sklearn.metrics: get_scorer
 
 
@@ -105,61 +106,153 @@ function check_scoring{T}(estimator::T, scoring=nothing; allow_none=false):
 end
 
 
-## """Input checker utility for building a CV in a user friendly way.
+"""Fit estimator and compute scores for a given dataset split.
 
-## Parameters
-## ----------
-## cv : int, a cv generator instance, or None
-##     The input specifying which cv generator to use. It can be an
-##     integer, in which case it is the number of folds in a KFold,
-##     None, in which case 3 fold is used, or another object, that
-##     will then be used as a cv generator.
+Parameters
+----------
+estimator : estimator object implementing 'fit'
+    The object to use to fit the data.
 
-## X : array-like
-##     The data the cross-val object will be applied on.
+X : array-like of shape at least 2D
+    The data to fit.
 
-## y : array-like
-##     The target variable for a supervised learning problem.
+y : array-like, optional, default: None
+    The target variable to try to predict in the case of
+    supervised learning.
 
-## classifier : boolean optional
-##     Whether the task is a classification task, in which case
-##     stratified KFold will be used.
+scorer : callable
+    A scorer callable object / function with signature
+    ``scorer(estimator, X, y)``.
 
-## Returns
-## -------
-## checked_cv: a cross-validation generator instance.
-##     The return value is guaranteed to be a cv generator instance, whatever
-##     the input type.
-## """
-## function check_cv(cv, X=nothing, y=nothing; classifier=true)
-##     return _check_cv(cv, X=X, y=y, classifier=classifier, warn_mask=true)
-## end
+train : array-like, shape (n_train_samples,)
+    Indices of training samples.
+
+test : array-like, shape (n_test_samples,)
+    Indices of test samples.
+
+verbose : integer
+    The verbosity level.
+
+error_score : 'raise' (default) or numeric
+    Value to assign to the score if an error occurs in estimator fitting.
+    If set to 'raise', the error is raised. If a numeric value is given,
+    FitFailedWarning is raised. This parameter does not affect the refit
+    step, which will always raise the error.
+
+parameters : dict or None
+    Parameters to be set on the estimator.
+
+fit_params : dict or None
+    Parameters that will be passed to ``estimator.fit``.
+
+return_train_score : boolean, optional, default: False
+    Compute and return score on training set.
+
+return_parameters : boolean, optional, default: False
+    Return parameters that has been used for the estimator.
+
+Returns
+-------
+train_score : float, optional
+    Score on training set, returned only if `return_train_score` is `True`.
+
+test_score : float
+    Score on test set.
+
+n_test_samples : int
+    Number of test samples.
+
+scoring_time : float
+    Time spent for fitting and scoring in seconds.
+
+parameters : dict or None, optional
+    The parameters that have been evaluated.
+"""
+function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
+                        parameters, fit_params; return_train_score=false,
+                        return_parameters=false, error_score="raise")
+    # Julia TODO
+    @assert error_score == "raise" "error_score = $error_score not supported"
+    if verbose > 1
+        if parameters === nothing
+            msg = "no parameters to be set"
+        else
+            msg = ""
+            # Julia TODO: translate this
+            ## msg = '%s' % (', '.join('%s=%s' % (k, v)
+            ##               for k, v in parameters.items()))
+        end
+        println("[CV] $msg")
+    end
+
+    # Adjust length of sample weights
+    fit_params = fit_params!==nothing ? fit_params : Dict()
+    fit_params = Dict([k => _index_param_value(X, v, train)
+                       for (k, v) in fit_params])
+
+    if parameters !== nothing
+        set_params(estimator; parameters...)
+    end
+
+    start_time = time()
+
+    X_train, y_train = _safe_split(estimator, X, y, train)
+    X_test, y_test = _safe_split(estimator, X, y, test, train)
+
+    try
+        if y_train === nothing
+            fit!(estimator, X_train; fit_params...)
+        else
+            fit!(estimator, X_train, y_train; fit_params...)
+        end
+    end # Julia TODO: Python has some meaningful error handling here
+    test_score = _score(estimator, X_test, y_test, scorer)
+    if return_train_score
+        train_score = _score(estimator, X_train, y_train, scorer)
+    end
+
+    scoring_time = time() - start_time
+
+    if verbose > 2
+        # Julia TODO: verbosity - see Python code
+    end
+
+    ret = return_train_score ? [train_score] : Any[]
+    push!(ret, test_score, size(X_test, 1), scoring_time)
+    if return_parameters
+        push!(ret, parameters)
+    end
+    return ret
+end
 
 
-## function _check_cv(cv, X=nothing, y=nothing, classifier=false, warn_mask=false)
-##     # This exists for internal use while indices is being deprecated.
-##     is_sparse = sp.issparse(X)
-##     needs_indices = is_sparse or not hasattr(X, "shape")
-##     if cv is None:
-##         cv = 3
-##     if isinstance(cv, numbers.Integral):
-##         if warn_mask and not needs_indices:
-##             warnings.warn('check_cv will return indices instead of boolean '
-##                           'masks from 0.17', DeprecationWarning)
-##         else:
-##             needs_indices = None
-##         if classifier:
-##             if type_of_target(y) in ['binary', 'multiclass']:
-##                 cv = StratifiedKFold(y, cv, indices=needs_indices)
+## def _safe_split(estimator, X, y, indices, train_indices=None):
+##     """Create subset of dataset and properly handle kernels."""
+##     if hasattr(estimator, 'kernel') and callable(estimator.kernel):
+##         # cannot compute the kernel values with custom function
+##         raise ValueError("Cannot use a custom kernel function. "
+##                          "Precompute the kernel matrix instead.")
+
+##     if not hasattr(X, "shape"):
+##         if getattr(estimator, "_pairwise", False):
+##             raise ValueError("Precomputed kernels or affinity matrices have "
+##                              "to be passed as arrays or sparse matrices.")
+##         X_subset = [X[idx] for idx in indices]
+##     else:
+##         if getattr(estimator, "_pairwise", False):
+##             # X is a precomputed square kernel matrix
+##             if X.shape[0] != X.shape[1]:
+##                 raise ValueError("X should be a square kernel matrix")
+##             if train_indices is None:
+##                 X_subset = X[np.ix_(indices, indices)]
 ##             else:
-##                 cv = KFold(_num_samples(y), cv, indices=needs_indices)
+##                 X_subset = X[np.ix_(indices, train_indices)]
 ##         else:
-##             if not is_sparse:
-##                 n_samples = len(X)
-##             else:
-##                 n_samples = X.shape[0]
-##             cv = KFold(n_samples, cv, indices=needs_indices)
-##     if needs_indices and not getattr(cv, "_indices", True):
-##         raise ValueError("Sparse data and lists require indices-based cross"
-##                          " validation generator, got: %r", cv)
-##     return cv
+##             X_subset = safe_indexing(X, indices)
+
+##     if y is not None:
+##         y_subset = safe_indexing(y, indices)
+##     else:
+##         y_subset = None
+
+##     return X_subset, y_subset
