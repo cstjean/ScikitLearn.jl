@@ -1,12 +1,12 @@
-# TODO: cross_val_predict
+# TODO: translate cross_val_predict
 
 @pyimport2 sklearn.cross_validation: (_check_cv, check_cv, 
                                       _index_param_value)
-@pyimport2 sklearn.metrics: get_scorer
+## @pyimport2 sklearn.metrics: get_scorer
 
 
-# Python indices are 0-based, so we need to increase the cross-validation
-# iterators by adding 1. 
+# Python indices are 0-based, so we need to transform the cross-validation
+# iterators by adding 1 to each index.
 # This code is rather dangerous, since if the caller had called `collect` on
 # `cv`, the +1 would not be applied.
 # I think the best option going forward would be to wrap the Python CV iterators
@@ -67,6 +67,7 @@ function cross_val_score(estimator, X, y=nothing; scoring=nothing, cv=nothing,
                                        classifier=is_classifier(estimator)))
 
     scorer = check_scoring(estimator, scoring)
+
     # We clone the estimator to make sure that all the folds are independent
     scores = Float64[_fit_and_score(clone(estimator), X, y, scorer,
                                     train, test, verbose, nothing,
@@ -281,6 +282,7 @@ end
 
 """Compute the score of an estimator on a given test set."""
 function _score(estimator, X_test, y_test, scorer)
+    @show scorer
     if y_test === nothing
         score = scorer(estimator, X_test)
     else

@@ -15,6 +15,7 @@ export decision_function, clone
 abstract BaseEstimator
 
 include("pipeline.jl")
+include("scorer.jl")
 include("cross_validation.jl")
 
 # Note that I don't know the rationale for the `safe` argument - cstjean Feb2016
