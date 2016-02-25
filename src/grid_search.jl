@@ -41,8 +41,8 @@ function _fit!(self::BaseSearchCV, X::AbstractArray, y,
                                    kwargify(parameters),
                                    self.fit_params, return_parameters=true,
                                    error_score=self.error_score)
-                    for parameters in parameter_iterable]
-                   for (train, test) in cv]...)
+                    for (train, test) in cv]
+                   for parameters in parameter_iterable]...)
 
     # Out is a list of triplet: score, estimator, n_test_samples
     n_fits = length(out)
@@ -54,16 +54,16 @@ function _fit!(self::BaseSearchCV, X::AbstractArray, y,
         n_test_samples = 0
         score = 0
         all_scores = Float64[]
-        local current_parameters
-        for (this_score, this_n_test_samples, _, parameters) in 
+        _, _, _, current_parameters = out[grid_start]
+        for (this_score, this_n_test_samples, _, parameters) in
             out[grid_start:grid_start + n_folds - 1]
+            @assert parameters == current_parameters # same for the whole loop
             push!(all_scores, this_score)
             if self.iid
                 this_score *= this_n_test_samples
                 n_test_samples += this_n_test_samples
             end
             score += this_score
-            current_parameters = parameters
         end
         if self.iid
             score /= n_test_samples
