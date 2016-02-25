@@ -17,7 +17,7 @@ Test data that will be fed to estimator.predict.
 y_true : array-like
 Gold standard target values for X.
 
-sample_weight : array-like, optional (default=None)
+sample_weight : array-like, optional (default=nothing)
 Sample weights.
 
 Returns

@@ -128,7 +128,7 @@ estimator : estimator object implementing 'fit'
 X : array-like of shape at least 2D
     The data to fit.
 
-y : array-like, optional, default: None
+y : array-like, optional, default: nothing
     The target variable to try to predict in the case of
     supervised learning.
 
@@ -151,10 +151,10 @@ error_score : 'raise' (default) or numeric
     FitFailedWarning is raised. This parameter does not affect the refit
     step, which will always raise the error.
 
-parameters : dict or None
+parameters : dict or nothing
     Parameters to be set on the estimator.
 
-fit_params : dict or None
+fit_params : dict or nothing
     Parameters that will be passed to ``estimator.fit``.
 
 return_train_score : boolean, optional, default: False
@@ -177,7 +177,7 @@ n_test_samples : int
 scoring_time : float
     Time spent for fitting and scoring in seconds.
 
-parameters : dict or None, optional
+parameters : dict or nothing, optional
     The parameters that have been evaluated.
 """
 function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
@@ -239,7 +239,7 @@ end
 
 
 """Create subset of dataset and properly handle kernels."""
-function _safe_split(estimator, X, y, indices, train_indices=None)
+function _safe_split(estimator, X, y, indices, train_indices=nothing)
     # Julia note: I don't get what they mean here. FIXME
     ## if hasattr(estimator, 'kernel') and callable(estimator.kernel)
     ##     # cannot compute the kernel values with custom function
@@ -282,7 +282,6 @@ end
 
 """Compute the score of an estimator on a given test set."""
 function _score(estimator, X_test, y_test, scorer)
-    @show scorer
     if y_test === nothing
         score = scorer(estimator, X_test)
     else

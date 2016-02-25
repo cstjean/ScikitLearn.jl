@@ -32,7 +32,7 @@ is_classifier(pip::Pipeline) = is_classifier(get_estimator(pip))
 clone(pip::Pipeline) =
     Pipeline([(name, clone(model)) for (name, model) in pip.steps])
 
-function fit!(pip::Pipeline, X, y=None)
+function fit!(pip::Pipeline, X, y=nothing)
     for tr in get_transforms(pip)
         # sklearn passes the y target to the transforms, and I'm not sure
         # why, but some of the rationale is here:
