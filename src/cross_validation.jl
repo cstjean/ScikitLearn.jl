@@ -1,7 +1,7 @@
 # TODO: cross_val_predict
 
 @pyimport2 sklearn.cross_validation: (_check_cv, check_cv, _safe_split,
-                                      _index_param_value, _score)
+                                      _index_param_value)
 @pyimport2 sklearn.metrics: get_scorer
 
 
@@ -256,3 +256,17 @@ end
 ##         y_subset = None
 
 ##     return X_subset, y_subset
+
+
+"""Compute the score of an estimator on a given test set."""
+function _score(estimator, X_test, y_test, scorer)
+    if y_test === nothing
+        score = scorer(estimator, X_test)
+    else
+        score = scorer(estimator, X_test, y_test)
+    end
+    if !isa(score, Number)
+        throw(ValueError("scoring must return a number, got a $(typeof(score)) instead."))
+    end
+    return score
+end
