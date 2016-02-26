@@ -17,7 +17,7 @@ include("sk_utils.jl")
 # These are the functions that should be implemented by estimators/transformers
 api = [:fit!, :transform, :fit_transform!, :predict, :score_samples, :sample,
        :score, :decision_function, :clone, :set_params!, :get_params,
-       :is_classifier, :is_pairwise]
+       :is_classifier, :is_pairwise, :get_feature_names]
 
 # Not sure if we should export all the api
 for f in api @eval(export $f) end
@@ -49,7 +49,8 @@ api_map = Dict(:decision_function => :decision_function,
                :score => :score,
                :transform => :transform,
                :set_params! => :set_params,
-               :get_params => :get_params)
+               :get_params => :get_params,
+               :get_feature_names => :get_feature_names)
 
 for (jl_fun, py_fun) in api_map
     @eval $jl_fun(py_model::PyObject, args...; kwargs...) =

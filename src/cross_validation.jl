@@ -199,7 +199,7 @@ function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
         if parameters === nothing
             msg = "no parameters to be set"
         else
-            msg = ""
+            msg = string(join(["$k=$v" for (k, v) in parameters], ", "))
             # Julia TODO: translate this
             ## msg = '%s' % (', '.join('%s=%s' % (k, v)
             ##               for k, v in parameters.items()))
@@ -236,7 +236,11 @@ function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
     scoring_time = time() - start_time
 
     if verbose > 2
-        # Julia TODO: verbosity - see Python code
+        msg *= @sprintf(", score=%.5f", test_score)
+    end
+    if verbose > 1
+        end_msg = msg * @sprintf("  -  %.1fs", scoring_time)
+        println("[CV] $end_msg")
     end
 
     ret = return_train_score ? [train_score] : Any[]
