@@ -6,6 +6,8 @@ using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
 @pyimport2 sklearn.feature_selection: (SelectFpr, f_classif)
+@pyimport2 sklearn.tree: (DecisionTreeClassifier, DecisionTreeRegressor)
+@pyimport2 sklearn: datasets
 
 
 function test_is_classifier()
@@ -45,8 +47,30 @@ function test_clone()
 end
 
 
+function test_score_sample_weight()
+    srand(0)
+
+    # test both ClassifierMixin and RegressorMixin
+    estimators = [DecisionTreeClassifier(max_depth=2),
+                  DecisionTreeRegressor(max_depth=2)]
+    sets = Any[datasets.load_iris(),
+               datasets.load_boston()]
+
+    for (est, ds) in zip(estimators, sets)
+        fit!(est, ds["data"], ds["target"])
+        # generate random sample weights
+        sample_weight = rand(1:10, length(ds["target"]))
+        # check that the score with and without sample weights are different
+        @test (score(est, ds["data"], ds["target"]) !=
+               score(est, ds["data"], ds["target"],
+                     sample_weight=sample_weight))
+    end
+end
+
+
 test_is_classifier()
 test_set_params()
 test_clone()
+test_score_sample_weight()
 
 :ok
