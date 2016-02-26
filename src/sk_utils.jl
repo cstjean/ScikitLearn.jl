@@ -13,6 +13,9 @@ from sklearn import decomposition, clone
 
 """
 macro pyimport2(expr)
+    if isa(expr, Expr)
+        @assert expr.head != :tuple "@pyimport2 requires parentheses, eg. @pyimport2 module_name: (a, b)"
+    end
     if @capture(expr, mod_:what_)
         if isa(what, Symbol)
             members = [what]
