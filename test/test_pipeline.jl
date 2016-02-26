@@ -3,6 +3,8 @@ using Skcore
 using Skcore: Pipeline
 using PyCall: PyError
 
+@pyimport2 sklearn.svm: SVC
+@pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
 
 JUNK_FOOD_DOCS = (
     "the pizza pizza beer copyright",
@@ -26,7 +28,7 @@ end
 Skcore.fit!(self::T, X, y) = self
 
 Skcore.get_params(self::T; deep=false) = Dict("a"=>self.a, "b"=>self.b)
-function Skcore.set_params!(self; params...)
+function Skcore.set_params!(self; a=error("Missing value"))
     self.a = params[:a]
     return self
 end
@@ -60,31 +62,31 @@ function test_pipeline_init()
     clf = T()
     pipe = Pipeline([("svc", clf)])
     @test (get_params(pipe, deep=true) ==
-           dict("svc__a"=>nothing, "svc__b"=>nothing, "svc"=>clf))
+           Dict("svc__a"=>nothing, "svc__b"=>nothing, "svc"=>clf))
 
     # Check that params are set
-    ## pipe.set_params(svc__a=0.1)
-    ## assert_equal(clf.a, 0.1)
-    ## assert_equal(clf.b, None)
-    ## # Smoke test the repr:
-    ## repr(pipe)
+    set_params!(pipe; svc__a=0.1)
+    @test clf.a==0.1
+    @test clf.b==nothing
+    # Smoke test the repr:
+    #repr(pipe) Julia TODO
 
-    ## # Test with two objects
-    ## clf = SVC()
-    ## filter1 = SelectKBest(f_classif)
-    ## pipe = Pipeline([("anova", filter1), ("svc", clf)])
+    # Test with two objects
+    clf = SVC()
+    filter1 = SelectKBest(f_classif)
+    pipe = Pipeline([("anova", filter1), ("svc", clf)])
 
-    ## # Check that we can"t use the same stage name twice
-    ## assert_raises(ValueError, Pipeline, [("svc", SVC()), ("svc", SVC())])
+    # Check that we can"t use the same stage name twice. Julia TODO
+    # @test_throws(ValueError, Pipeline, [("svc", SVC()), ("svc", SVC())])
 
-    ## # Check that params are set
-    ## pipe.set_params(svc__C=0.1)
-    ## assert_equal(clf.C, 0.1)
-    ## # Smoke test the repr:
-    ## repr(pipe)
+    # Check that params are set
+    set_params!(pipe, svc__C=0.1)
+    @test clf[:C]==0.1
+    # Smoke test the repr: Julia TODO
+    # repr(pipe)
 
-    ## # Check that params are not set when naming them wrong
-    ## assert_raises(ValueError, pipe.set_params, anova__C=0.1)
+    # Check that params are not set when naming them wrong
+    #assert_raises(ValueError, pipe.set_params, anova__C=0.1)
 
     ## # Test clone
     ## pipe2 = clone(pipe)
