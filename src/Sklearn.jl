@@ -9,16 +9,20 @@ include("sk_utils.jl")
 @pyimport2 sklearn
 @pyimport sklearn.base as sk_base
 
-# API
-export fit!, transform, fit_transform!, predict, score_samples, sample, score
-export decision_function, clone, set_params!, get_params
+# These are the functions that should be implemented by estimators/transformers
+api = [:fit!, :transform, :fit_transform!, :predict, :score_samples, :sample,
+       :score, :decision_function, :clone, :set_params!, :get_params,
+       :is_classifier]
+
+# Not sure if we should export all the api
+for f in api @eval(export $f) end
+
+macro import_api()
+    # I wish `importall ..` worked
+    esc(:(begin $([Expr(:import, :., :., f) for f in api]...) end))
+end
 
 abstract BaseEstimator
-
-include("pipeline.jl")
-include("scorer.jl")
-include("cross_validation.jl")
-include("grid_search.jl")
 
 # Note that I don't know the rationale for the `safe` argument - cstjean Feb2016
 clone(py_model::PyObject) = sklearn.clone(py_model, safe=true)
@@ -57,5 +61,13 @@ imported_python_modules =
 for (jl_module, py_module) in imported_python_modules
     @eval @pyimport sklearn.$py_module as $jl_module
 end
+
+
+
+include("pipeline.jl")
+include("scorer.jl")
+include("cross_validation.jl")
+include("grid_search.jl")
+
 
 end

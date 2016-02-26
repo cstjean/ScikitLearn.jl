@@ -1,3 +1,11 @@
+module GridSearch
+
+using PyCall
+using Parameters: @with_kw
+
+using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
+@import_api()
+
 abstract BaseSearchCV
 
 @pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid)
@@ -285,4 +293,8 @@ function fit!(self::GridSearchCV, X, y=nothing):
 
     """
     return _fit!(self, X, y, ParameterGrid(self.param_grid))
+end
+
+is_classifier(gcv::GridSearchCV) = is_classifier(gcv.estimator)
+
 end

@@ -7,8 +7,12 @@
 # Licence: BSD
 
 
-## The :mod:`sklearn.pipeline` module implements utilities to build a composite
-## estimator, as a chain of transforms and estimators.
+""" The :mod:`sklearn.pipeline` module implements utilities to build a composite
+estimator, as a chain of transforms and estimators. """
+module Pipelines
+
+using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify
+@import_api()
 
 
 """Pipeline of transforms with a final estimator.
@@ -37,7 +41,7 @@ type Pipeline <: BaseEstimator
     end
 end
 
-get_models(pip::Pipeline) = map(second, pip.steps)
+get_models(pip::Pipeline) = map(x->x[2], pip.steps)
 get_transforms(pip::Pipeline) = get_models(pip)[1:end-1]
 get_estimator(pip::Pipeline) = get_models(pip)[end]
 named_steps(pip::Pipeline) = Dict(pip.steps)
@@ -128,3 +132,4 @@ function score(pip::Pipeline, X, y=nothing)
 end
 
 
+end

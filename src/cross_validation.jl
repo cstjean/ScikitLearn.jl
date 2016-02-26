@@ -1,7 +1,16 @@
 # TODO: translate cross_val_predict
 
+module CrossValidation
+
+using PyCall
+
+using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
+@import_api()
+
 @pyimport2 sklearn.cross_validation: (_check_cv, check_cv, 
                                       _index_param_value)
+
+
 ## @pyimport2 sklearn.metrics: get_scorer
 
 
@@ -291,4 +300,6 @@ function _score(estimator, X_test, y_test, scorer)
         throw(ValueError("scoring must return a number, got a $(typeof(score)) instead."))
     end
     return score
+end
+
 end
