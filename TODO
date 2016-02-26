@@ -2,3 +2,8 @@ Re. Module loading: I don't have a great solution yet. I'm leaning towards
 having a separate module for each main Python module
 (eg. `sk_linear_model`). Or maybe I can @pyimport everything to make the
 hierarchy work and use `@reexport`. `@require` is also interesting.
+
+- Review docstrings
+- Support Julia algos
+- njobs>1
+- More tests

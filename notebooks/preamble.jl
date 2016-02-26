@@ -2,8 +2,8 @@ push!(LOAD_PATH, "/Users/cedric/Programa/Sklearn/src")
 push!(LOAD_PATH, "/Users/cedric/Programa/Mario")
 using Autoreload
 
-arequire("Sklearn")
-using Sklearn
+arequire("Skcore")
+using Skcore
 
 include("../src/Ndgrid.jl")
 

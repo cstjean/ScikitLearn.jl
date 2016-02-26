@@ -1,4 +1,8 @@
-module Sklearn
+# Skcore contains the actual implementation of the Julia part of scikit-learn.
+# It's a flat module, which simplifies the implementation.
+# Sklearn defines the visible interface. This schema makes it easier
+# change the public module structure.
+module Skcore
 
 using PyCall
 using Utils 

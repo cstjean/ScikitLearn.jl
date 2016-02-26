@@ -1,12 +1,12 @@
 # TODO: translate cross_val_predict
 
-module CrossValidation
+## module CrossValidation
 
-using PyCall
+## using PyCall
 
-using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
-using ..check_consistent_length
-@import_api()
+## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
+## using ..check_consistent_length
+## @import_api()
 
 @pyimport2 sklearn.cross_validation: (_check_cv, check_cv, 
                                       _index_param_value)
@@ -303,4 +303,4 @@ function _score(estimator, X_test, y_test, scorer)
     return score
 end
 
-end
+## end

@@ -1,7 +1,7 @@
 using Base.Test
-using Sklearn
-using Sklearn.GridSearch: GridSearchCV
-using Sklearn.Pipelines: Pipeline
+using Skcore
+using Skcore: GridSearchCV
+using Skcore: Pipeline
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
@@ -68,9 +68,12 @@ function test_score_sample_weight()
 end
 
 
-test_is_classifier()
-test_set_params()
-test_clone()
-test_score_sample_weight()
+function all_test_base()
+    test_is_classifier()
+    test_set_params()
+    test_clone()
+    test_score_sample_weight()
+end
+
 
 :ok

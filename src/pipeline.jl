@@ -3,16 +3,16 @@
 #                          Virgile Fritsch
 #                          Alexandre Gramfort
 #                          Lars Buitinck
-# Julia translation: Cedric St-Jean
+# Julia adaptation: Cedric St-Jean
 # Licence: BSD
 
 
-""" The :mod:`sklearn.pipeline` module implements utilities to build a composite
-estimator, as a chain of transforms and estimators. """
-module Pipelines
+## """ The :mod:`sklearn.pipeline` module implements utilities to build a composite
+## estimator, as a chain of transforms and estimators. """
+## module Pipelines
 
-using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify
-@import_api()
+## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify
+## @import_api()
 
 
 """Pipeline of transforms with a final estimator.
@@ -132,4 +132,4 @@ function score(pip::Pipeline, X, y=nothing)
 end
 
 
-end
+## end

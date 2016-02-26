@@ -1,13 +1,13 @@
-module GridSearch
+## module GridSearch
 
-using PyCall
-using Parameters: @with_kw
+## using PyCall
+## using Parameters: @with_kw
 
-using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
-using ..CrossValidation.check_scoring, ..CrossValidation.check_cv
-using ..CrossValidation._fit_and_score
+## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
+## using ..CrossValidation.check_scoring, ..CrossValidation.check_cv
+## using ..CrossValidation._fit_and_score
 
-@import_api()
+## @import_api()
 
 abstract BaseSearchCV
 
@@ -300,4 +300,4 @@ end
 
 is_classifier(gcv::GridSearchCV) = is_classifier(gcv.estimator)
 
-end
+## end
