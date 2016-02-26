@@ -8,3 +8,8 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - njobs>1
 - More tests
 - Deprecation warnings in Sk_Pipeline_PCA_Logistic.ipynb
+
+More long-term
+
+- JLD/Pickling (possibly by implementing JLD serialization for PyObjects
+through pickling)

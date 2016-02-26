@@ -104,3 +104,8 @@ function test_pipeline_init()
     delete!(params2, "anova")
     @test params == params2
 end
+
+
+function all_test_pipeline()
+    test_pipeline_init()
+end
