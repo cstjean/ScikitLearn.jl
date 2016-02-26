@@ -14,6 +14,7 @@
 ## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify
 ## @import_api()
 
+export Pipeline, named_steps
 
 """Pipeline of transforms with a final estimator.
 

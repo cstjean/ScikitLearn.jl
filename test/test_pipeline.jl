@@ -86,19 +86,21 @@ function test_pipeline_init()
     # repr(pipe)
 
     # Check that params are not set when naming them wrong
-    #assert_raises(ValueError, pipe.set_params, anova__C=0.1)
+    # (Note: I think this should be an ArgumentError if this was a Julia
+    # estimator)
+    @test_throws(PyError, set_params!(pipe; anova__C=0.1))
 
-    ## # Test clone
-    ## pipe2 = clone(pipe)
-    ## assert_false(pipe.named_steps["svc"] is pipe2.named_steps["svc"])
+    # Test clone
+    pipe2 = clone(pipe)
+    @test named_steps(pipe)["svc"] !== named_steps(pipe2)["svc"]
 
-    ## # Check that apart from estimators, the parameters are the same
-    ## params = pipe.get_params()
-    ## params2 = pipe2.get_params()
-    ## # Remove estimators that where copied
-    ## params.pop("svc")
-    ## params.pop("anova")
-    ## params2.pop("svc")
-    ## params2.pop("anova")
-    ## assert_equal(params, params2)
+    # Check that apart from estimators, the parameters are the same
+    params = get_params(pipe)
+    params2 = get_params(pipe2)
+    # Remove estimators that where copied
+    delete!(params, "svc")
+    delete!(params, "anova")
+    delete!(params2, "svc")
+    delete!(params2, "anova")
+    @test params == params2
 end
