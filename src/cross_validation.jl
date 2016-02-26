@@ -5,6 +5,7 @@ module CrossValidation
 using PyCall
 
 using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
+using ..check_consistent_length
 @import_api()
 
 @pyimport2 sklearn.cross_validation: (_check_cv, check_cv, 

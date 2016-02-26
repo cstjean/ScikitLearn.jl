@@ -1,7 +1,7 @@
 module Sklearn
 
 using PyCall
-using Utils
+using Utils 
 using Parameters
 
 include("sk_utils.jl")
@@ -12,7 +12,7 @@ include("sk_utils.jl")
 # These are the functions that should be implemented by estimators/transformers
 api = [:fit!, :transform, :fit_transform!, :predict, :score_samples, :sample,
        :score, :decision_function, :clone, :set_params!, :get_params,
-       :is_classifier]
+       :is_classifier, :is_pairwise]
 
 # Not sure if we should export all the api
 for f in api @eval(export $f) end
