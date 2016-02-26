@@ -7,3 +7,4 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - Support Julia algos
 - njobs>1
 - More tests
+- Deprecation warnings in Sk_Pipeline_PCA_Logistic.ipynb
