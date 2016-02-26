@@ -89,27 +89,6 @@ function get_params(pip::Pipeline; deep=true)
     end
 end
 
-function set_params!(pip::Pipeline; params...)
-    # Simple optimisation to gain speed (inspect is slow)
-    if isempty(params) return pip end
-
-    valid_params = get_params(pip, deep=true)
-    for (key, value) in params
-        sp = split(string(key), "__"; limit=2)
-        if length(sp) > 1
-            name, sub_name = sp
-            if !haskey(valid_params, name::AbstractString)
-                throw(ArgumentError("Invalid parameter $name for estimator $pip"))
-            end
-            sub_object = valid_params[name]
-            set_params!(sub_object; kwargify(Dict(sub_name=>value))...)
-        else
-            TODO() # should be straight-forward
-        end
-    end
-    pip
-end
-
 """Applies transforms to the data, and the score method of the
 final estimator. Valid only if the final estimator implements
 score.
@@ -131,6 +110,167 @@ function score(pip::Pipeline, X, y=nothing)
     end
     return score(get_estimator(pip), Xt, y)
 end
+
+
+"""Concatenates results of multiple transformer objects.
+
+This estimator applies a list of transformer objects in parallel to the
+input data, then concatenates the results. This is useful to combine
+several feature extraction mechanisms into a single transformer.
+
+Parameters
+----------
+transformer_list: list of (string, transformer) tuples
+    List of transformer objects to be applied to the data. The first
+    half of each tuple is the name of the transformer.
+
+n_jobs: int, optional
+    Number of jobs to run in parallel (default 1).
+
+transformer_weights: dict, optional
+    Multiplicative weights for features per transformer.
+    Keys are transformer names, values the weights.
+
+"""
+type FeatureUnion <: BaseEstimator
+    transformer_list::Vector{Tuple{Any, Any}}
+    n_jobs::Int
+    transformer_weights
+    FeatureUnion(transformer_list; n_jobs=1, transformer_weights=nothing) =
+        new(transformer_list, n_jobs, transformer_weights)
+end
+
+
+clone(fu::FeatureUnion) = 
+    FeatureUnion([(name, clone(model))
+                  for (name, model) in fu.transformer_list];
+                 n_jobs=fu.n_jobs, transformer_weights=fu.transformer_weights)
+
+
+"""Get feature names from all transformers.
+
+Returns
+-------
+feature_names : list of strings
+    Names of the features produced by transform.
+"""
+function get_feature_names(self::FeatureUnion)
+    feature_names = Any[]
+    for (name, trans) in self.transformer_list
+        push!(feature_names, [name * "__" * f for f in
+                              get_feature_names(trans)])
+    end
+    return feature_names
+end
+
+
+"""Fit all transformers using X.
+
+Parameters
+----------
+X : array-like or sparse matrix, shape (n_samples, n_features)
+    Input data, used to fit transformers.
+"""
+function fit!(self::FeatureUnion, X, y=nothing)
+    @assert self.n_jobs == 1 "n_jobs > 1 not supported yet. TODO"
+    transformers = [fit!(trans, X, y)
+                    for (name, trans) in self.transformer_list]
+    _update_transformer_list(self, transformers)
+    return self
+end
+
+
+    ## def fit_transform(self, X, y=None, **fit_params):
+    ##     """Fit all transformers using X, transform the data and concatenate
+    ##     results.
+
+    ##     Parameters
+    ##     ----------
+    ##     X : array-like or sparse matrix, shape (n_samples, n_features)
+    ##         Input data to be transformed.
+
+    ##     Returns
+    ##     -------
+    ##     X_t : array-like or sparse matrix, shape (n_samples, sum_n_components)
+    ##         hstack of results of transformers. sum_n_components is the
+    ##         sum of n_components (output dimension) over transformers.
+    ##     """
+    ##     result = Parallel(n_jobs=self.n_jobs)(
+    ##         delayed(_fit_transform_one)(trans, name, X, y,
+    ##                                     self.transformer_weights, **fit_params)
+    ##         for name, trans in self.transformer_list)
+
+    ##     Xs, transformers = zip(*result)
+    ##     self._update_transformer_list(transformers)
+    ##     if any(sparse.issparse(f) for f in Xs):
+    ##         Xs = sparse.hstack(Xs).tocsr()
+    ##     else:
+    ##         Xs = np.hstack(Xs)
+    ##     return Xs
+
+
+function _transform_one(transformer, name, X, transformer_weights)
+    if transformer_weights !== nothing
+        # Not taking any chance until I know what objects come this way -cstjean
+        @assert keytype(transformer_weights) == typeof(name)
+    end
+    if transformer_weights !== nothing && haskey(transformer_weights, name)
+        # if we have a weight for this transformer, muliply output
+        return transform(transformer, X) * transformer_weights[name]
+    end
+    return transform(transformer, X)
+end
+
+
+"""Transform X separately by each transformer, concatenate results.
+
+Parameters
+----------
+X : array-like or sparse matrix, shape (n_samples, n_features)
+    Input data to be transformed.
+
+Returns
+-------
+X_t : array-like or sparse matrix, shape (n_samples, sum_n_components)
+    hstack of results of transformers. sum_n_components is the
+    sum of n_components (output dimension) over transformers.
+"""
+function transform(self::FeatureUnion, X)
+    @assert self.n_jobs==1 "TODO: n_jobs>1"
+    Xs = [_transform_one(trans, name, X, self.transformer_weights)
+          for (name, trans) in self.transformer_list]
+    if any(issparse, Xs)
+        # I would just like a test case for it.
+        error("TODO: sparse matrices not supported in FeatureUnions - not hard")
+        #Xs = sparse.hstack(Xs).tocsr()
+    else
+        Xs = hcat(Xs...)
+    end
+    return Xs
+end
+
+function get_params(self; deep=true)
+    if !deep
+        return Dict("n_jobs" => self.n_jobs,
+                    "transformer_weights" => self.transformer_weights,
+                    "transformer_list" => self.transformer_list)
+    else
+        out = Dict(self.transformer_list)
+        for (name, trans) in self.transformer_list
+            for (key, value) in get_params(trans, deep=true)
+                out["$(name)__$key"] = value
+            end
+        end
+        return out
+    end
+end
+
+function _update_transformer_list(self, transformers)
+    self.transformer_list[:] =
+        [(name, new)
+         for ((name, old), new) in zip(self.transformer_list, transformers)]
+end
+
 
 
 ## end

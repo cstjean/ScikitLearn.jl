@@ -221,13 +221,13 @@ function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
     X_train, y_train = _safe_split(estimator, X, y, train)
     X_test, y_test = _safe_split(estimator, X, y, test, train)
 
-    try
-        if y_train === nothing
-            fit!(estimator, X_train; fit_params...)
-        else
-            fit!(estimator, X_train, y_train; fit_params...)
-        end
-    end # Julia TODO: Python has some meaningful error handling here
+    # Julia TODO: Python has some meaningful error handling here
+    if y_train === nothing
+        fit!(estimator, X_train; fit_params...)
+    else
+        fit!(estimator, X_train, y_train; fit_params...)
+    end
+
     test_score = _score(estimator, X_test, y_test, scorer)
     if return_train_score
         train_score = _score(estimator, X_train, y_train, scorer)

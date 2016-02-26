@@ -11,7 +11,7 @@
 
 abstract BaseSearchCV
 
-@pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid)
+@pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid, Sized)
 
 immutable CVScoreTuple
     parameters
