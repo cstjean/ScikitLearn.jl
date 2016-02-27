@@ -9,7 +9,6 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - More tests
 - Deprecation warnings in Sk_Pipeline_PCA_Logistic.ipynb
 - Random grid search
-- Feature
 - Dataframes
 - Kernels
 
@@ -17,6 +16,7 @@ Before release
 
 - Documentation
 - Check with scikit re. name
+- License
 
 
 More long-term

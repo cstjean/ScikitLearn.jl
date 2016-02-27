@@ -29,7 +29,7 @@ Skcore.fit!(self::T, X, y) = self
 
 Skcore.get_params(self::T; deep=false) = Dict("a"=>self.a, "b"=>self.b)
 function Skcore.set_params!(self; a=error("Missing value"))
-    self.a = params[:a]
+    self.a = a
     return self
 end
 

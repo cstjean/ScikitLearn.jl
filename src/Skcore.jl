@@ -5,7 +5,6 @@
 module Skcore
 
 using PyCall
-using Utils 
 using Parameters
 using SymDict
 
