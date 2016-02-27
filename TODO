@@ -11,10 +11,12 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - Random grid search
 - Dataframes
 - Kernels
-- Module
+
 
 Before release
 
+- Update Sklearn
+- Get rid of preamble in examples
 - Documentation
 - Check with scikit re. name
 - License

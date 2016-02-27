@@ -26,21 +26,24 @@ macro pyimport2(expr)
         expansion(m, g) =
             :(try
                 # If it's a module
-                @pyimport $mod.$m as $g
+                PyCall.@pyimport $mod.$m as $g
                 global $m = $g
             catch e
                 # If it's a variable/function
                 if isa(e, PyCall.PyError)
-                    @pyimport $mod as $g
+                    PyCall.@pyimport $mod as $g
                     global $m = $g.$m
                 else
                     rethrow()
                 end
             end)
-        esc(:(begin $([expansion(m, g) for (m, g) in zip(members, gensyms)]...)
+        # This is a bad expansion (putting everything in `esc`). FIXME
+        esc(:(begin
+            using PyCall: @pyimport
+            $([expansion(m, g) for (m, g) in zip(members, gensyms)]...)
             end))
     else
-        esc(:(@pyimport $expr))
+        esc(:(PyCall.@pyimport $expr))
     end
 end
 
