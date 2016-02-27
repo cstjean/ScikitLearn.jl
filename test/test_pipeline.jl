@@ -7,6 +7,7 @@ using PyCall: PyError
 @pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
 @pyimport2 sklearn.datasets: load_iris
 @pyimport2 sklearn.linear_model: LogisticRegression
+@pyimport2 sklearn.decomposition: PCA
 
 
 JUNK_FOOD_DOCS = (
@@ -149,7 +150,26 @@ function test_pipeline_fit_params()
 end
 
 
+function test_pipeline_methods_pca_svm()
+    # Test the various methods of the pipeline (pca + svm).
+    iris = load_iris()
+    X = iris["data"]
+    y = iris["target"]
+    # Test with PCA + SVC
+    clf = SVC(probability=true, random_state=0)
+    pca = PCA(n_components="mle", whiten=true)
+    pipe = Pipeline([("pca", pca), ("svc", clf)])
+    fit!(pipe, X, y)
+    predict(pipe, X)
+    predict_proba(pipe, X)
+    predict_log_proba(pipe, X)
+    score(pipe, X, y)
+end
+
+
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
+    test_pipeline_fit_params()
+    test_pipeline_methods_pca_svm()
 end
