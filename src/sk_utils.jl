@@ -71,3 +71,36 @@ end
 kwargify(assoc::Associative) =
     Dict([Symbol(k)=>v for (k, v) in assoc])
 
+
+""" `parse_function_definition(fdef)`
+
+Macro helper: parses the given function definition and returns
+`(fname::Symbol, args::Vector{Any}, kwargs::Vector{Any}, body::Vector{Any})`
+
+One can rebuild the function definition with
+`esc(:(function &fname (&(args...); &(kwargs...)) &(body...) end))`
+
+(replace the & with dollar sign - the docstring system didn't allow us to write
+it correctly) """
+function parse_function_definition(fdef)
+    if @capture(fdef, function fname_(args__; kwargs__) body__ end)
+        (fname, args, kwargs, body)
+    elseif @capture(fdef, function fname_(args__) body__ end)
+        (fname, args, Any[], body)
+    elseif @capture(fdef, (fname_(args__; kwargs__) = bexpr_))
+        (fname, args, kwargs, Any[bexpr])
+    elseif @capture(fdef, fname_(args__) = bexpr_)
+        (fname, args, Any[], Any[bexpr])
+    else
+        error("Not a function definition: $fdef")
+    end
+end
+
+""" `macro_keyword_args(kwarg)`
+
+Macro helper: if a function/macro definition contains x=y in an argument list,
+this will return (x, y) """ # TODO: add example
+function parse_kwarg(kwarg)
+    @assert kwarg.head == :kw
+    return (kwarg.args[1], kwarg.args[2])
+end

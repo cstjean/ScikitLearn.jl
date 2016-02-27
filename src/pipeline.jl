@@ -254,7 +254,7 @@ function transform(self::FeatureUnion, X)
     return Xs
 end
 
-function get_params(self; deep=true)
+function get_params(self::FeatureUnion; deep=true)
     if !deep
         return Dict("n_jobs" => self.n_jobs,
                     "transformer_weights" => self.transformer_weights,
@@ -270,7 +270,7 @@ function get_params(self; deep=true)
     end
 end
 
-function _update_transformer_list(self, transformers)
+function _update_transformer_list(self::FeatureUnion, transformers)
     self.transformer_list[:] =
         [(name, new)
          for ((name, old), new) in zip(self.transformer_list, transformers)]

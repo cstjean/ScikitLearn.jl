@@ -11,6 +11,7 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - Random grid search
 - Dataframes
 - Kernels
+- Feature extraction (eg. text features)
 
 
 Before release

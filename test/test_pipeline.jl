@@ -18,6 +18,7 @@ JUNK_FOOD_DOCS = (
     "the coke burger burger",
 )
 
+############################################################
 
 """Small class to test parameter dispatching.
 """
@@ -27,30 +28,34 @@ type T
     T(a=nothing, b=nothing) = new(a, b)
 end
 
-
 Skcore.fit!(self::T, X, y) = self
-
 Skcore.get_params(self::T; deep=false) = Dict("a"=>self.a, "b"=>self.b)
-function Skcore.set_params!(self; a=error("Missing value"))
+function Skcore.set_params!(self::T; a=error("Missing value"))
     self.a = a
     return self
 end
+Skcore.transform(self::T, X) = X
 
 
-## class FitParamT(object):
-##     """Mock classifier
-##     """
+############################################################
 
-##     def __init__(self):
-##         self.successful = False
-##         pass
+""" Mock classifier """
+type FitParamT
+    successful
+end
 
-##     def fit(self, X, y, should_succeed=False):
-##         self.successful = should_succeed
+@simple_model_constructor FitParamT(;successful=false) =
+    FitParamT(successful)
 
-##     def predict(self, X):
-##         return self.successful
+function Skcore.fit!(self::FitParamT, X, y; should_succeed=false)
+    self.successful = should_succeed
+end
 
+function Skcore.predict(self::FitParamT, X)
+    return self.successful
+end
+
+############################################################
 
 function test_pipeline_init()
     # Test the various init parameters of the pipeline.
@@ -123,6 +128,24 @@ function test_pipeline_methods_anova()
     predict_proba(pipe, X)
     predict_log_proba(pipe, X)
     score(pipe, X, y)
+end
+
+
+function test_pipeline_fit_params()
+    # Test that the pipeline can take fit parameters
+    pipe = Pipeline([("transf", T()), ("clf", FitParamT())])
+    # Julia note: fit! does not currently support arbitrary keyword arguments.
+    # This feature doesn't seem to be used so far, and it looks like an
+    # historical artifact to me since `set_params!` is used to achieve the
+    # same thing - cstjean Feb2016
+    # fit!(pipe, 1, 2; clf__should_succeed=true)
+    # Replacement test
+    set_params!(pipe; clf__successful=true)
+    # classifier should return true
+    @test predict(pipe, nothing)
+    # and transformer params should not be changed
+    @test named_steps(pipe)["transf"].a == nothing
+    @test named_steps(pipe)["transf"].b == nothing
 end
 
 
