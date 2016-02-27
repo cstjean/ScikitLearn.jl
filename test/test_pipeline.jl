@@ -7,7 +7,8 @@ using PyCall: PyError
 @pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
 @pyimport2 sklearn.datasets: load_iris
 @pyimport2 sklearn.linear_model: LogisticRegression
-@pyimport2 sklearn.decomposition: PCA
+@pyimport2 sklearn.decomposition: (PCA, RandomizedPCA)
+@pyimport2 sklearn.preprocessing: StandardScaler
 
 
 JUNK_FOOD_DOCS = (
@@ -166,10 +167,43 @@ function test_pipeline_methods_pca_svm()
     score(pipe, X, y)
 end
 
+function test_pipeline_methods_preprocessing_svm()
+    # Test the various methods of the pipeline (preprocessing + svm).
+    iris = load_iris()
+    X = iris["data"]
+    y = iris["target"]
+    n_samples = size(X, 1)
+    n_classes = length(unique(y))
+    scaler = StandardScaler()
+    pca = RandomizedPCA(n_components=2, whiten=true)
+    clf = SVC(probability=true, random_state=0)
+
+    for preprocessing in [scaler, pca]
+        pipe = Pipeline([("preprocess", preprocessing), ("svc", clf)])
+        fit!(pipe, X, y)
+
+        # check shapes of various prediction functions
+        pred = predict(pipe, X)
+        @test size(pred) == (n_samples,)
+
+        proba = predict_proba(pipe, X)
+        @test size(proba) == (n_samples, n_classes)
+
+        log_proba = predict_log_proba(pipe, X)
+        @test size(log_proba) == (n_samples, n_classes)
+
+        dec_function = decision_function(pipe, X)
+        @test size(dec_function) == (n_samples, n_classes)
+
+        score(pipe, X, y)
+    end
+end
+
 
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
     test_pipeline_fit_params()
     test_pipeline_methods_pca_svm()
+    test_pipeline_methods_preprocessing_svm()
 end

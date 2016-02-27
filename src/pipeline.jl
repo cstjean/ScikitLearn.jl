@@ -44,10 +44,10 @@ end
 
 get_models(pip::Pipeline) = map(x->x[2], pip.steps)
 get_transforms(pip::Pipeline) = get_models(pip)[1:end-1]
-get_estimator(pip::Pipeline) = get_models(pip)[end]
+get_final_estimator(pip::Pipeline) = get_models(pip)[end]
 named_steps(pip::Pipeline) = Dict(pip.steps)
 
-is_classifier(pip::Pipeline) = is_classifier(get_estimator(pip))
+is_classifier(pip::Pipeline) = is_classifier(get_final_estimator(pip))
 clone(pip::Pipeline) =
     Pipeline([(name, clone(model)) for (name, model) in pip.steps])
 
@@ -61,7 +61,7 @@ function fit!(pip::Pipeline, X, y=nothing)
         #    transform_xy(model, X, y) = (transform(model, X), y)
         X = fit_transform!(tr, X, y)
     end
-    est = get_estimator(pip)
+    est = get_final_estimator(pip)
     fit!(est, X, y)
     pip
 end
@@ -78,11 +78,11 @@ function pretransform(pip::Pipeline, X)
 end
 
 predict(pip::Pipeline, X) =
-    return predict(get_estimator(pip), pretransform(pip, X))
+    return predict(get_final_estimator(pip), pretransform(pip, X))
 predict_proba(pip::Pipeline, X) =
-    return predict_proba(get_estimator(pip), pretransform(pip, X))
+    return predict_proba(get_final_estimator(pip), pretransform(pip, X))
 predict_log_proba(pip::Pipeline, X) =
-    return predict_log_proba(get_estimator(pip), pretransform(pip, X))
+    return predict_log_proba(get_final_estimator(pip), pretransform(pip, X))
 
 function get_params(pip::Pipeline; deep=true)
     if !deep
@@ -114,8 +114,25 @@ y : iterable, default=None
     the pipeline.
 """
 score(pip::Pipeline, X, y=nothing) =
-    return score(get_estimator(pip), pretransform(pip, X), y)
+    return score(get_final_estimator(pip), pretransform(pip, X), y)
 
+
+"""Applies transforms to the data, and the decision_function method of
+the final estimator. Valid only if the final estimator implements
+decision_function.
+
+Parameters
+----------
+X : iterable
+    Data to predict on. Must fulfill input requirements of first step of
+    the pipeline.
+"""
+decision_function(pip::Pipeline, X, y=nothing) =
+    return decision_function(get_final_estimator(pip), pretransform(pip, X))
+
+
+################################################################################
+# FeatureUnion
 
 """Concatenates results of multiple transformer objects.
 
@@ -185,6 +202,7 @@ function fit!(self::FeatureUnion, X, y=nothing)
 end
 
 
+# TODO: translate this
     ## def fit_transform(self, X, y=None, **fit_params):
     ##     """Fit all transformers using X, transform the data and concatenate
     ##     results.
