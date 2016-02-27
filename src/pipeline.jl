@@ -66,13 +66,23 @@ function fit!(pip::Pipeline, X, y=nothing)
     pip
 end
 
-function predict(pip::Pipeline, X)
+"""    pretransform(pip::Pipeline, X)
+
+Applies all transformations (but not the final estimator) to `X` """
+function pretransform(pip::Pipeline, X)
     Xt = X
     for transf in get_transforms(pip)
         Xt = transform(transf, Xt)
     end
-    return predict(get_estimator(pip), Xt)
+    return Xt
 end
+
+predict(pip::Pipeline, X) =
+    return predict(get_estimator(pip), pretransform(pip, X))
+predict_proba(pip::Pipeline, X) =
+    return predict_proba(get_estimator(pip), pretransform(pip, X))
+predict_log_proba(pip::Pipeline, X) =
+    return predict_log_proba(get_estimator(pip), pretransform(pip, X))
 
 function get_params(pip::Pipeline; deep=true)
     if !deep
@@ -103,13 +113,8 @@ y : iterable, default=None
     Targets used for scoring. Must fulfill label requirements for all steps of
     the pipeline.
 """
-function score(pip::Pipeline, X, y=nothing)
-    Xt = X
-    for transf in get_transforms(pip)
-        Xt = transform(transf, Xt)
-    end
-    return score(get_estimator(pip), Xt, y)
-end
+score(pip::Pipeline, X, y=nothing) =
+    return score(get_estimator(pip), pretransform(pip, X), y)
 
 
 """Concatenates results of multiple transformer objects.

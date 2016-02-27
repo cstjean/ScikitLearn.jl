@@ -14,7 +14,9 @@ include("sk_utils.jl")
 @pyimport sklearn.base as sk_base
 
 # These are the functions that should be implemented by estimators/transformers
-api = [:fit!, :transform, :fit_transform!, :predict, :score_samples, :sample,
+api = [:fit!, :transform, :fit_transform!,
+       :predict, :predict_proba, :predict_log_proba,
+       :score_samples, :sample,
        :score, :decision_function, :clone, :set_params!, :get_params,
        :is_classifier, :is_pairwise, :get_feature_names]
 
@@ -71,6 +73,8 @@ api_map = Dict(:decision_function => :decision_function,
                :fit! => :fit,
                :fit_transform! => :fit_transform,
                :predict => :predict,
+               :predict_proba => :predict_proba,
+               :predict_log_proba => :predict_log_proba,
                :score_samples => :score_samples,
                :sample => :sample,
                :score => :score,

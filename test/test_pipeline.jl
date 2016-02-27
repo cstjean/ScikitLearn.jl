@@ -5,6 +5,9 @@ using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
 @pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
+@pyimport2 sklearn.datasets: load_iris
+@pyimport2 sklearn.linear_model: LogisticRegression
+
 
 JUNK_FOOD_DOCS = (
     "the pizza pizza beer copyright",
@@ -106,6 +109,24 @@ function test_pipeline_init()
 end
 
 
+function test_pipeline_methods_anova()
+    # Test the various methods of the pipeline (anova).
+    iris = load_iris()
+    X = iris["data"]
+    y = iris["target"]
+    # Test with Anova + LogisticRegression
+    clf = LogisticRegression()
+    filter1 = SelectKBest(f_classif, k=2)
+    pipe = Pipeline([("anova", filter1), ("logistic", clf)])
+    fit!(pipe, X, y)
+    predict(pipe, X)
+    predict_proba(pipe, X)
+    predict_log_proba(pipe, X)
+    score(pipe, X, y)
+end
+
+
 function all_test_pipeline()
     test_pipeline_init()
+    test_pipeline_methods_anova()
 end
