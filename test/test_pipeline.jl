@@ -259,6 +259,21 @@ function test_pipeline_transform()
 end
 
 
+function test_pipeline_fit_transform()
+    # Test whether pipeline works with a transformer missing fit_transform
+    iris = load_iris()
+    X = iris["data"]
+    y = iris["target"]
+    transft = T()
+    pipeline = Pipeline([("mock", transft)])
+
+    # test fit_transform:
+    X_trans = fit_transform!(pipeline, X, y)
+    X_trans2 = transform(fit!(transft, X, y), X)
+    @test isapprox(X_trans, X_trans2)
+end
+
+
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
@@ -267,4 +282,5 @@ function all_test_pipeline()
     test_pipeline_methods_preprocessing_svm()
     test_feature_union()
     test_pipeline_transform()
+    test_pipeline_fit_transform()
 end
