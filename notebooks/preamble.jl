@@ -1,5 +1,7 @@
-push!(LOAD_PATH, "/Users/cedric/Programa/Sklearn/src")
-push!(LOAD_PATH, "/Users/cedric/Programa/Mario")
+push!(LOAD_PATH,
+      "/Users/cedric/Programa/Sklearn/src",
+      "/Users/cedric/Programa/SklearnBase/src",
+      "/Users/cedric/Programa/Mario")
 using Autoreload
 
 arequire("Skcore")

@@ -1,7 +1,7 @@
 using Base.Test
 using Skcore
 using Skcore: GridSearchCV
-using Skcore: Pipeline
+using Skcore: Pipeline, is_classifier
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
