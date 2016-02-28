@@ -22,8 +22,9 @@
 # I think the best option going forward would be to wrap the Python CV iterators
 # to add the +1 near the source.
 fix_cv_iter_indices(cv) = cv
+fix_cv_arr(arr::Vector{Int}) = arr .+ 1
 fix_cv_iter_indices(cv::PyObject) =
-    [(train .+ 1, test .+ 1) for (train, test) in cv]
+    [(fix_cv_arr(train), fix_cv_arr(test)) for (train, test) in cv]
 
 
 """Evaluate a score by cross-validation
@@ -190,7 +191,10 @@ scoring_time : float
 parameters : dict or nothing, optional
     The parameters that have been evaluated.
 """
-function _fit_and_score(estimator, X, y, scorer, train, test, verbose,
+function _fit_and_score(estimator, X, y, scorer,
+                        # Vector{Int} is defensive programming. Could be
+                        # changed.
+                        train::Vector{Int}, test::Vector{Int}, verbose,
                         parameters, fit_params; return_train_score=false,
                         return_parameters=false, error_score="raise")
     # Julia TODO
@@ -283,7 +287,10 @@ function _safe_split(estimator, X, y, indices, train_indices=nothing)
     elseif ndims(X) == 1
         X_subset = X[indices]
     else
-        @assert ndims(X) == 2
+        # Python seems to support three-dimensionl X (see
+        # test_crossvalidation.jl). I don't understand why, and I'd rather
+        # disable it until I do - cstjean
+        @assert ndims(X) == 2 "X must be 1D or 2D"
         X_subset = X[indices, :]
     end
 
