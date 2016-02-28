@@ -1,4 +1,6 @@
+Work in progress
 
+Derived from [scikit-learn](http://scikit-learn.org/stable/)
 
 
 ```
