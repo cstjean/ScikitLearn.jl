@@ -12,14 +12,19 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - Dataframes
 - Feature extraction (eg. text features)
 
+Before 0.0.1
+-----
+- README.md
+- Link to examples
+- License
 
-Before release
 
+Before 0.0.2
+----
+- Check with scikit re. name
+- Documentation
 - Update Sklearn
 - Get rid of preamble in examples
-- Documentation
-- Check with scikit re. name
-- License
 
 
 More long-term
