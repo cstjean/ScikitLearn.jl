@@ -10,6 +10,8 @@ module Sklearn
 import Skcore
 
 using PyCall: @pyimport
+using SklearnBase
+using SklearnBase: @import_api, @simple_model_constructor
 
 export LinearModels, CrossValidation, Datasets, Ensembles, Trees
 
@@ -68,7 +70,7 @@ end
 # Other exports
 
 # Not sure if we should export all the api
-for f in Skcore.api @eval(@reexportsk $f) end
+for f in SklearnBase.api @eval(@reexportsk $f) end
 
 
 
