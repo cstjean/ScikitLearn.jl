@@ -20,7 +20,7 @@ Before 0.0.1
 
 
 Before 0.0.2
-----
+-----
 - Check with scikit re. name
 - Documentation
 - Update Sklearn
@@ -28,7 +28,9 @@ Before 0.0.2
 
 
 More long-term
-
+-----
 - JLD/Pickling (possibly by implementing JLD serialization for PyObjects
 through pickling)
 - Sparse matrices (grep for 'sparse' in /test)
+- Write KFold, StratifiedKFold, etc. to automatically account for Julian
+  indices being 1-based

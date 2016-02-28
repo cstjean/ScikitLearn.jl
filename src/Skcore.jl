@@ -5,7 +5,7 @@
 module Skcore
 
 using SklearnBase
-using SklearnBase: @import_api, @simple_model_constructor
+using SklearnBase: @import_api, @simple_estimator_constructor
 
 using PyCall
 using Parameters

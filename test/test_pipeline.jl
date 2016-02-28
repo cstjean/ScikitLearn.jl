@@ -1,6 +1,7 @@
 using Base.Test
 using Skcore
-using Skcore: Pipeline, FeatureUnion, make_pipeline, @simple_model_constructor
+using Skcore: Pipeline, FeatureUnion, make_pipeline
+using Skcore: @simple_estimator_constructor
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
@@ -48,7 +49,7 @@ type FitParamT
     successful
 end
 
-@simple_model_constructor FitParamT(;successful=false) =
+@simple_estimator_constructor FitParamT(;successful=false) =
     FitParamT(successful)
 
 function Skcore.fit!(self::FitParamT, X, y; should_succeed=false)
