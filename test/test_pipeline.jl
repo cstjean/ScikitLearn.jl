@@ -21,6 +21,8 @@ JUNK_FOOD_DOCS = (
 )
 
 ############################################################
+# Note: I defined T as TransfT because the two classes were nearly identical
+# in the Python version
 
 """Small class to test parameter dispatching.
 """
@@ -291,6 +293,36 @@ function test_make_pipeline()
 end
 
 
+function test_feature_union_weights()
+    # test feature union with transformer weights
+    iris = load_iris()
+    X = iris["data"]
+    y = iris["target"]
+    pca = RandomizedPCA(n_components=2, random_state=0)
+    select = SelectKBest(k=1)
+    # test using fit followed by transform
+    fs = FeatureUnion([("pca", pca), ("select", select)],
+                      transformer_weights=Dict("pca"=>10))
+    fit!(fs, X, y)
+    X_transformed = transform(fs, X)
+    # test using fit_transform
+    fs = FeatureUnion([("pca", pca), ("select", select)],
+                      transformer_weights=Dict("pca"=>10))
+    X_fit_transformed = fit_transform!(fs, X, y)
+    # test it works with transformers missing fit_transform
+    fs = FeatureUnion([("mock", T()), ("pca", pca), ("select", select)],
+                      transformer_weights=Dict("mock"=>10))
+    X_fit_transformed_wo_method = fit_transform!(fs, X, y)
+    # check against expected result
+
+    # We use a different pca object to control the random_state stream
+    @test isapprox(X_transformed[:, 1:end-1], 10 * fit_transform!(pca, X))
+    @test X_transformed[:, end] == fit_transform!(select, X, y)[:]
+    @test isapprox(X_fit_transformed[:, 1:end-1], 10 * fit_transform!(pca, X))
+    @test X_fit_transformed[:, end] == fit_transform!(select, X, y)[:]
+    @test size(X_fit_transformed_wo_method) == (size(X, 1), 7)
+end
+
 
 function all_test_pipeline()
     test_pipeline_init()
@@ -302,4 +334,5 @@ function all_test_pipeline()
     test_pipeline_transform()
     test_pipeline_fit_transform()
     test_make_pipeline()
+    test_feature_union_weights()
 end

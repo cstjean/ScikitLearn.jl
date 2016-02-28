@@ -10,7 +10,6 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - Deprecation warnings in Sk_Pipeline_PCA_Logistic.ipynb
 - Random grid search
 - Dataframes
-- Kernels
 - Feature extraction (eg. text features)
 
 
