@@ -1,12 +1,12 @@
 using Base.Test
 using Skcore
-using Skcore: Pipeline, FeatureUnion, make_pipeline
+using Skcore: Pipeline, FeatureUnion, make_pipeline, @simple_model_constructor
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
 @pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
 @pyimport2 sklearn.datasets: load_iris
-@pyimport2 sklearn.linear_model: LogisticRegression
+@pyimport2 sklearn.linear_model: (LogisticRegression, LinearRegression)
 @pyimport2 sklearn.decomposition: (PCA, RandomizedPCA, TruncatedSVD)
 @pyimport2 sklearn.preprocessing: StandardScaler
 
@@ -324,6 +324,26 @@ function test_feature_union_weights()
 end
 
 
+# TODO
+# def test_feature_union_parallel():
+# def test_feature_union_feature_names():
+
+function test_classes_property()
+    iris = load_iris()
+    X = iris["data"]
+    y = iris["target"]
+
+    reg = make_pipeline(SelectKBest(k=1), LinearRegression())
+    fit!(reg, X, y)
+    @test_throws(KeyError, get_classes(reg))
+
+    clf = make_pipeline(SelectKBest(k=1), LogisticRegression(random_state=0))
+    @test_throws(KeyError, get_classes(clf))
+    fit!(clf, X, y)
+    @test get_classes(clf) == unique(y)
+end
+
+
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
@@ -335,4 +355,5 @@ function all_test_pipeline()
     test_pipeline_fit_transform()
     test_make_pipeline()
     test_feature_union_weights()
+    test_classes_property()
 end

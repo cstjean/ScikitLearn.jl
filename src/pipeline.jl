@@ -321,6 +321,9 @@ function _update_transformer_list(self::FeatureUnion, transformers)
 end
 
 
+get_classes(pip::Pipeline) = get_classes(get_final_estimator(pip))
+
+
 ################################################################################
 # Convenience constructors
 
