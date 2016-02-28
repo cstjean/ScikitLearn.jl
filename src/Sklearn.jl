@@ -25,6 +25,11 @@ macro reexport(module_, identifiers...)
     end))
 end
 
+"""    reexportsk(identifiers...)
+is equivalent to
+    using Skcore.identifiers...
+    export identifiers...
+"""
 macro reexportsk(identifiers...)
     :(@reexport($(esc(:Skcore)), $(map(esc, identifiers)...)))
 end
@@ -44,7 +49,13 @@ end
 
 module CrossValidation
 using ..@reexportsk
-@reexportsk cross_val_score
+@reexportsk(cross_val_score)
+end
+
+
+module Pipelines
+using ..@reexportsk
+@reexportsk(Pipeline, make_pipeline, FeatureUnion)
 end
 
 

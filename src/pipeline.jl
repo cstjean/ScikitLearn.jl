@@ -321,5 +321,59 @@ function _update_transformer_list(self::FeatureUnion, transformers)
 end
 
 
+################################################################################
+# Convenience constructors
+
+estimator_typeof(est) = typeof(est)
+estimator_typeof(est::PyObject) = pytypeof(est)
+
+"""Generate names for estimators."""
+function _name_estimators(estimators)
+    names = [lowercase(string(estimator_typeof(estimator)))
+             for estimator in estimators]
+    namecount = Dict()
+    for (est, name) in zip(estimators, names)
+        namecount[name] = get(namecount, name, 0) + 1
+    end
+
+    for (k, v) in namecount
+        if v == 1
+            delete!(namecount, k)
+        end
+    end
+
+    for i in length(estimators):-1:1
+        name = names[i]
+        if haskey(namecount, name)
+            names[i] *= "-$(namecount[name])"
+            namecount[name] -= 1
+        end
+    end
+    return collect(zip(names, estimators))
+end
+
+
+"""Construct a Pipeline from the given estimators.
+
+This is a shorthand for the Pipeline constructor; it does not require, and
+does not permit, naming the estimators. Instead, they will be given names
+automatically based on their types.
+
+Examples
+--------
+>>> from sklearn.naive_bayes import GaussianNB
+>>> from sklearn.preprocessing import StandardScaler
+>>> make_pipeline(StandardScaler(), GaussianNB())    # doctest: +NORMALIZE_WHITESPACE
+Pipeline(steps=[('standardscaler',
+                 StandardScaler(copy=True, with_mean=True, with_std=True)),
+                ('gaussiannb', GaussianNB())])
+
+Returns
+-------
+p : Pipeline
+"""
+function make_pipeline(steps...)
+    return Pipeline(_name_estimators(steps))
+end
 
 ## end

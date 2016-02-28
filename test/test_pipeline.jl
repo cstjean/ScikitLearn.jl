@@ -1,6 +1,6 @@
 using Base.Test
 using Skcore
-using Skcore: Pipeline, FeatureUnion
+using Skcore: Pipeline, FeatureUnion, make_pipeline
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
@@ -274,6 +274,24 @@ function test_pipeline_fit_transform()
 end
 
 
+function test_make_pipeline()
+    t1 = T()
+    t2 = T()
+
+    pipe = make_pipeline(t1, t2)
+    @test(isa(pipe, Pipeline))
+    @test(pipe.steps[1][1]=="t-1")
+    @test(pipe.steps[2][1]=="t-2")
+
+    pipe = make_pipeline(t1, t2, FitParamT())
+    @test(isa(pipe, Pipeline))
+    @test(pipe.steps[1][1]=="t-1")
+    @test(pipe.steps[2][1]=="t-2")
+    @test(pipe.steps[3][1]=="fitparamt")
+end
+
+
+
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
@@ -283,4 +301,5 @@ function all_test_pipeline()
     test_feature_union()
     test_pipeline_transform()
     test_pipeline_fit_transform()
+    test_make_pipeline()
 end
