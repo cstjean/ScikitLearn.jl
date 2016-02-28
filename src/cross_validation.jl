@@ -8,8 +8,7 @@
 ## using ..check_consistent_length
 ## @import_api()
 
-@pyimport2 sklearn.cross_validation: (_check_cv, check_cv, 
-                                      _index_param_value)
+@pyimport2 sklearn.cross_validation: (_check_cv, check_cv)
 
 
 ## @pyimport2 sklearn.metrics: get_scorer
@@ -129,6 +128,34 @@ function check_scoring{T}(estimator::T, scoring=nothing; allow_none=false)
 end
 
 
+# This is to help deal with the keyword arguments to `fit!` during
+# cross-validation . For instance, if `sample_weights` are provided, then
+# cross-validation needs to select them according to the train/test split. The
+# sklearn-py code has a heuristic "if size(X, 1)==size(keyword_arg, 1) then we
+# need to split keyword_arg too". I replicate that here, but I would sleep
+# better without it.
+# See the Python definition copied below. - cstjean
+function _index_param_value(X, v::AbstractArray, indices)
+    if size(X, 1) == size(v, 1)
+        return v[indices]
+    else
+        return v
+        ## throw(ArgumentError("fit! was passed a keyword argument that is an ::AbstractArray that does not match with X (not the same number of samples). This is disallowed at the moment"))
+    end
+end
+# Default for every argument that's not an AbstractArray
+_index_param_value(X, v, indices) = v
+
+## def _index_param_value(X, v, indices):
+##     """Private helper function for parameter value indexing."""
+##     if not _is_arraylike(v) or _num_samples(v) != _num_samples(X):
+##         # pass through: skip indexing
+##         return v
+##     if sp.issparse(v):
+##         v = v.tocsr()
+##     return safe_indexing(v, indices)
+
+
 """Fit estimator and compute scores for a given dataset split.
 
 Parameters
@@ -195,7 +222,8 @@ function _fit_and_score(estimator, X, y, scorer,
                         # Vector{Int} is defensive programming. Could be
                         # changed.
                         train::Vector{Int}, test::Vector{Int}, verbose,
-                        parameters, fit_params; return_train_score=false,
+                        parameters, fit_params::Union{Void, SymbolDict};
+                        return_train_score=false,
                         return_parameters=false, error_score="raise")
     # Julia TODO
     @assert error_score == "raise" "error_score = $error_score not supported"

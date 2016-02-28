@@ -40,7 +40,7 @@ accept non-array arguments through cross-validation, such as:
     - object
     - function
 """
-function Skcore.fit!(self, X, Y=nothing, sample_weight=nothing,
+function Skcore.fit!(self::MockClassifier, X, Y=nothing; sample_weight=nothing,
                      class_prior=nothing,
                      sparse_sample_weight=nothing, sparse_param=nothing,
                      dummy_int=nothing,
@@ -78,20 +78,20 @@ function Skcore.fit!(self, X, Y=nothing, sample_weight=nothing,
     if sparse_param !== nothing
         ## fmt = ('MockClassifier extra fit_param sparse_param.shape '
         ##        'is ({0}, {1}), should be ({2}, {3})')
-        @test sparse_param.shape == P_sparse.shape
+        @test size(sparse_param) == size(P_sparse)
     end
     return self
 end
 
 
-function Skcore.predict(self, T)
+function Skcore.predict(self::MockClassifier, T)
     if self.allow_nd
         T = reshape(T, size(T, 1), Int(length(T) / size(T, 1)))
     end
     return size(T, 1)
 end
 
-Skcore.score(self, X=nothing, Y=nothing) =
+Skcore.score(self::MockClassifier, X=nothing, Y=nothing) =
     1. / (1 + abs(self.a))
 
 
@@ -165,7 +165,41 @@ end
 ##     @test scores_indices == scores_masks
 ## end
 
+# I think this test is related to the checks at the top of _safe_split. TODO
+#def test_cross_val_score_precomputed()
+
+
+function test_cross_val_score_fit_params()
+    clf = MockClassifier()
+    n_samples = size(X, 1)
+    n_classes = length(unique(y))
+
+    DUMMY_INT = 42
+    DUMMY_STR = "42"
+    DUMMY_OBJ = Dict()
+
+    function assert_fit_params(clf)
+        # Function to test that the values are passed correctly to the
+        # classifier arguments for non-array type
+
+        @test clf.dummy_int == DUMMY_INT
+        @test clf.dummy_str == DUMMY_STR
+        @test clf.dummy_obj == DUMMY_OBJ
+    end
+    
+    fit_params = Dict(:sample_weight=> ones(n_samples),
+                      :class_prior=> ones(n_classes) / n_classes,
+                      #:sparse_sample_weight=> W_sparse, TODO
+                      :sparse_param=> P_sparse,
+                      :dummy_int=> DUMMY_INT,
+                      :dummy_str=> DUMMY_STR,
+                      :dummy_obj=> DUMMY_OBJ,
+                      :callback=> assert_fit_params)
+    cross_val_score(clf, X, y, fit_params=fit_params)
+end
+
 
 function all_test_crossvalidation()
     test_cross_val_score()
+    test_cross_val_score_fit_params()
 end
