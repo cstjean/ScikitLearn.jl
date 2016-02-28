@@ -18,7 +18,8 @@ api = [:fit!, :transform, :fit_transform!,
        :predict, :predict_proba, :predict_log_proba,
        :score_samples, :sample,
        :score, :decision_function, :clone, :set_params!, :get_params,
-       :is_classifier, :is_pairwise, :get_feature_names]
+       :is_classifier, :is_pairwise, :get_feature_names,
+       :inverse_transform]
 
 # Not sure if we should export all the api
 for f in api @eval(export $f) end
@@ -147,6 +148,9 @@ end
 api_map = Dict(:decision_function => :decision_function,
                :fit! => :fit,
                :fit_transform! => :fit_transform,
+               :get_feature_names => :get_feature_names,
+               :get_params => :get_params,
+               :inverse_transform => :inverse_transform,
                :predict => :predict,
                :predict_proba => :predict_proba,
                :predict_log_proba => :predict_log_proba,
@@ -154,9 +158,7 @@ api_map = Dict(:decision_function => :decision_function,
                :sample => :sample,
                :score => :score,
                :transform => :transform,
-               :set_params! => :set_params,
-               :get_params => :get_params,
-               :get_feature_names => :get_feature_names)
+               :set_params! => :set_params)
 
 for (jl_fun, py_fun) in api_map
     @eval $jl_fun(py_model::PyObject, args...; kwargs...) =

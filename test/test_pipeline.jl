@@ -238,6 +238,27 @@ function test_feature_union()
 end
 
 
+function test_pipeline_transform()
+    # Test whether pipeline works with a transformer at the end.
+    # Also test pipeline.transform and pipeline.inverse_transform
+    iris = load_iris()
+    X = iris["data"]
+    pca = PCA(n_components=2)
+    pipeline = Pipeline([("pca", pca)])
+
+    # test transform and fit_transform:
+    X_trans = transform(fit!(pipeline, X), X)
+    X_trans2 = fit_transform!(pipeline, X)
+    X_trans3 = fit_transform!(pca, X)
+    @test isapprox(X_trans, X_trans2)
+    @test isapprox(X_trans, X_trans3)
+
+    X_back = inverse_transform(pipeline, X_trans)
+    X_back2 = inverse_transform(pca, X_trans)
+    @test isapprox(X_back, X_back2)
+end
+
+
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
@@ -245,4 +266,5 @@ function all_test_pipeline()
     test_pipeline_methods_pca_svm()
     test_pipeline_methods_preprocessing_svm()
     test_feature_union()
+    test_pipeline_transform()
 end

@@ -83,6 +83,32 @@ predict_proba(pip::Pipeline, X) =
     return predict_proba(get_final_estimator(pip), pretransform(pip, X))
 predict_log_proba(pip::Pipeline, X) =
     return predict_log_proba(get_final_estimator(pip), pretransform(pip, X))
+transform(pip::Pipeline, X) =
+    return transform(get_final_estimator(pip), pretransform(pip, X))
+
+
+"""Applies inverse transform to the data.
+Starts with the last step of the pipeline and applies ``inverse_transform`` in
+inverse order of the pipeline steps.
+Valid only if all steps of the pipeline implement inverse_transform.
+
+Parameters
+----------
+X : iterable
+    Data to inverse transform. Must fulfill output requirements of the
+    last step of the pipeline.
+"""
+function inverse_transform(self::Pipeline, X)
+    if ndims(X) == 1
+        X = X'
+    end
+    Xt = X
+    for (name, step) in self.steps[end:-1:1]
+        Xt = inverse_transform(step, Xt)
+    end
+    return Xt
+end
+
 
 function get_params(pip::Pipeline; deep=true)
     if !deep
