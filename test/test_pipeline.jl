@@ -1,13 +1,13 @@
 using Base.Test
 using Skcore
-using Skcore: Pipeline
+using Skcore: Pipeline, FeatureUnion
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
 @pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
 @pyimport2 sklearn.datasets: load_iris
 @pyimport2 sklearn.linear_model: LogisticRegression
-@pyimport2 sklearn.decomposition: (PCA, RandomizedPCA)
+@pyimport2 sklearn.decomposition: (PCA, RandomizedPCA, TruncatedSVD)
 @pyimport2 sklearn.preprocessing: StandardScaler
 
 
@@ -167,6 +167,7 @@ function test_pipeline_methods_pca_svm()
     score(pipe, X, y)
 end
 
+
 function test_pipeline_methods_preprocessing_svm()
     # Test the various methods of the pipeline (preprocessing + svm).
     iris = load_iris()
@@ -200,10 +201,48 @@ function test_pipeline_methods_preprocessing_svm()
 end
 
 
+function test_feature_union()
+    # basic sanity check for feature union
+    iris = load_iris()
+    X = iris["data"]
+    X = X .- mean(X, 1)
+    y = iris["target"]
+    svd = TruncatedSVD(n_components=2, random_state=0)
+    select = SelectKBest(k=1)
+    fs = FeatureUnion([("svd", svd), ("select", select)])
+    fit!(fs, X, y)
+    X_transformed = transform(fs, X)
+    @test size(X_transformed) == (size(X, 1), 3)
+
+    # check if it does the expected thing
+    @test isapprox(X_transformed[:, 1:end-1], fit_transform!(svd, X))
+    @test(X_transformed[:, end] ==
+          fit_transform!(select, X, y)[:])
+
+    # test if it also works for sparse input
+    # We use a different svd object to control the random_state stream
+    # TODO
+    ## fs = FeatureUnion([("svd", svd), ("select", select)])
+    ## X_sp = sparse.csr_matrix(X)
+    ## X_sp_transformed = fs.fit_transform(X_sp, y)
+    ## assert_array_almost_equal(X_transformed, X_sp_transformed.toarray())
+
+    # test setting parameters
+    set_params!(fs; select__k=2)
+    @test size(fit_transform!(fs, X, y)) == (size(X, 1), 4)
+
+    # test it works with transformers missing fit_transform
+    fs = FeatureUnion([("mock", T()), ("svd", svd), ("select", select)])
+    X_transformed = fit_transform!(fs, X, y)
+    @test size(X_transformed) == (size(X, 1), 8)
+end
+
+
 function all_test_pipeline()
     test_pipeline_init()
     test_pipeline_methods_anova()
     test_pipeline_fit_params()
     test_pipeline_methods_pca_svm()
     test_pipeline_methods_preprocessing_svm()
+    test_feature_union()
 end

@@ -27,3 +27,4 @@ More long-term
 
 - JLD/Pickling (possibly by implementing JLD serialization for PyObjects
 through pickling)
+- Sparse matrices (grep for 'sparse' in /test)
