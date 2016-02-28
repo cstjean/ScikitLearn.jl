@@ -280,7 +280,10 @@ function _safe_split(estimator, X, y, indices, train_indices=nothing)
         ##     X_subset = X[np.ix_(indices, indices)]
     ## else:
         ##     X_subset = X[np.ix_(indices, train_indices)]
+    elseif ndims(X) == 1
+        X_subset = X[indices]
     else
+        @assert ndims(X) == 2
         X_subset = X[indices, :]
     end
 
