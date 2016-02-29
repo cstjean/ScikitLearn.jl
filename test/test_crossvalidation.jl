@@ -4,7 +4,7 @@ using Skcore: cross_val_score
 using PyCall: PyError
 using SklearnBase: @simple_estimator_constructor
 
-@pyimport sklearn.cross_validation as cval
+@pyimport2 sklearn.cross_validation as cval
 
 
 ## function check_valid_split(train, test, n_samples=None)

@@ -37,16 +37,16 @@ macro reexportsk(identifiers...)
 end
 
 
-module LinearModels
-using ..@reexport
-using PyCall: @pyimport
-@pyimport sklearn.linear_model as _linear_model
-for var in names(_linear_model)
-    if isa(var, Symbol) && string(var)[1] != '_'
-        @eval const $var = _linear_model.$var
-    end
-end
-end
+## module LinearModels
+## using ..@reexport
+## using PyCall: @pyimport
+## @pyimport sklearn.linear_model as _linear_model
+## for var in names(_linear_model)
+##     if isa(var, Symbol) && string(var)[1] != '_'
+##         @eval const $var = _linear_model.$var
+##     end
+## end
+## end
 
 
 module CrossValidation
@@ -61,15 +61,16 @@ using ..@reexportsk
 end
 
 
-@pyimport sklearn.ensemble as Ensembles
-@pyimport sklearn.datasets as Datasets
-@pyimport sklearn.tree as Trees
+## @pyimport sklearn.ensemble as Ensembles
+## @pyimport sklearn.datasets as Datasets
+## @pyimport sklearn.tree as Trees
 
 
 ################################################################################
 # Other exports
 
-# Not sure if we should export all the api
+# Not sure if we should export all the api. set_params!/get_params are rarely
+# used by user code.
 for f in SklearnBase.api @eval(@reexportsk $f) end
 
 

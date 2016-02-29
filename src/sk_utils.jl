@@ -12,7 +12,7 @@ is the same as the Python code:
 from sklearn import decomposition, clone
 
 """
-macro pyimport2(expr)
+macro pyimport2(expr, optional_varname...)
     if isa(expr, Expr)
         @assert expr.head != :tuple "@pyimport2 requires parentheses, eg. @pyimport2 module_name: (a, b)"
     end
@@ -39,11 +39,10 @@ macro pyimport2(expr)
             end)
         # This is a bad expansion (putting everything in `esc`). FIXME
         esc(:(begin
-            using PyCall: @pyimport
             $([expansion(m, g) for (m, g) in zip(members, gensyms)]...)
             end))
     else
-        esc(:(PyCall.@pyimport $expr))
+        esc(:(PyCall.@pyimport($expr, $(optional_varname...))))
     end
 end
 
