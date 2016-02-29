@@ -3,6 +3,8 @@ using PyCall
 
 export @pyimport2, check_consistent_length
 
+# We don't strictly need this, but it's convenient for writing examples
+include("Ndgrid.jl")
 
 """
     @pyimport2 sklearn: (decomposition, clone)

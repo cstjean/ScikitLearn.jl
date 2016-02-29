@@ -64,6 +64,11 @@ using ..@reexportsk
 end
 
 
+module Utils
+using ..@reexportsk
+@reexportsk(meshgrid)
+end
+
 ## @pyimport sklearn.ensemble as Ensembles
 ## @pyimport sklearn.datasets as Datasets
 ## @pyimport sklearn.tree as Trees
