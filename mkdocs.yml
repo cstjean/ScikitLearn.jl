@@ -1,0 +1,10 @@
+site_name:           scikit-learn.jl
+repo_url:            https://github.com/cstjean/scikit-learn.jl
+site_description:    Julia implementation of the scikit-learn API
+site_author:         Cedric St-Jean
+theme:               readthedocs
+markdown_extensions: [tables, fenced_code]
+pages:
+- Introduction: index.md
+- API: api/Skcore.md
+- API Sklearn: api/Sklearn.md
