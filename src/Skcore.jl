@@ -58,6 +58,16 @@ end
 
 ################################################################################
 
+"""
+@sk_import imports models from the Python version of scikit-learn. Example:
+
+    @sk_import linear_model: (LinearRegression, LogisticRegression)
+    model = fit!(LinearRegression(), X, y)
+"""
+macro sk_import(expr)
+    @assert @capture(expr, mod_:what_) "`@sk_import` syntax error. Example: @sk_import linear_model: (LinearRegression, LogisticRegression)"
+    :(@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what))))
+end
 
 ################################################################################
 

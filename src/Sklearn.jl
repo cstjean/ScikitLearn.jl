@@ -12,8 +12,11 @@ import Skcore
 using PyCall: @pyimport
 using SklearnBase
 using SklearnBase: @import_api, @simple_estimator_constructor
+using Skcore: @sk_import
 
-export LinearModels, CrossValidation, Datasets, Ensembles, Trees
+export LinearModels, Datasets, Ensembles, Trees
+export CrossValidation, @sk_import
+
 
 ################################################################################
 
@@ -72,7 +75,5 @@ end
 # Not sure if we should export all the api. set_params!/get_params are rarely
 # used by user code.
 for f in SklearnBase.api @eval(@reexportsk $f) end
-
-
 
 end
