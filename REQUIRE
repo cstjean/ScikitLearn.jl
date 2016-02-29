@@ -1,0 +1,3 @@
+julia 0.4
+PyCall 1.4.0
+SymDict 0.0.2

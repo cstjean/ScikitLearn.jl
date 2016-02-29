@@ -132,9 +132,8 @@ end
 # cross-validation . For instance, if `sample_weights` are provided, then
 # cross-validation needs to select them according to the train/test split. The
 # sklearn-py code has a heuristic "if size(X, 1)==size(keyword_arg, 1) then we
-# need to split keyword_arg too". I replicate that here, but I would sleep
-# better without it.
-# See the Python definition copied below. - cstjean
+# need to split keyword_arg too". I replicate that logic here, but I would sleep
+# better if we could get rid of it. - cstjean
 function _index_param_value(X, v::AbstractArray, indices)
     if size(X, 1) == size(v, 1)
         return v[indices]
@@ -146,6 +145,7 @@ end
 # Default for every argument that's not an AbstractArray
 _index_param_value(X, v, indices) = v
 
+# For reference:
 ## def _index_param_value(X, v, indices):
 ##     """Private helper function for parameter value indexing."""
 ##     if not _is_arraylike(v) or _num_samples(v) != _num_samples(X):

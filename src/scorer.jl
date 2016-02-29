@@ -104,14 +104,12 @@ scorer : callable
 
 Examples
 --------
->>> from sklearn.metrics import fbeta_score, make_scorer
->>> ftwo_scorer = make_scorer(fbeta_score, beta=2)
->>> ftwo_scorer
-make_scorer(fbeta_score, beta=2)
->>> from sklearn.grid_search import GridSearchCV
->>> from sklearn.svm import LinearSVC
->>> grid = GridSearchCV(LinearSVC(), param_grid={'C': [1, 10]},
-...                     scoring=ftwo_scorer)
+    from sklearn.metrics import fbeta_score, make_scorer
+    ftwo_scorer = make_scorer(fbeta_score, beta=2)
+    from sklearn.grid_search import GridSearchCV
+    from sklearn.svm import LinearSVC
+    grid = GridSearchCV(LinearSVC(), param_grid={'C': [1, 10]},
+                        scoring=ftwo_scorer)
 """
 function make_scorer(score_func; greater_is_better=true,
                      needs_proba=false, needs_threshold=false, kwargs...)
