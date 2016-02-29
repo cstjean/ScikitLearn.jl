@@ -6,6 +6,7 @@ using SklearnBase: @simple_estimator_constructor
 
 @pyimport sklearn.cross_validation as cval
 
+
 ## function check_valid_split(train, test, n_samples=None)
 ##     # Use python sets to get more informative assertion failure messages
 ##     train, test = set(train), set(test)
@@ -199,7 +200,25 @@ function test_cross_val_score_fit_params()
 end
 
 
+function test_cross_val_score_score_func()
+    clf = MockClassifier()
+    _score_func_args = []
+
+    function score_func(y_test, y_predict)
+        push!(_score_func_args, (y_test, y_predict))
+        return 1.0
+    end
+
+    scoring = make_scorer(score_func)
+    score = cross_val_score(clf, X, y, scoring=scoring)
+    @test score == [1.0, 1.0, 1.0]
+    @test length(_score_func_args) == 3
+end
+
+
 function all_test_crossvalidation()
     test_cross_val_score()
     test_cross_val_score_fit_params()
+    # Disabled until we have `make_scorer`
+    #test_cross_val_score_score_func()
 end

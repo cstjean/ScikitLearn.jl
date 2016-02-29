@@ -11,7 +11,7 @@ import Skcore
 
 using PyCall: @pyimport
 using SklearnBase
-using SklearnBase: @import_api, @simple_model_constructor
+using SklearnBase: @import_api, @simple_estimator_constructor
 
 export LinearModels, CrossValidation, Datasets, Ensembles, Trees
 
