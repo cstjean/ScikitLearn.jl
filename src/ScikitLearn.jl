@@ -1,11 +1,11 @@
-# All code is in Skcore. Sklearn is defined here by importing from Skcore and
-# reexporting what we want. This arrangement simplifies the codebase and allows
-# us to experiment with different submodule structures without breaking
+# All code is in Skcore. ScikitLearn is defined here by importing from Skcore
+# and reexporting what we want. This arrangement simplifies the codebase and
+# allows us to experiment with different submodule structures without breaking
 # everything.
 include("Skcore.jl")
 
 
-module Sklearn
+module ScikitLearn
 
 import Skcore
 
@@ -14,7 +14,7 @@ using SklearnBase
 using SklearnBase: @import_api, @simple_estimator_constructor
 using Skcore: @sk_import
 
-export LinearModels, Datasets, Ensembles, Trees
+# export LinearModels, Datasets, Ensembles, Trees
 export CrossValidation, @sk_import
 
 
@@ -30,9 +30,9 @@ macro reexport(module_, identifiers...)
     end))
 end
 
-"""    reexportsk(identifiers...)
+"""    @reexportsk(identifiers...)
 is equivalent to
-    using Skcore.identifiers...
+    using Skcore: identifiers...
     export identifiers...
 """
 macro reexportsk(identifiers...)
