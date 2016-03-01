@@ -1,6 +1,6 @@
 ... work in progress
 
-<a href="examples/Clustering_Comparison.html"><img src="docs/example_images/Clustering_Comparison.png" alt="Some image" width="100"></a>
+<a href="examples/Clustering_Comparison.ipynb"><img src="docs/example_images/Clustering_Comparison.png" alt="Some image" width="100"></a>
 <img src="docs/example_images/Clustering_Comparison.png" alt="Another image" width="100">
 
 # ScikitLearn.jl
