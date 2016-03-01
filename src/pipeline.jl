@@ -1,3 +1,6 @@
+# Adapted from scikit-learn
+# Copyright (c) 2007–2016 The scikit-learn developers.
+
 # Original Python authors: Edouard Duchesnay
 #                          Gael Varoquaux
 #                          Virgile Fritsch

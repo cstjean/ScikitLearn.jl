@@ -1,3 +1,6 @@
+# Adapted from scikit-learn
+# Copyright (c) 2007–2016 The scikit-learn developers.
+
 @pyimport2 sklearn.metrics: (mean_squared_error)
 
 abstract BaseScorer
