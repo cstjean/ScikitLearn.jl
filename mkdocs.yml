@@ -6,5 +6,6 @@ theme:               readthedocs
 markdown_extensions: [tables, fenced_code]
 pages:
 - Introduction: index.md
+- Reading the Python documentation
 - API: api/Skcore.md
 - API Sklearn: api/Sklearn.md

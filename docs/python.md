@@ -1,5 +1,4 @@
-Relationship to scikit-learn
-------
+# Relationship to scikit-learn
 
 The [scikit-learn](http://scikit-learn.org/stable/about.html) library has so far received [contributions](https://github.com/scikit-learn/scikit-learn/graphs/contributors) from dozens of developers and machine learning experts. ScikitLearn.jl leans on that codebase as much as possible, but the API had to be adapated to Julia, and follows Julia's conventions.
 
@@ -15,11 +14,12 @@ particular:
   conventions: `sklearn.cross_validation` becomes `ScikitLearn.CrossValidation`
   and `sklearn.pipelines.Pipeline` becomes `ScikitLearn.Pipelines.Pipeline`
 
-When training a scikit-learn model, its class members are accessed with
-`[]`. For example:
+To access the class members and methods of a Python objects (including all
+models imported through `@sk_import`), use `obj[:member_name]`. For example:
 
 ```
 @sk_import linear_model: Lasso
 lm = fit!(Lasso(), X, y)
 println(lm[:n_iter_])   # equivalent to lm.n_iter_ in Python
 ```
+
