@@ -1,5 +1,23 @@
 ... work in progress
 
+<html>
+  <style>
+    .floated_img
+    {
+    float: left;
+    }
+  </style>
+
+  <div class="floated_img">
+    <img src="example_images/Clustering_Comparison.png" alt="Some image" width="100">
+    <p>Description of above image</p>
+  </div>
+  <div class="floated_img">
+    <img src="example_images/Clustering_Comparison.png" alt="Another image" width="100">
+    <p>Description of above image</p>
+  </div>
+</html>
+
 # ScikitLearn.jl
 
 ScikitLearn.jl allows you to train, combine, evaluate, and tune the parameters
