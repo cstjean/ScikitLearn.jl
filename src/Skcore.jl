@@ -18,6 +18,12 @@ importall ScikitLearnBase
 @pyimport2 sklearn
 @pyimport sklearn.base as sk_base
 
+# This should be in ScikitLearn.jl, maybe?
+translated_modules =
+    Dict(:cross_validation => :CrossValidation,
+         :pipeline => :Pipelines
+         )
+
 for f in ScikitLearnBase.api
     # Export all the API. Not sure if we should do that...
     @eval(export $f)
@@ -65,7 +71,10 @@ end
     model = fit!(LinearRegression(), X, y)
 """
 macro sk_import(expr)
-    @assert @capture(expr, mod_:what_) "`@sk_import` syntax error. Example: @sk_import linear_model: (LinearRegression, LogisticRegression)"
+    @assert @capture(expr, mod_:what_) "`@sk_import` syntax error. Try something like: @sk_import linear_model: (LinearRegression, LogisticRegression)"
+    if haskey(translated_modules, mod)
+        warn("Module $mod has been ported to Julia - try `import ScikitLearn: $(translated_modules[mod])` instead")
+    end
     :(@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what))))
 end
 

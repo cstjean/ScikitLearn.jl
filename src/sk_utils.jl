@@ -48,7 +48,8 @@ macro pyimport2(expr, optional_varname...)
                if !isdefined($(Expr(:quote, member)))
                    const $(esc(member)) = $obj
                elseif !isa($(esc(member)), Union{Module, PyObject})
-                   error("@pyimport2: ", $(Expr(:quote, member)), " already defined")
+                   error("@pyimport2: ", $(Expr(:quote, member)),
+                         " already defined")
                end
                end
                for (member, obj) in zip(members, py_objects)]...)
