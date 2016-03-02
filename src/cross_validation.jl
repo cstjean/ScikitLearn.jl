@@ -4,19 +4,9 @@
 
 # TODO: translate cross_val_predict
 
-## module CrossValidation
-
-## using PyCall
-
-## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
-## using ..check_consistent_length
-## @import_api()
-
-@pyimport2 sklearn.cross_validation: (_check_cv, check_cv)
-
-
-## @pyimport2 sklearn.metrics: get_scorer
-
+@pyimport2 sklearn.cross_validation: (StratifiedKFold, KFold,
+                                      # TODO: translate typeoftarget
+                                      type_of_target)
 
 # Python indices are 0-based, so we need to transform the cross-validation
 # iterators by adding 1 to each index.
@@ -29,6 +19,53 @@ fix_cv_arr(arr::Vector{Int}) = arr .+ 1
 fix_cv_iter_indices(cv::PyObject) =
     [(fix_cv_arr(train), fix_cv_arr(test)) for (train, test) in cv]
 
+
+"""Input checker utility for building a CV in a user friendly way.
+
+Parameters
+----------
+cv : int, a cv generator instance, or None
+    The input specifying which cv generator to use. It can be an
+    integer, in which case it is the number of folds in a KFold,
+    None, in which case 3 fold is used, or another object, that
+    will then be used as a cv generator.
+
+X : array-like
+    The data the cross-val object will be applied on.
+
+y : array-like
+    The target variable for a supervised learning problem.
+
+classifier : boolean optional
+    Whether the task is a classification task, in which case
+    stratified KFold will be used.
+
+Returns
+-------
+checked_cv: a cross-validation generator instance.
+    The return value is guaranteed to be a cv generator instance, whatever
+    the input type.
+"""
+function check_cv(cv, X=nothing, y=nothing; classifier=false)
+    is_sparse = issparse(X)
+    needs_indices = true
+    if cv === nothing
+        cv = 3
+    end
+    if isa(cv, Number)
+        if classifier
+            if type_of_target(y) in ["binary", "multiclass"]
+                cv = StratifiedKFold(y, cv, indices=needs_indices)
+            else
+                cv = KFold(size(y, 1), cv, indices=needs_indices)
+            end
+        else
+            n_samples = size(X, 1)
+            cv = KFold(n_samples, cv, indices=needs_indices)
+        end
+    end
+    return cv
+end
 
 """Evaluate a score by cross-validation
 
@@ -77,8 +114,8 @@ function cross_val_score(estimator, X, y=nothing; scoring=nothing, cv=nothing,
 
     check_consistent_length(X, y)
 
-    cv = fix_cv_iter_indices(_check_cv(cv, X, y,
-                                       classifier=is_classifier(estimator)))
+    cv = fix_cv_iter_indices(check_cv(cv, X, y,
+                                      classifier=is_classifier(estimator)))
 
     scorer = check_scoring(estimator, scoring)
 

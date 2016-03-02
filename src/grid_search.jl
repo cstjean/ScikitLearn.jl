@@ -55,7 +55,8 @@ function _fit!(self::BaseSearchCV, X::AbstractArray, y,
     out = vcat(Any[[_fit_and_score(clone(base_estimator), X, y, self.scorer_,
                                    train, test, self.verbose,
                                    kwargify(parameters),
-                                   self.fit_params, return_parameters=true,
+                                   kwargify(self.fit_params),
+                                   return_parameters=true,
                                    error_score=self.error_score)
                     for (train, test) in cv]
                    for parameters in parameter_iterable]...)
