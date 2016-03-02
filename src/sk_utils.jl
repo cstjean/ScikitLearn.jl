@@ -27,25 +27,29 @@ macro pyimport2(expr, optional_varname...)
         end
         gensyms = [gensym() for _ in members]
         expansion(m, g) =
+            begin
+                ## @show :(PyCall.@pyimport $(esc(Expr(:., mod, QuoteNode(m)))) as $(esc(g)))
+                mname = PyCall.modulename(m)
             :(try
                 # If it's a module
-                PyCall.@pyimport $mod.$m as $g
-                global $m = $g
-            catch e
+                global const $(esc(m)) = PyCall.pywrap(PyCall.pyimport($mname))
+                #PyCall.@pyimport $(esc(Expr(:., mod, Expr(:quote, m)))) PyCall.as $(esc(g))
+                #$(esc(:(global $m = $g)))
+            catch $(esc(:e))
                 # If it's a variable/function
-                if isa(e, PyCall.PyError)
-                    PyCall.@pyimport $mod as $g
-                    global $m = $g.$m
+                if $(esc(:(isa(e, PyCall.PyError))))
+                    $(esc(:(PyCall.@pyimport $mod as $g)))
+                    $(esc(:(global $m = $g.$m)))
                 else
                     rethrow()
                 end
-            end)
+            end) end
         # This is a bad expansion (putting everything in `esc`). FIXME
-        esc(:(begin
+        :(begin
             $([expansion(m, g) for (m, g) in zip(members, gensyms)]...)
-            end))
+            end)
     else
-        esc(:(PyCall.@pyimport($expr, $(optional_varname...))))
+        :(@pyimport($(esc(expr)), $(map(esc, optional_varname)...)))
     end
 end
 
