@@ -21,7 +21,8 @@ importall ScikitLearnBase
 # This should be in ScikitLearn.jl, maybe?
 translated_modules =
     Dict(:cross_validation => :CrossValidation,
-         :pipeline => :Pipelines
+         :pipeline => :Pipelines,
+         :grid_search => :GridSearch
          )
 
 for f in ScikitLearnBase.api

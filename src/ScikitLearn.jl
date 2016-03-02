@@ -66,6 +66,12 @@ using ..@reexportsk
 end
 
 
+module GridSearch
+using ..@reexportsk
+@reexportsk(GridSearchCV)
+end
+
+
 module Utils
 using ..@reexportsk
 using Skcore: @pyimport2
