@@ -5,7 +5,7 @@ using Base.Test
 using Skcore
 using Skcore: cross_val_score
 using PyCall: PyError
-using SklearnBase: @simple_estimator_constructor
+using ScikitLearnBase: @simple_estimator_constructor
 
 @pyimport2 sklearn.cross_validation as cval
 

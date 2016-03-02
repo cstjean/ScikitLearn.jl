@@ -4,6 +4,7 @@ using PyCall
 # We don't strictly need this, but it's convenient for writing examples
 include("Ndgrid.jl")
 
+export @pyimport2
 
 # TODO: this should be in PyCall.jl
 """
