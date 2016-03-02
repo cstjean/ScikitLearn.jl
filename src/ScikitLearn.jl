@@ -54,8 +54,8 @@ end
 module CrossValidation
 using ..@reexportsk, ..@sk_import
 @reexportsk(cross_val_score)
-## @sk_import cross_validation: train_test_split
-## export train_test_split
+@sk_import cross_validation: train_test_split
+export train_test_split
 end
 
 

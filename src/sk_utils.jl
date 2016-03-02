@@ -6,6 +6,10 @@ include("Ndgrid.jl")
 
 export @pyimport2
 
+@pyimport types as py_types
+ispymodule(obj::PyObject) = pyisinstance(mm, py_types.ModuleType)
+
+
 # TODO: this should be in PyCall.jl
 """
     @pyimport2 sklearn: (decomposition, clone)
@@ -25,33 +29,36 @@ macro pyimport2(expr, optional_varname...)
         else
             @assert @capture(what, ((members__),)) "Bad @pyimport2 statement"
         end
-        gensyms = [gensym() for _ in members]
-        expansion(m, g) =
-            begin
-                ## @show :(PyCall.@pyimport $(esc(Expr(:., mod, QuoteNode(m)))) as $(esc(g)))
-                mname = PyCall.modulename(m)
-            :(try
-                # If it's a module
-                global const $(esc(m)) = PyCall.pywrap(PyCall.pyimport($mname))
-                #PyCall.@pyimport $(esc(Expr(:., mod, Expr(:quote, m)))) PyCall.as $(esc(g))
-                #$(esc(:(global $m = $g)))
-            catch $(esc(:e))
-                # If it's a variable/function
-                if $(esc(:(isa(e, PyCall.PyError))))
-                    $(esc(:(PyCall.@pyimport $mod as $g)))
-                    $(esc(:(global $m = $g.$m)))
-                else
-                    rethrow()
-                end
-            end) end
-        # This is a bad expansion (putting everything in `esc`). FIXME
+        # I hate importing the Python objects at macro-expansion time, but I
+        # couldn't figure out how to write a proper macro version of this. TODO
+        module_ = PyCall.pyimport(PyCall.modulename(mod))
+        function get_obj(member)
+            try
+                return pywrap(PyCall.pyimport(PyCall.modulename(mod) * "." *
+                                              string(member)))
+            catch e
+                if isa(e, PyCall.PyError)
+                    return module_[member]
+                else rethrow() end
+            end
+        end
+        py_objects = map(get_obj, members)
         :(begin
-            $([expansion(m, g) for (m, g) in zip(members, gensyms)]...)
+            $([quote
+               if !isdefined($(Expr(:quote, member)))
+                   const $(esc(member)) = $obj
+               elseif !isa($(esc(member)), Union{Module, PyObject})
+                   error("@pyimport2: ", $(Expr(:quote, member)), " already defined")
+               end
+               end
+               for (member, obj) in zip(members, py_objects)]...)
+            nothing
             end)
     else
         :(@pyimport($(esc(expr)), $(map(esc, optional_varname)...)))
     end
 end
+
 
 nunique(iter) = length(Set(iter)) # slow definition
 
