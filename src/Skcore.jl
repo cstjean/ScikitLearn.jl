@@ -75,7 +75,7 @@ macro sk_import(expr)
     if haskey(translated_modules, mod)
         warn("Module $mod has been ported to Julia - try `import ScikitLearn: $(translated_modules[mod])` instead")
     end
-    :(@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what))))
+    :(Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what))))
 end
 
 ################################################################################

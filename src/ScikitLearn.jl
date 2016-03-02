@@ -53,6 +53,7 @@ end
 
 module CrossValidation
 using ..@reexportsk, ..@sk_import
+using Skcore: @pyimport2
 @reexportsk(cross_val_score)
 @pyimport2 sklearn.cross_validation: train_test_split
 export train_test_split
