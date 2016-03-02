@@ -1,7 +1,7 @@
 # All code is in Skcore. ScikitLearn is defined here by importing from Skcore
-# and reexporting what we want. This arrangement simplifies the codebase and
-# allows us to experiment with different submodule structures without breaking
-# everything.
+# and reexporting what we want in the interface. This arrangement simplifies
+# the codebase and allows us to experiment with different submodule structures
+# without breaking everything.
 include("Skcore.jl")
 
 
@@ -10,11 +10,10 @@ module ScikitLearn
 import Skcore
 
 using PyCall: @pyimport
-using SklearnBase
-using SklearnBase: @import_api, @simple_estimator_constructor
+using ScikitLearnBase
+using ScikitLearnBase: @import_api, @simple_estimator_constructor
 using Skcore: @sk_import
 
-# export LinearModels, Datasets, Ensembles, Trees
 export CrossValidation, @sk_import
 
 
@@ -53,8 +52,10 @@ end
 
 
 module CrossValidation
-using ..@reexportsk
+using ..@reexportsk, ..@sk_import
 @reexportsk(cross_val_score)
+## @sk_import cross_validation: train_test_split
+## export train_test_split
 end
 
 
@@ -66,7 +67,9 @@ end
 
 module Utils
 using ..@reexportsk
+using Skcore: @pyimport2
 @reexportsk(meshgrid)
+export @pyimport2
 end
 
 ## @pyimport sklearn.ensemble as Ensembles
@@ -79,6 +82,6 @@ end
 
 # Not sure if we should export all the api. set_params!/get_params are rarely
 # used by user code.
-for f in SklearnBase.api @eval(@reexportsk $f) end
+for f in ScikitLearnBase.api @eval(@reexportsk $f) end
 
 end

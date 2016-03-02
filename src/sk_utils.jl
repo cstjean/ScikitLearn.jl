@@ -1,17 +1,17 @@
 using MacroTools
 using PyCall
 
-export @pyimport2, check_consistent_length
-
 # We don't strictly need this, but it's convenient for writing examples
 include("Ndgrid.jl")
 
+
+# TODO: this should be in PyCall.jl
 """
     @pyimport2 sklearn: (decomposition, clone)
 
 is the same as the Python code:
 
-from sklearn import decomposition, clone
+    from sklearn import decomposition, clone
 
 """
 macro pyimport2(expr, optional_varname...)

@@ -16,7 +16,7 @@ that project.
 
 ## Installation
 
-You first need Python with numpy, which is easiest to get through
+This package requires Python 2.7 with numpy, which is easiest to get through
 [Anaconda](https://www.continuum.io/downloads). Then [install
 scikit-learn](http://scikit-learn.org/stable/install.html) with either
 
@@ -26,8 +26,11 @@ or
 
 `pip install -U scikit-learn`
 
-(more instructions on [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)). Then you should `Pkg.clone` this package, as well as [ScikitLearnBase](https://github.com/cstjean/ScikitLearnBase.jl)
+(if you have issues, check out [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)). To install this package, at the Julia REPL type:
 
-See the [notebooks folder](notebooks/) for examples.
+```julia
+Pkg.clone("https://github.com/cstjean/ScikitLearn.jl.git")
+Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
+```
 
-
+See the [examples folder](examples/) for more.

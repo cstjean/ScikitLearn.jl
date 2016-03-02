@@ -4,8 +4,8 @@
 # change the public module structure.
 module Skcore
 
-using SklearnBase
-using SklearnBase: @import_api, @simple_estimator_constructor
+using ScikitLearnBase
+using ScikitLearnBase: @import_api, @simple_estimator_constructor
 
 using PyCall
 using Parameters
@@ -13,12 +13,12 @@ using SymDict
 
 include("sk_utils.jl")
 
-importall SklearnBase
+importall ScikitLearnBase
 
 @pyimport2 sklearn
 @pyimport sklearn.base as sk_base
 
-for f in SklearnBase.api
+for f in ScikitLearnBase.api
     # Export all the API. Not sure if we should do that...
     @eval(export $f)
 end
