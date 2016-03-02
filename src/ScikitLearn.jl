@@ -62,7 +62,7 @@ end
 
 module Pipelines
 using ..@reexportsk
-@reexportsk(Pipeline, make_pipeline, FeatureUnion)
+@reexportsk(Pipeline, make_pipeline, FeatureUnion, named_steps)
 end
 
 
