@@ -14,8 +14,6 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 
 Before 0.0.1
 -----
-1. Build the documentation
-2. Host the documentation
 3. Add pages
   - Models
   - Cross-validation

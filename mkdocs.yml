@@ -7,3 +7,4 @@ markdown_extensions: [tables, fenced_code]
 pages:
 - Introduction: index.md
 - Reading the scikit-learn documentation: python.md
+- Example gallery: examples.md
