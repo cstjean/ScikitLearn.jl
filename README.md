@@ -28,6 +28,7 @@ Pkg.clone("https://github.com/cstjean/ScikitLearn.jl.git")
 Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
 ```
 
-## Examples
+## Documentation
 
-See the notebooks in the [example folder](examples/).
+Please see the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
+[example gallery](examples/).
