@@ -1,18 +1,17 @@
 # ScikitLearn.jl
 
-ScikitLearn.jl allows you to train, combine, evaluate, and tune the parameters
-of machine-learning and statistical models. It supports both models defined
+ScikitLearn.jl is a Julia machine learning library modeled after
+[scikit-learn](http://scikit-learn.org/stable/). It supports both models defined
 in Julia and those of the [scikit-learn library](http://scikit-learn.org/stable/modules/classes.html).
 
-Disclaimer: ScikitLearn.jl is derived from
-[scikit-learn](http://scikit-learn.org/stable/), but not an official part of
-that project.
+Disclaimer: ScikitLearn.jl is derived and borrows code from
+[scikit-learn](http://scikit-learn.org/stable/), but it is not an official part
+of that project. It is licensed under [BSD-3](LICENSE).
 
 ## Installation
 
 This package requires Python 2.7 with numpy, which is easiest to get through
-[Anaconda](https://www.continuum.io/downloads). Then [install
-scikit-learn](http://scikit-learn.org/stable/install.html) with either
+[Anaconda](https://www.continuum.io/downloads), and [scikit-learn](http://scikit-learn.org/stable/install.html):
 
 `conda install scikit-learn`
 
@@ -27,4 +26,6 @@ Pkg.clone("https://github.com/cstjean/ScikitLearn.jl.git")
 Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
 ```
 
-See the [examples folder](examples/) for more.
+## Examples
+
+See the notebooks in the [example folder](examples/).

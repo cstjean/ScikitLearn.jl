@@ -14,14 +14,24 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 
 Before 0.0.1
 -----
-- README.md
-- Link to examples
-- License
+1. Build the documentation
+2. Host the documentation
+3. Add pages
+  - Models
+  - Cross-validation
+  - Pipeline/FeatureUnion
+  - GridSearch
+  - Page with examples
+4. Pick some Julia algorithm for demonstration purpose. Don't use @require for
+   now
+5. Update README.md
+6. Check with scikit re. name
+7. Update ScikitLearnBase
 
 
 Before 0.0.2
 -----
-- Check with scikit re. name
+- 
 - Documentation
 - Update Sklearn
 - Get rid of preamble in examples
