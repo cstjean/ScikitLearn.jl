@@ -7,4 +7,4 @@ markdown_extensions: [tables, fenced_code]
 pages:
 - Introduction: index.md
 - Reading the scikit-learn documentation: python.md
-- Example gallery: https://github.com/cstjean/ScikitLearn.jl/blob/master/docs/examples.md
+- Example gallery: examples_refer.md
