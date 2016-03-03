@@ -29,4 +29,4 @@ Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
 ## Documentation
 
 Please see the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
-[example gallery](examples/).
+[example gallery](docs/examples.md).
