@@ -6,9 +6,10 @@ The [scikit-learn](http://scikit-learn.org/stable/about.html) Python library has
   `predict(model, X)`
 - Methods that modify the model's state have a `!` at the end:
   `model.fit_transform(X)` becomes `fit_transform!(model, X)`
-- Submodules follow the camel case and pluralizing (where appropriate)
-  conventions: `sklearn.cross_validation` becomes `ScikitLearn.CrossValidation`,
-  and `sklearn.pipelines.Pipeline` becomes `ScikitLearn.Pipelines.Pipeline`
+- Submodules that were translated into Julia follow the camel case and
+  pluralizing (where appropriate) conventions: `sklearn.cross_validation`
+  becomes `ScikitLearn.CrossValidation`, and `sklearn.pipelines.Pipeline`
+  becomes `ScikitLearn.Pipelines.Pipeline`
 
 To access the class members and methods of a Python objects (i.e. all
 models imported through `@sk_import`), use `obj[:member_name]`. For example:
