@@ -35,7 +35,7 @@ Finally, if you would like to run the examples, you will need [PyPlot.jl](https:
 See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 [example gallery](docs/examples.md).
 
-## Bugs
+## Goal
 
 We aim to achieve feature parity with scikit-learn. If you encounter any problem
-that is solved by that library, [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues).
+that is solved by that library but not this one, [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues).
