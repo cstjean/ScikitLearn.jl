@@ -32,10 +32,10 @@ Finally, if you would like to run the examples, you will need [PyPlot.jl](https:
 
 ## Documentation
 
-Please see the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
+See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 [example gallery](docs/examples.md).
 
 ## Bugs
 
 We aim to achieve feature parity with scikit-learn. If you encounter any problem
-that is solved by that library, please [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues)
+that is solved by that library, [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues).

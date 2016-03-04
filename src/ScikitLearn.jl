@@ -1,7 +1,8 @@
-# All code is in Skcore. ScikitLearn is defined here by importing from Skcore
-# and reexporting what we want in the interface. This arrangement simplifies
-# the codebase and allows us to experiment with different submodule structures
-# without breaking everything.
+# IMPORTANT NOTE: Most of the codebase is in the module Skcore. ScikitLearn is
+# defined here by importing from Skcore and reexporting what we want in the
+# interface. This arrangement simplifies the codebase and allows us to
+# experiment with different submodule structures without breaking everything.
+
 include("Skcore.jl")
 
 
