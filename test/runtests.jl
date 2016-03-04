@@ -1,6 +1,8 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
+include("../src/Skcore.jl")  # a bit awkward - FIXME
+
 include("test_base.jl")
 all_test_base()
 
