@@ -2,11 +2,12 @@
 
 # ScikitLearn.jl
 
-ScikitLearn.jl is a Julia machine learning library modeled after
-[scikit-learn](http://scikit-learn.org/stable/). It supports both models defined
+ScikitLearn.jl is a Julia machine learning library derived from
+[scikit-learn](http://scikit-learn.org/stable/). It aims to provide the
+same functionality, while supporting both models defined
 in Julia and those of the [scikit-learn library](http://scikit-learn.org/stable/modules/classes.html).
 
-Disclaimer: ScikitLearn.jl is derived and borrows code from
+Disclaimer: ScikitLearn.jl borrows code and documentation from
 [scikit-learn](http://scikit-learn.org/stable/), but it is not an official part
 of that project. It is licensed under [BSD-3](LICENSE).
 
@@ -37,5 +38,7 @@ See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 
 ## Goal
 
-We aim to achieve feature parity with scikit-learn. If you encounter any problem
-that is solved by that library but not this one, [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues).
+ScikitLearn.jl is a work-in-progress, but we aim to achieve feature parity with
+scikit-learn. If you encounter any problem that is solved by that library but
+not this one, [file an
+issue](https://github.com/cstjean/ScikitLearn.jl/issues).
