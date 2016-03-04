@@ -24,9 +24,11 @@ or
 (if you have issues, check out [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)). To install this package, at the Julia REPL type:
 
 ```julia
-Pkg.clone("https://github.com/cstjean/ScikitLearn.jl.git")
 Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
+Pkg.clone("https://github.com/cstjean/ScikitLearn.jl.git")
 ```
+
+Finally, if you would like to run the examples, you will need [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 
 ## Documentation
 

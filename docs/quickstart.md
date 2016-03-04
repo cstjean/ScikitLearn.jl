@@ -75,6 +75,8 @@ stronger). We can use grid search algorithms to find the optimal `C`.
 return the one with the highest cross-validation performance.
 
 ```julia
+using ScikitLearn.GridSearch: GridSearchCV
+
 gridsearch = GridSearchCV(LogisticRegression(), Dict(:C => 0.1:0.1:2.0))
 fit!(gridsearch, X, y)
 println("Best parameters: $(gridsearch.best_params_)")
