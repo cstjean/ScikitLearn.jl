@@ -30,3 +30,8 @@ Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
 
 Please see the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 [example gallery](docs/examples.md).
+
+## Bugs
+
+We aim to achieve feature parity with scikit-learn. If you encounter any problem
+that is solved by that library, please [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues)

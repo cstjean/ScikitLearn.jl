@@ -58,9 +58,23 @@ api_map = Dict(:decision_function => :decision_function,
                :transform => :transform,
                :set_params! => :set_params)
 
+@pyimport numpy
+
+# PyCall does not always convert everything back into a Julia value,
+# unfortunately, so we have some post-evaluation logic. These should be fixed
+# in PyCall.jl
+tweak_rval(x) = x
+function tweak_rval(x::PyObject)
+    if pyisinstance(x, numpy.ndarray) && length(x[:shape]) == 1
+        return collect(x)
+    else
+        x
+    end
+end
+
 for (jl_fun, py_fun) in api_map
     @eval $jl_fun(py_model::PyObject, args...; kwargs...) =
-        py_model[$(Expr(:quote, py_fun))](args...; kwargs...)
+        tweak_rval(py_model[$(Expr(:quote, py_fun))](args...; kwargs...))
 end
 
 ################################################################################

@@ -19,12 +19,12 @@ Before 0.0.1
   - Cross-validation
   - Pipeline/FeatureUnion
   - GridSearch
-  - Page with examples
 4. Pick some Julia algorithm for demonstration purpose. Don't use @require for
    now
 5. Update README.md
-6. Check with scikit re. name
-7. Update ScikitLearnBase
+6. Install the package on a fresh Julia
+7. Check with scikit re. name
+8. Update ScikitLearnBase
 
 
 Before 0.0.2
