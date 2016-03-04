@@ -1,6 +1,6 @@
 Most data science and machine learning problems involve several steps of
-data preprocessing and transformation. ScikitLearn.jl provides two classes to
-help with that.
+data preprocessing and transformation. ScikitLearn.jl provides two types to
+facilitate this task.
 
 Pipelines
 ----

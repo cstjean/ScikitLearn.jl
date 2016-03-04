@@ -1,4 +1,5 @@
-# Relationship to scikit-learn
+Relationship to scikit-learn
+----
 
 The [scikit-learn](http://scikit-learn.org/stable/about.html) Python library has so far received [contributions](https://github.com/scikit-learn/scikit-learn/graphs/contributors) from dozens of developers and machine learning experts. ScikitLearn.jl leans on that codebase as much as possible, but the API had to be adapted to Julia, and follows Julia's conventions. When reading the scikit-learn [documentation](http://scikit-learn.org/stable/documentation.html), keep in mind that:
 

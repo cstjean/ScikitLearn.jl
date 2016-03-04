@@ -1,7 +1,8 @@
 Python models
 -----
 
-scikit-learn has on the order of 100 to 200 models, split into three categories:
+scikit-learn has on the order of 100 to 200 models (usually called
+"estimators"), split into three categories:
 
 - [Supervised Learning](http://scikit-learn.org/stable/supervised_learning.html) (linear regression, support vector machines, random forest, neural nets, ...)
 - [Unsupervised Learning](http://scikit-learn.org/stable/unsupervised_learning.html) (clustering, PCA, mixture models, manifold learning, ...)
