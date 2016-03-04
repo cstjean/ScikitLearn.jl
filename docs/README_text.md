@@ -36,4 +36,4 @@ Please see the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 ## Bugs
 
 We aim to achieve feature parity with scikit-learn. If you encounter any problem
-that is solved by that library, please [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues)
+that is solved by that library, please [file an issue](https://github.com/cstjean/ScikitLearn.jl/issues).
