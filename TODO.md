@@ -14,16 +14,8 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 
 Before 0.0.1
 -----
-3. Add pages
-  - Models
-  - Cross-validation
-  - Pipeline/FeatureUnion
-  - GridSearch
 4. Pick some Julia algorithm for demonstration purpose. Don't use @require for
    now
-5. Update README.md
-6. Install the package on a fresh Julia
-7. Check with scikit re. name
 8. Update ScikitLearnBase
 
 

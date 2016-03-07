@@ -1,6 +1,8 @@
 /.DS_Store
 /.ipynb_checkpoints
+/GaussianProcesses.ipynb
 /Kernel_Density_Estimate.ipynb
+/NMF.ipynb
 /Pipeline_Example.ipynb
 /Pipeline_PCA_Logistic_Py.ipynb
 /RBM_Py.ipynb
