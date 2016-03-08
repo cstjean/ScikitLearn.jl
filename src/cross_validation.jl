@@ -48,20 +48,19 @@ checked_cv: a cross-validation generator instance.
 """
 function check_cv(cv, X=nothing, y=nothing; classifier=false)
     is_sparse = issparse(X)
-    needs_indices = true
     if cv === nothing
         cv = 3
     end
     if isa(cv, Number)
         if classifier
             if type_of_target(y) in ["binary", "multiclass"]
-                cv = StratifiedKFold(y, cv, indices=needs_indices)
+                cv = StratifiedKFold(y, cv)
             else
-                cv = KFold(size(y, 1), cv, indices=needs_indices)
+                cv = KFold(size(y, 1), cv)
             end
         else
             n_samples = size(X, 1)
-            cv = KFold(n_samples, cv, indices=needs_indices)
+            cv = KFold(n_samples, cv)
         end
     end
     return cv
@@ -273,9 +272,6 @@ function _fit_and_score(estimator, X, y, scorer,
             msg = "no parameters to be set"
         else
             msg = string(join(["$k=$v" for (k, v) in parameters], ", "))
-            # Julia TODO: translate this
-            ## msg = '%s' % (', '.join('%s=%s' % (k, v)
-            ##               for k, v in parameters.items()))
         end
         println("[CV] $msg")
     end
