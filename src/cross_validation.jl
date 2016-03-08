@@ -138,6 +138,59 @@ function cross_val_score(estimator, X, y=nothing; scoring=nothing, cv=nothing,
 end
 
 
+"""Fit estimator and predict values for a given dataset split.
+
+Parameters
+----------
+estimator : estimator object implementing 'fit' and 'predict'
+The object to use to fit the data.
+
+X : array-like of shape at least 2D
+The data to fit.
+
+y : array-like, optional, default: None
+The target variable to try to predict in the case of
+supervised learning.
+
+train : array-like, shape (n_train_samples,)
+Indices of training samples.
+
+test : array-like, shape (n_test_samples,)
+Indices of test samples.
+
+verbose : integer
+The verbosity level.
+
+fit_params : dict or None
+Parameters that will be passed to ``estimator.fit``.
+
+Returns
+-------
+preds : sequence
+Result of calling 'estimator.predict'
+
+test : array-like
+This is the value of the test parameter
+"""
+function _fit_and_predict(estimator, X, y, train, test, verbose, fit_params)
+    fit_params = fit_params !== nothing ? fit_params : Dict()
+    # Adjust length of sample weights
+    fit_params = Dict([(k => _index_param_value(X, v, train))
+                       for (k, v) in fit_params])
+
+    X_train, y_train = _safe_split(estimator, X, y, train)
+    X_test, _ = _safe_split(estimator, X, y, test, train)
+
+    if y_train === nothing
+        fit!(estimator, X_train; fit_params...)
+    else
+        fit!(estimator, X_train, y_train; fit_params...)
+    end
+    preds = predict(estimator, X_test)
+    return preds, test
+end
+
+
 """Generate cross-validated estimates for each input data point
 
 Parameters
@@ -181,24 +234,21 @@ function cross_val_predict(estimator, X, y=nothing; cv=nothing, n_jobs=1,
 
     check_consistent_length(X, y)
 
-    @show cv
-    cv = sk_cv.KFold(length(y), cv)#check_cv(cv, X, y, classifier=is_classifier(estimator))
+    #cv = sk_cv.KFold(length(y), cv)
+    cv = check_cv(cv, X, y, classifier=is_classifier(estimator))
     # We clone the estimator to make sure that all the folds are
     # independent
-    @show length(cv)
-    preds_blocks = Any[sk_cv._fit_and_predict(clone(estimator), X, y,
-                                              train, test, verbose,
-                                              fit_params)
+    preds_blocks = Any[_fit_and_predict(clone(estimator), X, y,
+                                        train, test, verbose,
+                                        fit_params)
                        for (train, test) in cv]
-    @show size(preds_blocks)
     p = vcat([p for (p, _) in preds_blocks]...)
-    @show size(p)
     locs = vcat([loc for (_, loc) in preds_blocks]...)
     ## if !sk_cv._check_is_partition(locs, size(X, 1))
     ##     error("cross_val_predict only works for partitions")
     ## end
     preds = copy(p)  # is the copy necessary?
-    preds[locs+1] = p
+    preds[locs] = p
     return preds
 end
 
