@@ -381,5 +381,3 @@ function _score(estimator, X_test, y_test, scorer)
     end
     return score
 end
-
-## end

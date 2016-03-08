@@ -7,25 +7,9 @@ hierarchy work and use `@reexport`. `@require` is also interesting.
 - Support Julia algos
 - njobs>1
 - More tests
-- Deprecation warnings in Sk_Pipeline_PCA_Logistic.ipynb
 - Random grid search
 - Dataframes
 - Feature extraction (eg. text features)
-
-Before 0.0.1
------
-4. Pick some Julia algorithm for demonstration purpose. Don't use @require for
-   now
-8. Update ScikitLearnBase
-
-
-Before 0.0.2
------
-- 
-- Documentation
-- Update Sklearn
-- Get rid of preamble in examples
-
 
 More long-term
 -----
