@@ -4,21 +4,31 @@
 
 # TODO: translate cross_val_predict
 
-@pyimport2 sklearn.cross_validation: (StratifiedKFold, KFold,
-                                      # TODO: translate typeoftarget
+@pyimport2 sklearn.cross_validation: (# TODO: translate typeoftarget
                                       type_of_target)
+@pyimport sklearn.cross_validation as sk_cv
+
+################################################################################
+# Defining the cross-validation iterators (eg. KFold)
 
 # Python indices are 0-based, so we need to transform the cross-validation
 # iterators by adding 1 to each index.
-# This code is rather dangerous, since if the caller had called `collect` on
-# `cv`, the +1 would not be applied.
-# I think the best option going forward would be to wrap the Python CV iterators
-# to add the +1 near the source.
-fix_cv_iter_indices(cv) = cv
 fix_cv_arr(arr::Vector{Int}) = arr .+ 1
 fix_cv_iter_indices(cv::PyObject) =
     [(fix_cv_arr(train), fix_cv_arr(test)) for (train, test) in cv]
 
+
+cv_iterator_syms = [:KFold, :StratifiedKFold, :LabelKFold, :LeaveOneOut,
+                    :LeavePOut, :LeaveOneLabelOut, :LeavePLabelOut,
+                    :ShuffleSplit, :LabelShuffleSplit, :StratifiedShuffleSplit]
+
+for cv_iter in cv_iterator_syms
+    @eval function $cv_iter(args...; kwargs...)
+        fix_cv_iter_indices(sk_cv.$cv_iter(args...; kwargs...))
+    end
+end
+
+################################################################################
 
 """Input checker utility for building a CV in a user friendly way.
 
@@ -113,8 +123,7 @@ function cross_val_score(estimator, X, y=nothing; scoring=nothing, cv=nothing,
 
     check_consistent_length(X, y)
 
-    cv = fix_cv_iter_indices(check_cv(cv, X, y,
-                                      classifier=is_classifier(estimator)))
+    cv = check_cv(cv, X, y, classifier=is_classifier(estimator))
 
     scorer = check_scoring(estimator, scoring)
 

@@ -11,8 +11,6 @@
 ## using ..CrossValidation.check_scoring, ..CrossValidation.check_cv
 ## using ..CrossValidation._fit_and_score
 
-## @import_api()
-
 abstract BaseSearchCV
 
 @pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid, Sized)
@@ -38,8 +36,8 @@ function _fit!(self::BaseSearchCV, X::AbstractArray, y,
             throw(ArgumentError("Target variable (y) has a different number of samples ($(size(y, 1))) than data (X: $n_smaples samples)"))
         end
     end
-    cv = fix_cv_iter_indices(check_cv(cv, X, y,
-                                      classifier=is_classifier(estimator)))
+    cv = check_cv(cv, X, y,
+                  classifier=is_classifier(estimator))
 
     if self.verbose > 0
         if pyisinstance(parameter_iterable, Sized)

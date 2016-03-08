@@ -5,7 +5,6 @@ using Base.Test
 using Skcore
 using Skcore: cross_val_score
 using PyCall: PyError
-using ScikitLearnBase: @simple_estimator_constructor
 
 @pyimport2 sklearn.cross_validation as cval
 
@@ -31,9 +30,10 @@ type MockClassifier
     dummy_int
     dummy_str
     dummy_obj
+    MockClassifier(; a=0, allow_nd=false) =
+        new(a, allow_nd, nothing, nothing, nothing)
 end
-@simple_estimator_constructor MockClassifier(; a=0, allow_nd=false) =
-    MockClassifier(a, allow_nd, nothing, nothing, nothing)
+declare_hyperparameters(MockClassifier, [:a, :allow_nd])
 Skcore.is_classifier(::MockClassifier) = true
 
 

@@ -4,7 +4,7 @@
 using Base.Test
 using Skcore
 using Skcore: Pipeline, FeatureUnion, make_pipeline
-using Skcore: @simple_estimator_constructor
+using ScikitLearnBase: declare_hyperparameters
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC
@@ -50,10 +50,9 @@ Skcore.transform(self::T, X) = X
 """ Mock classifier """
 type FitParamT
     successful
+    FitParamT(;successful=false) = new(successful)
 end
-
-@simple_estimator_constructor FitParamT(;successful=false) =
-    FitParamT(successful)
+declare_hyperparameters(FitParamT, [:successful])
 
 function Skcore.fit!(self::FitParamT, X, y; should_succeed=false)
     self.successful = should_succeed
