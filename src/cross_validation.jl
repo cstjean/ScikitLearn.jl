@@ -2,8 +2,6 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 
-# TODO: translate cross_val_predict
-
 @pyimport2 sklearn.cross_validation: (# TODO: translate typeoftarget
                                       type_of_target)
 @pyimport sklearn.cross_validation as sk_cv
@@ -22,6 +20,9 @@ cv_iterator_syms = [:KFold, :StratifiedKFold, :LabelKFold, :LeaveOneOut,
                     :LeavePOut, :LeaveOneLabelOut, :LeavePLabelOut,
                     :ShuffleSplit, :LabelShuffleSplit, :StratifiedShuffleSplit]
 
+# The current procedure collects the value in order to fix them.
+# I don't worry about that much (should be marginal in the grand scheme of
+# things), but we could do better.
 for cv_iter in cv_iterator_syms
     @eval function $cv_iter(args...; kwargs...)
         fix_cv_iter_indices(sk_cv.$cv_iter(args...; kwargs...))
@@ -137,6 +138,72 @@ function cross_val_score(estimator, X, y=nothing; scoring=nothing, cv=nothing,
 end
 
 
+"""Generate cross-validated estimates for each input data point
+
+Parameters
+----------
+estimator : estimator object implementing 'fit' and 'predict'
+    The object to use to fit the data.
+
+X : array-like
+    The data to fit. Can be, for example a list, or an array at least 2d.
+
+y : array-like, optional, default: None
+    The target variable to try to predict in the case of
+    supervised learning.
+
+cv : cross-validation generator or int, optional, default: None
+    A cross-validation generator to use. If int, determines
+    the number of folds in StratifiedKFold if y is binary
+    or multiclass and estimator is a classifier, or the number
+    of folds in KFold otherwise. If None, it is equivalent to cv=3.
+    This generator must include all elements in the test set exactly once.
+    Otherwise, a ValueError is raised.
+
+n_jobs : integer, optional
+    The number of CPUs to use to do the computation. -1 means
+    'all CPUs'.
+
+verbose : integer, optional
+    The verbosity level.
+
+fit_params : dict, optional
+    Parameters to pass to the fit method of the estimator.
+
+Returns
+-------
+preds : ndarray
+    This is the result of calling 'predict'
+"""
+function cross_val_predict(estimator, X, y=nothing; cv=nothing, n_jobs=1,
+                           verbose=0, fit_params=nothing)
+    @assert n_jobs==1 "Parallel cross-validation not supported yet. TODO"
+
+    check_consistent_length(X, y)
+
+    @show cv
+    cv = sk_cv.KFold(length(y), cv)#check_cv(cv, X, y, classifier=is_classifier(estimator))
+    # We clone the estimator to make sure that all the folds are
+    # independent
+    @show length(cv)
+    preds_blocks = Any[sk_cv._fit_and_predict(clone(estimator), X, y,
+                                              train, test, verbose,
+                                              fit_params)
+                       for (train, test) in cv]
+    @show size(preds_blocks)
+    p = vcat([p for (p, _) in preds_blocks]...)
+    @show size(p)
+    locs = vcat([loc for (_, loc) in preds_blocks]...)
+    ## if !sk_cv._check_is_partition(locs, size(X, 1))
+    ##     error("cross_val_predict only works for partitions")
+    ## end
+    preds = copy(p)  # is the copy necessary?
+    preds[locs+1] = p
+    return preds
+end
+
+
+
 
 """Determine scorer from user options.
 
@@ -187,6 +254,8 @@ function _index_param_value(X, v::AbstractArray, indices)
     if size(X, 1) == size(v, 1)
         return v[indices]
     else
+        # Is this branch ever reached, though? Are there legitimate arguments
+        # to `fit` that are not of the same length as the data?
         return v
         ## throw(ArgumentError("fit! was passed a keyword argument that is an ::AbstractArray that does not match with X (not the same number of samples). This is disallowed at the moment"))
     end
