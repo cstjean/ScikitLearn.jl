@@ -12,7 +12,6 @@ import Skcore
 
 using PyCall: @pyimport
 using ScikitLearnBase
-using ScikitLearnBase: @import_api, @simple_estimator_constructor
 using Skcore: @sk_import
 
 export CrossValidation, @sk_import

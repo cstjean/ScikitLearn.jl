@@ -5,7 +5,6 @@
 module Skcore
 
 using ScikitLearnBase
-using ScikitLearnBase: @import_api, @simple_estimator_constructor
 
 using PyCall
 using Parameters
