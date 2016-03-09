@@ -13,7 +13,8 @@
 
 abstract BaseSearchCV
 
-@pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid, Sized)
+@pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid, Sized,
+                                 ParameterSampler)
 
 immutable CVScoreTuple
     parameters
@@ -303,5 +304,181 @@ function fit!(self::GridSearchCV, X, y=nothing):
 end
 
 is_classifier(gcv::GridSearchCV) = is_classifier(gcv.estimator)
+
+################################################################################
+# RandomizedSearchCV
+
+"""Randomized search on hyper parameters.
+
+RandomizedSearchCV implements a "fit" method and a "predict" method like
+any classifier except that the parameters of the classifier
+used to predict is optimized by cross-validation.
+
+In contrast to GridSearchCV, not all parameter values are tried out, but
+rather a fixed number of parameter settings is sampled from the specified
+distributions. The number of parameter settings that are tried is
+given by n_iter.
+
+If all parameters are presented as a list,
+sampling without replacement is performed. If at least one parameter
+is given as a distribution, sampling with replacement is used.
+It is highly recommended to use continuous distributions for continuous
+parameters.
+
+Parameters
+----------
+estimator : object type that implements the "fit" and "predict" methods
+    A object of that type is instantiated for each parameter setting.
+
+param_distributions : dict
+    Dictionary with parameters names (string) as keys and distributions
+    or lists of parameters to try. Distributions must provide a ``rvs``
+    method for sampling (such as those from scipy.stats.distributions).
+    If a list is given, it is sampled uniformly.
+
+n_iter : int, default=10
+    Number of parameter settings that are sampled. n_iter trades
+    off runtime vs quality of the solution.
+
+scoring : string, callable or None, optional, default: None
+    A string (see model evaluation documentation) or
+    a scorer callable object / function with signature
+    ``scorer(estimator, X, y)``.
+
+fit_params : dict, optional
+    Parameters to pass to the fit method.
+
+n_jobs : int, default=1
+    Number of jobs to run in parallel.
+
+pre_dispatch : int, or string, optional
+    Controls the number of jobs that get dispatched during parallel
+    execution. Reducing this number can be useful to avoid an
+    explosion of memory consumption when more jobs get dispatched
+    than CPUs can process. This parameter can be:
+
+        - None, in which case all the jobs are immediately
+          created and spawned. Use this for lightweight and
+          fast-running jobs, to avoid delays due to on-demand
+          spawning of the jobs
+
+        - An int, giving the exact number of total jobs that are
+          spawned
+
+        - A string, giving an expression as a function of n_jobs,
+          as in '2*n_jobs'
+
+iid : boolean, default=True
+    If True, the data is assumed to be identically distributed across
+    the folds, and the loss minimized is the total loss per sample,
+    and not the mean loss across the folds.
+
+cv : integer or cross-validation generator, optional
+    If an integer is passed, it is the number of folds (default 3).
+    Specific cross-validation objects can be passed, see
+    sklearn.cross_validation module for the list of possible objects
+
+refit : boolean, default=True
+    Refit the best estimator with the entire dataset.
+    If "False", it is impossible to make predictions using
+    this RandomizedSearchCV instance after fitting.
+
+verbose : integer
+    Controls the verbosity: the higher, the more messages.
+
+error_score : 'raise' (default) or numeric
+    Value to assign to the score if an error occurs in estimator fitting.
+    If set to 'raise', the error is raised. If a numeric value is given,
+    FitFailedWarning is raised. This parameter does not affect the refit
+    step, which will always raise the error.
+
+
+Attributes
+----------
+grid_scores_ : list of named tuples
+    Contains scores for all parameter combinations in param_grid.
+    Each entry corresponds to one parameter setting.
+    Each named tuple has the attributes:
+
+        * ``parameters``, a dict of parameter settings
+        * ``mean_validation_score``, the mean score over the
+          cross-validation folds
+        * ``cv_validation_scores``, the list of scores for each fold
+
+best_estimator_ : estimator
+    Estimator that was chosen by the search, i.e. estimator
+    which gave highest score (or smallest loss if specified)
+    on the left out data. Not available if refit=False.
+
+best_score_ : float
+    Score of best_estimator on the left out data.
+
+best_params_ : dict
+    Parameter setting that gave the best results on the hold out data.
+
+Notes
+-----
+The parameters selected are those that maximize the score of the held-out
+data, according to the scoring parameter.
+
+If `n_jobs` was set to a value higher than one, the data is copied for each
+parameter setting(and not `n_jobs` times). This is done for efficiency
+reasons if individual jobs take very little time, but may raise errors if
+the dataset is large and not enough memory is available.  A workaround in
+this case is to set `pre_dispatch`. Then, the memory is copied only
+`pre_dispatch` many times. A reasonable value for `pre_dispatch` is `2 *
+n_jobs`.
+
+See Also
+--------
+:class:`GridSearchCV`:
+    Does exhaustive search over a grid of parameters.
+
+:class:`ParameterSampler`:
+    A generator over parameter settins, constructed from
+    param_distributions.
+
+"""
+@with_kw type RandomizedSearchCV <: BaseSearchCV
+    estimator
+    param_distributions
+    n_iter=10
+    scoring=nothing
+    fit_params=Dict()
+    n_jobs=1
+    iid=true
+    refit=true
+    cv=nothing
+    verbose=0
+    random_state=nothing
+    error_score="raise"
+
+    grid_scores_
+    best_estimator_
+    best_score_
+    best_params_
+end
+
+
+
+"""Run fit on the estimator with randomly drawn parameters.
+
+Parameters
+----------
+X : array-like, shape = [n_samples, n_features]
+    Training vector, where n_samples in the number of samples and
+    n_features is the number of features.
+
+y : array-like, shape = [n_samples] or [n_samples, n_output], optional
+    Target relative to X for classification or regression;
+    None for unsupervised learning.
+
+"""
+function fit!(self::RandomizedSearchCV, X, y=nothing)
+    sampled_params = ParameterSampler(self.param_distributions,
+                                      self.n_iter,
+                                      random_state=self.random_state)
+    return _fit!(self, X, y, sampled_params)
+end
 
 ## end

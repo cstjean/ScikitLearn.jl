@@ -94,6 +94,32 @@ end
 
 ################################################################################
 
+# A CompositeEstimator contains one or more estimators
+abstract CompositeEstimator <: BaseEstimator
+
+function set_params!(estimator::CompositeEstimator; params...) # from base.py
+    # Simple optimisation to gain speed (inspect is slow)
+    if isempty(params) return estimator end
+
+    valid_params = get_params(estimator, deep=true)
+    for (key, value) in params
+        sp = split(string(key), "__"; limit=2)
+        if length(sp) > 1
+            name, sub_name = sp
+            if !haskey(valid_params, name::AbstractString)
+                throw(ArgumentError("Invalid parameter $name for estimator $estimator"))
+            end
+            sub_object = valid_params[name]
+            set_params!(sub_object; Dict(Symbol(sub_name)=>value)...)
+        else
+            TODO() # should be straight-forward
+        end
+    end
+    estimator
+end
+
+################################################################################
+
 imported_python_modules =
     Dict(:LinearModels => :linear_model,
          :Datasets => :datasets,

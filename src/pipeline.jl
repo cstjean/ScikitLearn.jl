@@ -36,7 +36,7 @@ export Pipeline, named_steps
         List of (name, transform) tuples (implementing fit/transform) that are
         chained, in the order in which they are chained, with the last object
         an estimator. """
-type Pipeline <: BaseEstimator
+type Pipeline <: CompositeEstimator
     steps::Vector{Tuple{Any, Any}} # of tuples(string, model)
     function Pipeline(steps)
         @assert(nunique(map(first, steps)) == length(steps),
@@ -183,7 +183,7 @@ transformer_weights: dict, optional
     Keys are transformer names, values the weights.
 
 """
-type FeatureUnion <: BaseEstimator
+type FeatureUnion <: CompositeEstimator
     transformer_list::Vector{Tuple{Any, Any}}
     n_jobs::Int
     transformer_weights

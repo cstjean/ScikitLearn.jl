@@ -30,3 +30,12 @@ These iterators can be passed to `cross_val_score`'s `cv` argument.
 - [Quick start guide](quickstart.md)
 - [Concatenating multiple feature extraction methods](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Feature_Stacker.ipynb)
 - [Underfitting vs. Overfitting](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Underfitting_vs_Overfitting.ipynb)
+
+## Cross-validated predictions
+
+`cross_val_predict` performs cross-validation and returns the test-set predicted
+values. Documentation [here](http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.cross_val_predict.html)
+
+### Examples
+
+- [Cross_Validated_Predictions](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Cross_Validated_Predictions.ipynb)

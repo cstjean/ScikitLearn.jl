@@ -3,13 +3,13 @@ having a separate module for each main Python module
 (eg. `sk_linear_model`). Or maybe I can @pyimport everything to make the
 hierarchy work and use `@reexport`. `@require` is also interesting.
 
-- Review docstrings
+- Random grid search
 - Support Julia algos
 - njobs>1
-- More tests
-- Random grid search
 - Dataframes
 - Feature extraction (eg. text features)
+- More tests
+- Review docstrings
 
 More long-term
 -----
