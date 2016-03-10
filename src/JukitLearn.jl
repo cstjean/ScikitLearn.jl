@@ -92,6 +92,6 @@ end
 
 # Not sure if we should export all the api. set_params!/get_params are rarely
 # used by user code.
-for f in ScikitLearnBase.api @eval(@reexportsk $f) end
+for f in JukitLearnBase.api @eval(@reexportsk $f) end
 
 end
