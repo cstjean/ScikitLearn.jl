@@ -4,7 +4,7 @@
 using Base.Test
 using Skcore
 using Skcore: Pipeline, FeatureUnion, make_pipeline
-using JukitLearnBase: declare_hyperparameters
+using ScikitLearnBase: declare_hyperparameters
 using PyCall: PyError
 
 @pyimport2 sklearn.svm: SVC

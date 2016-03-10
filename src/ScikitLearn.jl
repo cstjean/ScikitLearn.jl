@@ -6,12 +6,12 @@
 include("Skcore.jl")
 
 
-module JukitLearn
+module ScikitLearn
 
 import Skcore
 
 using PyCall: @pyimport
-using JukitLearnBase
+using ScikitLearnBase
 using Skcore: @sk_import
 
 export CrossValidation, @sk_import
@@ -92,6 +92,6 @@ end
 
 # Not sure if we should export all the api. set_params!/get_params are rarely
 # used by user code.
-for f in JukitLearnBase.api @eval(@reexportsk $f) end
+for f in ScikitLearnBase.api @eval(@reexportsk $f) end
 
 end
