@@ -8,9 +8,9 @@ Julia. It aims to provide the same functionality, while supporting both models
 defined in Julia and those of the [scikit-learn
 library](http://scikit-learn.org/stable/modules/classes.html) (via PyCall.jl).
 
-Disclaimer: ScikitLearn.jl borrows code and documentation from
-[scikit-learn](http://scikit-learn.org/stable/), but it is not an official part
-of that project. It is licensed under [BSD-3](LICENSE).
+**Disclaimer**: ScikitLearn.jl borrows code and documentation from
+[scikit-learn](http://scikit-learn.org/stable/), but *it is not an official part
+of that project*. It is licensed under [BSD-3](LICENSE).
 
 Main features:
 
