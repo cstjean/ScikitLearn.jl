@@ -285,21 +285,21 @@ function GridSearchCV(estimator, param_grid; kwargs...)
     GridSearchCV(estimator=estimator, param_grid=param_grid; kwargs...)
 end
 
-function fit!(self::GridSearchCV, X, y=nothing):
-    """Run fit with all sets of parameters.
+"""Run fit with all sets of parameters.
 
-    Parameters
-    ----------
+Parameters
+----------
 
-    X : array-like, shape = [n_samples, n_features]
-        Training vector, where n_samples is the number of samples and
-        n_features is the number of features.
+X : array-like, shape = [n_samples, n_features]
+    Training vector, where n_samples is the number of samples and
+    n_features is the number of features.
 
-    y : array-like, shape = [n_samples] or [n_samples, n_output], optional
-        Target relative to X for classification or regression;
-        None for unsupervised learning.
+y : array-like, shape = [n_samples] or [n_samples, n_output], optional
+    Target relative to X for classification or regression;
+    None for unsupervised learning.
 
-    """
+"""
+function fit!(self::GridSearchCV, X, y=nothing)
     return _fit!(self, X, y, ParameterGrid(self.param_grid))
 end
 
@@ -453,12 +453,17 @@ See Also
     random_state=nothing
     error_score="raise"
 
-    grid_scores_
-    best_estimator_
-    best_score_
-    best_params_
+    scorer_=nothing
+    grid_scores_=nothing
+    best_estimator_=nothing
+    best_score_=nothing
+    best_params_=nothing
 end
 
+function RandomizedSearchCV(estimator, param_distributions; kwargs...)
+    RandomizedSearchCV(estimator=estimator,
+                       param_distributions=param_distributions; kwargs...)
+end
 
 
 """Run fit on the estimator with randomly drawn parameters.

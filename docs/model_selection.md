@@ -20,3 +20,16 @@ See `?GridSearchCV` and the [scikit-learn docs](http://scikit-learn.org/stable/m
 - [Quick start guide](quickstart.md)
 - [Pipelining: chaining a PCA and a logistic regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Pipeline_PCA_Logistic.ipynb)
 - [Concatenating multiple feature extraction methods](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Feature_Stacker.ipynb)
+
+## Random Search
+
+`RandomizedSearchCV` will sample from each parameter independently.
+Documentation [here](http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.RandomizedSearchCV.html).
+
+Note: The distributions have to be specified using `scipy.stats` (see example
+below), but we hope to support Distributions.jl in the future. File an issue if
+this is a pain point.
+
+### Examples
+
+- [Comparing randomized search and grid search for hyperparameter estimation](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Randomized_Search.ipynb)

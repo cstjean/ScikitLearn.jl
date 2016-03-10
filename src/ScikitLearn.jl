@@ -71,7 +71,7 @@ end
 
 module GridSearch
 using ..@reexportsk
-@reexportsk(GridSearchCV)
+@reexportsk(GridSearchCV, RandomizedSearchCV)
 end
 
 
