@@ -16,7 +16,9 @@ Main features:
 - Cross-validation
 - Hyperparameter tuning
 
-
+Check out the [Quick-Start
+Guide](http://scikitlearnjl.readthedocs.org/en/latest/quickstart/) for a quick
+tour.
 
 ## Installation
 
