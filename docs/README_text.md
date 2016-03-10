@@ -1,13 +1,22 @@
-# ScikitLearn.jl
+# JukitLearn.jl
 
-ScikitLearn.jl is a Julia machine learning library derived from
-[scikit-learn](http://scikit-learn.org/stable/). It aims to provide the
+JukitLearn.jl implements the [scikit-learn](http://scikit-learn.org/stable/)
+interface and algorithms in Julia. It aims to provide the
 same functionality, while supporting both models defined
 in Julia and those of the [scikit-learn library](http://scikit-learn.org/stable/modules/classes.html).
 
-Disclaimer: ScikitLearn.jl borrows code and documentation from
+Disclaimer: JukitLearn.jl borrows code and documentation from
 [scikit-learn](http://scikit-learn.org/stable/), but it is not an official part
 of that project. It is licensed under [BSD-3](LICENSE).
+
+Main features:
+
+- Around 150 machine learning and statistical models accessed through a uniform interface
+- Pipelines and FeatureUnions
+- Cross-validation
+- Hyperparameter tuning
+
+
 
 ## Installation
 
@@ -36,7 +45,6 @@ See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 
 ## Goal
 
-ScikitLearn.jl is a work-in-progress, but we aim to achieve feature parity with
-scikit-learn. If you encounter any problem that is solved by that library but
-not this one, [file an
+JukitLearn.jl aims to achieve feature parity with scikit-learn. If you
+encounter any problem that is solved by that library but not this one, [file an
 issue](https://github.com/cstjean/ScikitLearn.jl/issues).

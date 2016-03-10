@@ -1,8 +1,8 @@
 Model Selection
 ------
 
-Most models contain _hyper-parameters_: parameters that are specified in the
-constructor, and not derived from the data. ScikitLearn.jl provides
+Most models contain _hyperparameters_: parameters that are specified in the
+constructor, and not learned from the data. ScikitLearn.jl provides
 `GridSearchCV` to find the best set of hyper-parameter:
 
 ```julia
