@@ -35,8 +35,8 @@ or
 (if you have issues, check out [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)). To install this package, at the Julia REPL type:
 
 ```julia
-Pkg.clone("https://github.com/cstjean/ScikitLearnBase.jl.git")
-Pkg.clone("https://github.com/cstjean/ScikitLearn.jl.git")
+Pkg.clone("https://github.com/cstjean/JukitLearnBase.jl.git")
+Pkg.clone("https://github.com/cstjean/JukitLearn.jl.git")
 ```
 
 Finally, if you would like to run the examples, you will need [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
@@ -50,4 +50,4 @@ See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 
 JukitLearn.jl aims to achieve feature parity with scikit-learn. If you
 encounter any problem that is solved by that library but not this one, [file an
-issue](https://github.com/cstjean/ScikitLearn.jl/issues).
+issue](https://github.com/cstjean/JukitLearn.jl/issues).
