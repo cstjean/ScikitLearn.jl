@@ -4,7 +4,7 @@
 # change the public module structure.
 module Skcore
 
-using ScikitLearnBase
+using JukitLearnBase
 
 using PyCall
 using Parameters
@@ -12,7 +12,7 @@ using SymDict
 
 include("sk_utils.jl")
 
-importall ScikitLearnBase
+importall JukitLearnBase
 
 @pyimport2 sklearn
 @pyimport sklearn.base as sk_base
@@ -24,7 +24,7 @@ translated_modules =
          :grid_search => :GridSearch
          )
 
-for f in ScikitLearnBase.api
+for f in JukitLearnBase.api
     # Export all the API. Not sure if we should do that...
     @eval(export $f)
 end

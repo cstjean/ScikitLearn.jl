@@ -1,9 +1,10 @@
 # JukitLearn.jl
 
-JukitLearn.jl implements the [scikit-learn](http://scikit-learn.org/stable/)
-interface and algorithms in Julia. It aims to provide the
-same functionality, while supporting both models defined
-in Julia and those of the [scikit-learn library](http://scikit-learn.org/stable/modules/classes.html).
+JukitLearn.jl implements the popular
+[scikit-learn](http://scikit-learn.org/stable/) interface and algorithms in
+Julia. It aims to provide the same functionality, while supporting both models
+defined in Julia and those of the [scikit-learn
+library](http://scikit-learn.org/stable/modules/classes.html).
 
 Disclaimer: JukitLearn.jl borrows code and documentation from
 [scikit-learn](http://scikit-learn.org/stable/), but it is not an official part
@@ -17,7 +18,7 @@ Main features:
 - Hyperparameter tuning
 
 Check out the [Quick-Start
-Guide](http://scikitlearnjl.readthedocs.org/en/latest/quickstart/) for a quick
+Guide](http://scikitlearnjl.readthedocs.org/en/latest/quickstart/) for a
 tour.
 
 ## Installation

@@ -6,12 +6,12 @@
 include("Skcore.jl")
 
 
-module ScikitLearn
+module JukitLearn
 
 import Skcore
 
 using PyCall: @pyimport
-using ScikitLearnBase
+using JukitLearnBase
 using Skcore: @sk_import
 
 export CrossValidation, @sk_import
