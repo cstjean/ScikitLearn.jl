@@ -7,6 +7,8 @@ julia:
     - nightly
 notifications:
     email: false
+git:
+    depth: 99999
 env:
     global:
     - PYTHON=conda
