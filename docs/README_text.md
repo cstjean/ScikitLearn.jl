@@ -1,5 +1,7 @@
 # ScikitLearn.jl
 
+[![Documentation Status](https://readthedocs.org/projects/scikitlearnjl/badge/?version=latest)](http://scikitlearnjl.readthedocs.org/en/latest/?badge=latest)
+
 ScikitLearn.jl implements the popular
 [scikit-learn](http://scikit-learn.org/stable/) interface and algorithms in
 Julia. It aims to provide the same functionality, while supporting both models
