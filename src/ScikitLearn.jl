@@ -3,31 +3,18 @@
 # interface. This arrangement simplifies the codebase and allows us to
 # experiment with different submodule structures without breaking everything.
 
-include("Skcore.jl")
-
-
 module ScikitLearn
 
-import Skcore
+include("Skcore.jl")
 
 using PyCall: @pyimport
 using ScikitLearnBase
-using Skcore: @sk_import
+using ScikitLearn.Skcore: @sk_import
 
 export CrossValidation, @sk_import
 
 
 ################################################################################
-
-macro reexport(module_, identifiers...)
-    esc(:(begin
-        $([:(begin
-             using $module_: $idf
-             export $idf
-             end)
-        for idf in identifiers]...)
-    end))
-end
 
 """    @reexportsk(identifiers...)
 is equivalent to
@@ -35,31 +22,25 @@ is equivalent to
     export identifiers...
 """
 macro reexportsk(identifiers...)
-    :(@reexport($(esc(:Skcore)), $(map(esc, identifiers)...)))
+    esc(:(begin
+        $([:(begin
+             using ScikitLearn.Skcore: $idf
+             export $idf
+             end)
+        for idf in identifiers]...)
+    end))
 end
-
-
-## module LinearModels
-## using ..@reexport
-## using PyCall: @pyimport
-## @pyimport sklearn.linear_model as _linear_model
-## for var in names(_linear_model)
-##     if isa(var, Symbol) && string(var)[1] != '_'
-##         @eval const $var = _linear_model.$var
-##     end
-## end
-## end
-
 
 module CrossValidation
 using ..@reexportsk, ..@sk_import
-using Skcore: @pyimport2
-import Skcore
+using ScikitLearn.Skcore: @pyimport2
 @reexportsk(cross_val_score, cross_val_predict)
 @pyimport2 sklearn.cross_validation: train_test_split
 export train_test_split
 
-@eval @reexportsk($(Skcore.cv_iterator_syms...))
+using ..Skcore: cv_iterator_syms
+
+@eval @reexportsk($(cv_iterator_syms...))
 end
 
 
@@ -77,7 +58,7 @@ end
 
 module Utils
 using ..@reexportsk
-using Skcore: @pyimport2
+using ScikitLearn.Skcore: @pyimport2
 @reexportsk(meshgrid)
 export @pyimport2
 end
