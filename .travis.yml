@@ -7,6 +7,9 @@ julia:
     - nightly
 notifications:
     email: false
+before_install:
+    #install scikit-learn to test functionallity
+  - if [ $MPMATH = "true" ]; then julia -e 'Pkg.add("Conda"); using Conda; Conda.add("scikit-learn")';fi
 #script:
 #    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 #    - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("ScikitLearn"); Pkg.test("ScikitLearn"; coverage=true)'
