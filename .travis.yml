@@ -7,6 +7,9 @@ julia:
     - nightly
 notifications:
     email: false
+env:
+    global:
+    - PYTHON=conda
 before_install:
     #install scikit-learn to test functionallity
   - if [ $MPMATH = "true" ]; then julia -e 'Pkg.add("Conda"); using Conda; Conda.add("scikit-learn")';fi
