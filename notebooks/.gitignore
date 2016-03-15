@@ -1,6 +1,8 @@
 /.DS_Store
 /.ipynb_checkpoints
+/GaussianProcesses-Copy1.ipynb
 /GaussianProcesses.ipynb
+/GaussianProcessesNative.ipynb
 /Kernel_Density_Estimate.ipynb
 /NMF.ipynb
 /Pipeline_Example.ipynb
