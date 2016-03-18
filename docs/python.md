@@ -1,7 +1,7 @@
 Relationship to scikit-learn
 ----
 
-The [scikit-learn](http://scikit-learn.org/stable/about.html) Python library has so far received [contributions](https://github.com/scikit-learn/scikit-learn/graphs/contributors) from dozens of developers and machine learning experts. ScikitLearn.jl leans on that codebase as much as possible, but the API had to be adapted to Julia, and follows Julia's conventions. When reading the scikit-learn [documentation](http://scikit-learn.org/stable/documentation.html), keep in mind that:
+ScikitLearn.jl aims to mirror the Python scikit-learn project, but the API had to be adapted to Julia, and follows Julia's conventions. When reading the Python [documentation](http://scikit-learn.org/stable/documentation.html), keep in mind:
 
 - Most object methods are now functions: Python's `model.predict(X)` becomes
   `predict(model, X)`
@@ -10,7 +10,7 @@ The [scikit-learn](http://scikit-learn.org/stable/about.html) Python library has
 - A few of the Python submodules were translated into Julia to support
   Julia models: `ScikitLearn.Pipelines`, `ScikitLearn.CrossValidation`, and `ScikitLearn.GridSearch`
 
-Furthermore, to access the class members and methods of a Python objects
+To access the class members and methods of a Python object
 (i.e. all models imported through `@sk_import`), use `obj[:member_name]`. For
 example:
 
@@ -20,6 +20,6 @@ lm = fit!(Lasso(), X, y)
 println(lm[:n_iter_])   # equivalent to lm.n_iter_ in Python
 ```
 
-This is rarely necessary, because most important/frequently-used methods have
-been defined in Julia (eg. `transformer.classes_` is now
+This is rarely necessary, because the most important/frequently-used methods
+have been defined in Julia (eg. `transformer.classes_` is now
 `get_classes(transformer)`)

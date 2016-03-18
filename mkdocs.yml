@@ -13,3 +13,4 @@ pages:
 - Cross-validation: cross_validation.md
 - Model selection: model_selection.md
 - Pipelines and FeatureUnion: pipelines.md
+- Getting help: help.md

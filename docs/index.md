@@ -14,4 +14,4 @@ REPL). The primary source of information, tutorial, etc. is at
 [scikit-learn.org](http://scikit-learn.org/stable/documentation.html), but
 please see [how to read the Python documentation](python) beforehand.
 
-
+Note: ScikitLearn.jl is not associated to the [scikit-learn.org](scikit-learn.org) organization. All issues should be filed [here](https://github.com/cstjean/ScikitLearn.jl/issues)
