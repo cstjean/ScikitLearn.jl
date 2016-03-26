@@ -5,21 +5,15 @@ Credits: this code and documentation was adapted from Paul Butler's [sklearn-pan
 
 It is possible to train models based on dataframes, but they need to be converted to arrays first. `DataFrameMapper` is used to specify how this conversion proceeds. For example, PCA might be applied to some numerical dataframe columns, and one-hot-encoding to a categorical column.
 
-Note: `ScikitLearn.DataFrameMapper` won't be available until `DataFrames` is imported
+## Transformation Mapping
 
 
 ```julia
 using ScikitLearn
 using DataFrames: DataFrame, NA, DataArray
 using DataArrays: @data
-
 @sk_import preprocessing: (LabelBinarizer, StandardScaler)
-```
 
-## Transformation Mapping
-
-
-```julia
 data = DataFrame(pet=["cat", "dog", "dog", "fish", "cat", "dog", "cat", "fish"],
                  children=[4., 6, 3, 3, 2, 3, 5, 4],
                  salary=[90, 24, 44, 27, 32, 59, 36, 27])
@@ -36,20 +30,17 @@ data = DataFrame(pet=["cat", "dog", "dog", "fish", "cat", "dog", "cat", "fish"],
 
 The mapper takes a list of pairs. The first is a column name from the DataFrame, or a list containing one or multiple columns (we will see an example with multiple columns later). The second is an object which will perform the transformation which will be applied to that column:
 
+Note: `ScikitLearn.DataFrameMapper` won't be available until `DataFrames` is imported
+
 
 ```julia
 mapper = DataFrameMapper([(:pet, LabelBinarizer()),
-                          ([:children], StandardScaler())])
+                          ([:children], StandardScaler())]);
 ```
 
 
 
-
-    ScikitLearn.DataFrameMapper(Tuple[(:pet,PyObject LabelBinarizer(neg_label=0, pos_label=1, sparse_output=False)),([:children],PyObject StandardScaler(copy=True, with_mean=True, with_std=True))],false,false)
-
-
-
-The difference between specifying the column selector as 'column' (as a simple string) and ['column'] (as a list with one element) is the shape of the array that is passed to the transformer. In the first case, a one dimensional array with be passed, while in the second case it will be a 2-dimensional array with one column, i.e. a column vector.
+The difference between specifying the column selector as :column (as a single symbol) and [:column] (as a list with one element) is the shape of the array that is passed to the transformer. In the first case, a one dimensional array with be passed, while in the second case it will be a 2-dimensional array with one column, i.e. a column vector.
 
 ### Test the Transformation
 
@@ -101,16 +92,8 @@ Transformations may require multiple input columns. In these cases, the column n
 
 ```julia
 @sk_import decomposition: PCA
-
-mapper2 = DataFrameMapper([([:children, :salary], PCA(1))])
+mapper2 = DataFrameMapper([([:children, :salary], PCA(1))]);
 ```
-
-
-
-
-    ScikitLearn.DataFrameMapper(Tuple[([:children,:salary],PyObject PCA(copy=True, n_components=1, whiten=False))],false,false)
-
-
 
 Now running `fit_transform!` will run PCA on the `children` and `salary` columns and return the first principal component:
 
@@ -141,22 +124,6 @@ Multiple transformers can be applied to the same column specifying them in a lis
 
 ```julia
 @sk_import preprocessing: Imputer
-```
-
-
-```julia
-a, b = promote(@data([1,2,3]), Float32[])
-```
-
-
-
-
-    ([1,2,3],Float32[])
-
-
-
-
-```julia
 mapper3 = DataFrameMapper([([:age], [Imputer()])]; NA2NaN=true)
 data_3 = DataFrame(age= @data([1, NA, 3]))
 fit_transform!(mapper3, data_3)
@@ -199,17 +166,14 @@ round(fit_transform!(mapper3, copy(data)))
 
 
 
+## Cross-validation
+
+Now that we can combine features from a DataFrame, we may want to use cross-validation to see whether our model works.
+
 
 ```julia
 @sk_import linear_model: LinearRegression
-```
 
-## Cross-validation
-
-Now that we can combine features from pandas DataFrames, we may want to use cross-validation to see whether our model works.
-
-
-```julia
 pipe = Pipelines.Pipeline([
      (:featurize, mapper),
      (:lm, LinearRegression())])
