@@ -18,6 +18,7 @@ Main features:
 - Pipelines and FeatureUnions
 - Cross-validation
 - Hyperparameter tuning
+- DataFrames support
 
 Check out the [Quick-Start
 Guide](http://scikitlearnjl.readthedocs.org/en/latest/quickstart/) for a
