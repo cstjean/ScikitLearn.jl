@@ -37,11 +37,17 @@ type DataFrameMapper <: BaseEstimator
     end
 end
 
+clone(dfm::DataFrameMapper) =
+    DataFrameMapper([(col, clone(feat)) for (col, feat) in dfm.features];
+                    sparse=dfm.sparse, NA2NaN=dfm.NA2NaN)
+    
+
 """
 Convert a vector to a matrix
 """
 _handle_feature(fea::Vector) = reshape(fea, length(fea), 1)
 _handle_feature(fea::Matrix) = fea
+_handle_feature(fea::DataArray) = _handle_feature(convert(Array, fea))
 
 """
 Get a subset of columns from the given table X.
@@ -132,3 +138,4 @@ function transform(self, X)
     return hcat(extracted...)
 end
 
+Base.issparse(::DataFrame) = false
