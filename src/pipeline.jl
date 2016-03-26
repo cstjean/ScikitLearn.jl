@@ -7,7 +7,7 @@
 #                          Alexandre Gramfort
 #                          Lars Buitinck
 # Julia adaptation: Cedric St-Jean
-# Licence: BSD
+# License: BSD
 
 
 ## """ The :mod:`sklearn.pipeline` module implements utilities to build a composite
@@ -17,7 +17,7 @@
 ## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify
 ## @import_api()
 
-export Pipeline, named_steps
+export Pipeline, named_steps, make_pipeline
 
 """Pipeline of transforms with a final estimator.
 

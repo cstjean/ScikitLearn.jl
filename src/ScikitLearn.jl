@@ -1,7 +1,8 @@
-# IMPORTANT NOTE: Most of the codebase is in the module Skcore. ScikitLearn is
+# NOTE: Most of the codebase is in the module Skcore. ScikitLearn is
 # defined here by importing from Skcore and reexporting what we want in the
-# interface. This arrangement simplifies the codebase and allows us to
+# interface. This arrangement simplifies the codebase and allowed us to
 # experiment with different submodule structures without breaking everything.
+# TODO: get rid of Skcore
 
 module ScikitLearn
 
@@ -11,7 +12,7 @@ using PyCall: @pyimport
 using ScikitLearnBase
 using ScikitLearn.Skcore: @sk_import
 
-export CrossValidation, @sk_import
+export @sk_import, CrossValidation, Pipelines, GridSearch
 
 
 ################################################################################
@@ -66,6 +67,10 @@ end
 ## @pyimport sklearn.ensemble as Ensembles
 ## @pyimport sklearn.datasets as Datasets
 ## @pyimport sklearn.tree as Trees
+
+
+using Requires
+@require DataFrames include("dataframes.jl")
 
 
 ################################################################################

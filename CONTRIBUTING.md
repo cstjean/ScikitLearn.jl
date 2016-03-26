@@ -23,4 +23,4 @@ There are three ways to make a library compatible with ScikitLearnBase.jl
 - Create a new library that wraps the type and implements the interface
 - Make a PR to ScikitLearn.jl, and use @require to avoid adding the library as a dependency
 
-Option 1 is obviously preferrable where possible.
+Option 1 is generally preferable where possible.
