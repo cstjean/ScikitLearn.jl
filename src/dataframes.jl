@@ -38,7 +38,8 @@ type DataFrameMapper <: BaseEstimator
 end
 
 clone(dfm::DataFrameMapper) =
-    DataFrameMapper([(col, clone(feat)) for (col, feat) in dfm.features];
+    DataFrameMapper([(col, feat===nothing ? feat : clone(feat))
+                     for (col, feat) in dfm.features];
                     sparse=dfm.sparse, NA2NaN=dfm.NA2NaN)
     
 
