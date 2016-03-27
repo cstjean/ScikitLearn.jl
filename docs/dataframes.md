@@ -3,9 +3,11 @@ Credits: this code and documentation was adapted from Paul Butler's [sklearn-pan
 
 # DataFrames
 
-It is possible to train models based on dataframes, but they need to be converted to arrays first. `DataFrameMapper` is used to specify how this conversion proceeds. For example, PCA might be applied to some numerical dataframe columns, and one-hot-encoding to a categorical column.
+It is possible to use a dataframe as a training set, but it needs to be converted to an array first. `DataFrameMapper` is used to specify how this conversion proceeds. For example, PCA might be applied to some numerical dataframe columns, and one-hot-encoding to a categorical column.
 
 ## Transformation Mapping
+
+Consider this dataset:
 
 
 ```julia
@@ -37,8 +39,6 @@ Note: `ScikitLearn.DataFrameMapper` won't be available until `DataFrames` is imp
 mapper = DataFrameMapper([(:pet, LabelBinarizer()),
                           ([:children], StandardScaler())]);
 ```
-
-
 
 The difference between specifying the column selector as :column (as a single symbol) and [:column] (as a list with one element) is the shape of the array that is passed to the transformer. In the first case, a one dimensional array with be passed, while in the second case it will be a 2-dimensional array with one column, i.e. a column vector.
 

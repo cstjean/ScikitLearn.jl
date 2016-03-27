@@ -9,7 +9,8 @@ using RDatasets: dataset
 
 iris = dataset("datasets", "iris")
 
-# ScikitLearn.jl expects arrays - does not yet accept dataframes
+# ScikitLearn.jl expects arrays, but DataFrames can also be used - see
+# the corresponding section of the manual
 X = convert(Array, iris[[:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]])
 y = convert(Array, iris[:Species])
 ```
