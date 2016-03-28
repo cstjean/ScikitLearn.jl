@@ -64,9 +64,10 @@ using ScikitLearn.Skcore: @pyimport2
 export @pyimport2
 end
 
-## @pyimport sklearn.ensemble as Ensembles
-## @pyimport sklearn.datasets as Datasets
-## @pyimport sklearn.tree as Trees
+
+module Preprocessing
+include("dictencoder.jl")
+end
 
 
 using Requires
