@@ -66,7 +66,11 @@ end
 
 
 module Preprocessing
+# These are my own extensions. I'd like to keep ScikitLearn close to
+# scikit-learn, which is why they are not exported so far. I might move them
+# elsewhere. - cstjean
 include("dictencoder.jl")
+include("preprocessing.jl")
 end
 
 
