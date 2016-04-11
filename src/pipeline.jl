@@ -330,12 +330,12 @@ get_classes(pip::Pipeline) = get_classes(get_final_estimator(pip))
 ################################################################################
 # Convenience constructors
 
-estimator_typeof(est) = typeof(est)
-estimator_typeof(est::PyObject) = pytypeof(est)
+estimator_typename(est) = string(typeof(est))
+estimator_typename(est::PyObject) = pytypeof(est)[:__name__]
 
 """Generate names for estimators."""
 function _name_estimators(estimators)
-    names = [lowercase(string(estimator_typeof(estimator)))
+    names = [lowercase(estimator_typename(estimator))
              for estimator in estimators]
     namecount = Dict()
     for (est, name) in zip(estimators, names)
