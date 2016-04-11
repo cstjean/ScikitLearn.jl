@@ -34,7 +34,7 @@ function _fit!(self::BaseSearchCV, X::AbstractArray, y,
 
     if y !== nothing
         if size(y, 1) != n_samples
-            throw(ArgumentError("Target variable (y) has a different number of samples ($(size(y, 1))) than data (X: $n_smaples samples)"))
+            throw(ArgumentError("Target variable (y) has a different number of samples ($(size(y, 1))) than data (X: $n_samples samples)"))
         end
     end
     cv = check_cv(cv, X, y,
