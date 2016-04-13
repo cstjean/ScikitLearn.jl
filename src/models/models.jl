@@ -1,3 +1,3 @@
 import Requires
 
-@require GaussianMixtures include("GaussianProcesses.jl")
+@require GaussianMixtures include("GaussianMixtures.jl")
