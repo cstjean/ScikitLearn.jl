@@ -50,10 +50,14 @@ predict(gmm::GMM, X) =
     # This is just `argmax(axis=2)`. It's very verbose in Julia.
     ind2sub(size(X), vec(findmax(predict_proba(gmm, X), 2)[2]))[2]
 
-""" `density(gmm::GMM, X)` returns `log(P(X|\mu, \Sigma))` """
-density(gmm::GMM, X) =
-    squeeze(logsumexp(broadcast(+, llpg(gmm, X),
-                                reshape(log(gmm.w), 1, length(gmm.w))), 2), 2)
+""" `density(gmm::GMM, X)` returns `log(P(X|μ, Σ))` """
+function density(gmm::GMM, X)
+    # Let mᵢ be "X came from mixture #i"
+    # P(X|μ, Σ) = P(X|m₁, μ, Σ) * P(mᵢ) + P(X|m₂, μ, Σ) * P(m₂) + ...
+    logPrior = reshape(log(gmm.w), 1, length(gmm.w))
+    PX = logsumexp(broadcast(+, llpg(gmm, X), logPrior), 2)
+    return squeeze(PX, 2)::Vector
+end
 
 # score_samples is underspecified by the scikit-learn API, so we're more or
 # less free to return what we want
