@@ -9,7 +9,7 @@ module ScikitLearn
 include("Skcore.jl")
 
 using PyCall: @pyimport
-using ScikitLearnBase
+importall ScikitLearnBase
 using ScikitLearn.Skcore: @sk_import
 
 export @sk_import, CrossValidation, Pipelines, GridSearch
@@ -77,6 +77,7 @@ end
 using Requires
 @require DataFrames include("dataframes.jl")
 
+include("models/models.jl")
 
 ################################################################################
 # Other exports
