@@ -14,11 +14,11 @@ of that project*. It is licensed under [BSD-3](LICENSE).
 
 Main features:
 
-- Around 150 machine learning and statistical models accessed through a uniform interface
-- Pipelines and FeatureUnions
-- Cross-validation
-- Hyperparameter tuning
-- DataFrames support
+- Around 150 machine learning and statistical [models](http://scikitlearnjl.readthedocs.org/en/latest/models/) accessed through a uniform [interface](http://scikitlearnjl.readthedocs.org/en/latest/api/)
+- [Pipelines and FeatureUnions](http://scikitlearnjl.readthedocs.org/en/latest/pipelines/)
+- [Cross-validation](http://scikitlearnjl.readthedocs.org/en/latest/cross_validation/)
+- [Hyperparameter tuning](http://scikitlearnjl.readthedocs.org/en/latest/model_selection/)
+- [DataFrames support](http://scikitlearnjl.readthedocs.org/en/latest/dataframes/)
 
 Check out the [Quick-Start
 Guide](http://scikitlearnjl.readthedocs.org/en/latest/quickstart/) for a

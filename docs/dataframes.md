@@ -1,9 +1,8 @@
-
-Credits: this code and documentation was adapted from Paul Butler's [sklearn-pandas](https://github.com/paulgb/sklearn-pandas)
+*Credits: this code and documentation was adapted from Paul Butler's [sklearn-pandas](https://github.com/paulgb/sklearn-pandas)*
 
 # DataFrames
 
-It is possible to use a dataframe as a training set, but it needs to be converted to an array first. `DataFrameMapper` is used to specify how this conversion proceeds. For example, PCA might be applied to some numerical dataframe columns, and one-hot-encoding to a categorical column.
+It is possible to use a [dataframe](https://github.com/JuliaStats/DataFrames.jl) as a training set, but it needs to be converted to an array first. `DataFrameMapper` is used to specify how this conversion proceeds. For example, PCA might be applied to some numerical dataframe columns, and one-hot-encoding to a categorical column.
 
 ## Transformation Mapping
 

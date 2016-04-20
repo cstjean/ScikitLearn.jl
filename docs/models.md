@@ -31,6 +31,23 @@ parameters.
 Julia models
 ------
 
+Julia models are hosted in other packages, but they all implement the same [api](api.md).
+
+### Gaussian Mixtures
+
+```
+Pkg.checkout("GaussianMixtures.jl")   # install the package
+using GaussianMixtures: GMM
+using ScikitLearn
+
+gmm = fit!(GMM(n_components=3), X)
+predict_proba(gmm, X)
+```
+
+Documentation at [GaussianMixtures.jl]. See also this [density estimation example](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
+
+### Contributing
+
 To make your Julia model compatible with ScikitLearn.jl, you need to implement
 the scikit-learn interface. See [ScikitLearnBase.jl](https://github.com/cstjean/ScikitLearnBase.jl)
 
