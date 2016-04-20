@@ -6,6 +6,7 @@
 /GaussianProcessesNative-Copy1.ipynb
 /GaussianProcessesNative.ipynb
 /Kernel_Density_Estimate.ipynb
+/Low_Rank_Models.ipynb
 /NMF.ipynb
 /Pipeline_Example.ipynb
 /Pipeline_PCA_Logistic_Py.ipynb
@@ -16,6 +17,7 @@
 /Sk_Undefitting_vs_Overfitting_Py.html
 /Sk_Undefitting_vs_Overfitting_Py.ipynb
 /Test.ipynb
+/Test_GMM.ipynb
 /Test_Py.ipynb
 /Test_Python.ipynb
 /Undefitting_vs_Overfitting_Py.ipynb
