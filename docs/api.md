@@ -1,4 +1,4 @@
-Api
+Model Api
 ------
 
 Not all models implement every function. All input matrices X are vertical
@@ -52,13 +52,14 @@ can sometimes be more efficient.
 
 #### score_samples
 
-`score_samples(model, X)` evaluates the density model on X.
+For probabilistic models, `score_samples(model, X)` evaluates the density model
+on X.
 
 #### score
 
 `score(model, X)` and `score(model, X, y)` assign a score to how likely `X` or
-`y|X` is given the learned model parameters. The higher this score is, the better
-the model. This is used for cross-validation.
+`y|X` is given the learned model parameters. The higher this score is, the
+better the model. This is used for cross-validation.
 
 #### decision_function
 

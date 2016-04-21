@@ -7,6 +7,7 @@ markdown_extensions: [tables, fenced_code]
 pages:
 - Introduction: index.md
 - Quick start guide: quickstart.md
+- Model API: api.md
 - Reading the scikit-learn documentation: python.md
 - Example gallery: examples_refer.md
 - Models: models.md
@@ -14,5 +15,4 @@ pages:
 - Model selection: model_selection.md
 - Pipelines and FeatureUnion: pipelines.md
 - DataFrames: dataframes.md
-- API: api.md
 - Getting help: help.md

@@ -44,7 +44,7 @@ gmm = fit!(GMM(n_components=3), X)
 predict_proba(gmm, X)
 ```
 
-Documentation at [GaussianMixtures.jl]. See also this [density estimation example](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
+Documentation at [GaussianMixtures.jl](https://github.com/davidavdav/GaussianMixtures.jl). See also this [density estimation example](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
 
 ### Contributing
 
