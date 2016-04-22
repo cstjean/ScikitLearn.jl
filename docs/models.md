@@ -31,7 +31,8 @@ parameters.
 Julia models
 ------
 
-Julia models are hosted in other packages, but they all implement the same [api](api.md).
+Julia models are hosted in other packages, and need to be installed separately
+with `Pkg.add` or `Pkg.checkout`. They all implement the [common api](api.md).
 
 ### Gaussian Mixtures
 
@@ -40,7 +41,9 @@ Pkg.checkout("GaussianMixtures.jl")   # install the package
 using GaussianMixtures: GMM
 using ScikitLearn
 
-gmm = fit!(GMM(n_components=3), X)
+gmm = fit!(GMM(n_components=3, # number of Gaussians to fit
+               kind=:diag), # diagonal covariance matrix (other option: :full)
+           X)
 predict_proba(gmm, X)
 ```
 
