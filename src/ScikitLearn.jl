@@ -78,6 +78,10 @@ using Requires
 @require DataFrames include("dataframes.jl")
 
 
+module Models
+include("models/models.jl")
+end
+
 ################################################################################
 # Other exports
 
