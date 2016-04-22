@@ -46,6 +46,11 @@ applies the transformation from `model` to `X`, and returns a similar array
 `fit_transform!(model, X)` is equivalent to `transform(fit!(model, X), X)` but
 can sometimes be more efficient.
 
+#### fit_predict!
+
+`fit_predict!(model, X)` is equivalent to `predict(fit!(model, X), X)` but
+can sometimes be more efficient.
+
 #### inverse_transform
 
 `inverse_transform(model, X)` applies the inverse of the model transformation.
@@ -76,5 +81,4 @@ decision boundary.
   changed with `set_params!`
 - `is_classifier(model)` is true if `model` is a classifier.
 - `get_feature_names(model)` returns the name of the output features
-- `is_pairwise(model)`: WRITEME
 - `get_classes(preprocessor)` returns the label of each class
