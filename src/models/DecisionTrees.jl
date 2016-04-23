@@ -3,6 +3,28 @@ using DecisionTree: Leaf, Node, LeafOrNode
 importall ScikitLearnBase
 
 ################################################################################
+# Helpers
+
+# Returns a dict ("Label1" => 1, "Label2" => 2, "Label3" => 3, ...)
+class_index(classes) =
+    Dict([c=>i for (i, c) in enumerate(classes)])
+
+"""    compute_probabilities(classes::Vector, votes::Vector)
+
+Helper function. Counts the votes.
+Returns a vector of probabilities (eg. [0.2, 0.6, 0.2]) which is in the same
+order as `get_classes(classifier)` (eg. ["versicolor", "setosa", "virginica"])
+"""
+function compute_probabilities(classes::Vector, votes::Vector)
+    class2ind = class_index(classes)
+    counts = zeros(Float64, length(class2ind))
+    for label in votes
+        counts[class2ind[label]] += 1
+    end
+    return counts / sum(counts) # normalize to get probabilities
+end
+
+################################################################################
 # Classifier
 
 type DecisionTreeClassifier <: BaseClassifier
@@ -32,11 +54,8 @@ predict(dt::DecisionTreeClassifier, X) = apply_tree(dt.root, X)
 
 # apply_tree_prob computes P(C=c|X) by counting the fraction of C objects
 # in leaf.values
-# This is rather slow because
-# A) closures are slow (will be fixed in 0.5, so no big deal)
-# B) that's an O(N^2) algo. We should precompute it at Leaf construction time.
 apply_tree_prob(leaf::Leaf, feature::Vector, classes) =
-    [count(x->x==cl, leaf.values) / length(leaf.values) for cl in classes]
+    compute_probabilities(classes, leaf.values)
 
 function apply_tree_prob(tree::Node, features::Vector, classes)
     if tree.featval === nothing
@@ -119,8 +138,7 @@ end
 
 function apply_forest_prob(forest::Ensemble, features::Vector, classes)
     votes = [apply_tree(tree, features) for tree in forest.trees]
-    # Also O(N^2). Would be O(N) if classes was a Label=>Int dictionary
-    return [count(x->x==cl, votes) / length(forest.trees) for cl in classes]
+    return compute_probabilities(classes, votes)
 end
 
 function apply_forest_prob(forest::Ensemble, features::Matrix, classes)
