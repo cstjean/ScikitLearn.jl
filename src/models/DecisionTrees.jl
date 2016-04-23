@@ -3,18 +3,15 @@ using DecisionTree: Leaf, Node, LeafOrNode
 importall ScikitLearnBase
 
 ################################################################################
-# Helpers
+# Utilities
 
 # Returns a dict ("Label1" => 1, "Label2" => 2, "Label3" => 3, ...)
 class_index(classes) =
     Dict([c=>i for (i, c) in enumerate(classes)])
 
-"""    compute_probabilities(classes::Vector, votes::Vector)
-
-Helper function. Counts the votes.
-Returns a vector of probabilities (eg. [0.2, 0.6, 0.2]) which is in the same
-order as `get_classes(classifier)` (eg. ["versicolor", "setosa", "virginica"])
-"""
+## Helper function. Counts the votes.
+## Returns a vector of probabilities (eg. [0.2, 0.6, 0.2]) which is in the same
+## order as `get_classes(classifier)` (eg. ["versicolor", "setosa", "virginica"])
 function compute_probabilities(classes::Vector, votes::Vector)
     class2ind = class_index(classes)
     counts = zeros(Float64, length(class2ind))
@@ -23,6 +20,18 @@ function compute_probabilities(classes::Vector, votes::Vector)
     end
     return counts / sum(counts) # normalize to get probabilities
 end
+
+# Applies `vector_fun(classifier, X_row, classes)::Vector` to each row in X
+# and returns a Matrix containing the resulting vectors, stacked vertically
+function stack_function_results(vector_fun::Function, classifier, X::Matrix,
+                                classes::Vector)
+    N = size(X,1)
+    out = Array(Float64, N, length(classes))
+    for i in 1:N
+        out[i, :] = vector_fun(classifier, squeeze(X[i,:],1), classes)
+    end
+    return out
+end    
 
 ################################################################################
 # Classifier
@@ -67,15 +76,8 @@ function apply_tree_prob(tree::Node, features::Vector, classes)
     end
 end
 
-function apply_tree_prob(tree::LeafOrNode, features::Matrix, classes)
-    N = size(features,1)
-    predictions = Array(Float64, N, length(classes))
-    for i in 1:N
-        predictions[i, :] = apply_tree_prob(tree, squeeze(features[i,:],1),
-                                            classes)
-    end
-    return predictions
-end
+apply_tree_prob(tree::Node, features::Matrix, classes) =
+    stack_function_results(apply_tree_prob, tree, features, classes)
 
 predict_proba(dt::DecisionTreeClassifier, X) =
     apply_tree_prob(dt.root, X, dt.classes)
@@ -141,15 +143,8 @@ function apply_forest_prob(forest::Ensemble, features::Vector, classes)
     return compute_probabilities(classes, votes)
 end
 
-function apply_forest_prob(forest::Ensemble, features::Matrix, classes)
-    N = size(features,1)
-    predictions = Array(Float64, N, length(classes))
-    for i in 1:N
-        predictions[i, :] = apply_forest_prob(forest, squeeze(features[i,:],1),
-                                              classes)
-    end
-    return predictions
-end
+apply_forest_prob(forest::Ensemble, features::Matrix, classes) =
+    stack_function_results(apply_forest_prob, forest, features, classes)
 
 predict_proba(rf::RandomForestClassifier, X) = 
     apply_forest_prob(rf.ensemble, X, rf.classes)
