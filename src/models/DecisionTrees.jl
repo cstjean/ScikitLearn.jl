@@ -179,3 +179,39 @@ end
 
 predict(rf::RandomForestRegressor, X) = apply_forest(rf.ensemble, X)
 
+################################################################################
+# AdaBoost Stump Classifier
+
+type AdaBoostStumpClassifier <: BaseClassifier
+    niterations::Int
+    ensemble::Ensemble
+    coeffs::Vector{Float64}
+    classes::Vector
+    AdaBoostStumpClassifier(; niterations=10) = new(niterations)
+end
+declare_hyperparameters(AdaBoostStumpClassifier, [:niterations])
+get_classes(ada::AdaBoostStumpClassifier) = ada.classes
+
+function fit!(ada::AdaBoostStumpClassifier, X, y)
+    ada.ensemble, ada.coeffs = build_adaboost_stumps(y, X, ada.niterations)
+    ada.classes = sort(unique(y))
+    ada
+end
+
+predict(ada::AdaBoostStumpClassifier, X) =
+    apply_adaboost_stumps(ada.ensemble, ada.coeffs, X)
+
+function apply_adaboost_stumps_prob(stumps::Ensemble, coeffs::Vector{Float64}, features::Vector, classes::Vector)
+    votes = [apply_tree(stump, features) for stump in stumps.trees]
+    compute_probabilities(classes, votes, coeffs)
+end
+
+function apply_adaboost_stumps_prob(stumps::Ensemble, coeffs::Vector{Float64},
+                                    features::Matrix, classes::Vector)
+    stack_function_results(row->apply_adaboost_stumps_prob(stumps, coeffs, row,
+                                                           classes),
+                           features)
+end
+
+predict_proba(ada::AdaBoostStumpClassifier, X) =
+    apply_adaboost_stumps_prob(ada.ensemble, ada.coeffs, X, ada.classes)
