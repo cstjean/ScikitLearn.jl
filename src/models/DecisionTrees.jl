@@ -11,24 +11,28 @@ class_index(classes) =
 
 ## Helper function. Counts the votes.
 ## Returns a vector of probabilities (eg. [0.2, 0.6, 0.2]) which is in the same
-## order as `get_classes(classifier)` (eg. ["versicolor", "setosa", "virginica"])
-function compute_probabilities(classes::Vector, votes::Vector)
+## order as get_classes(classifier) (eg. ["versicolor", "setosa", "virginica"])
+function compute_probabilities(classes::Vector, votes::Vector, weights=1.0)
     class2ind = class_index(classes)
     counts = zeros(Float64, length(class2ind))
-    for label in votes
-        counts[class2ind[label]] += 1
+    for (i, label) in enumerate(votes)
+        if isa(weights, Number)
+            counts[class2ind[label]] += weights
+        else
+            counts[class2ind[label]] += weights[i]
+        end
     end
     return counts / sum(counts) # normalize to get probabilities
 end
 
-# Applies `vector_fun(classifier, X_row, classes)::Vector` to each row in X
+# Applies `row_fun(X_row)::Vector` to each row in X
 # and returns a Matrix containing the resulting vectors, stacked vertically
-function stack_function_results(vector_fun::Function, classifier, X::Matrix,
-                                classes::Vector)
-    N = size(X,1)
-    out = Array(Float64, N, length(classes))
+function stack_function_results(row_fun::Function, X::Matrix)
+    N = size(X, 1)
+    N_cols = length(row_fun(squeeze(X[1,:],1))) # gets the number of columns
+    out = Array(Float64, N, N_cols)
     for i in 1:N
-        out[i, :] = vector_fun(classifier, squeeze(X[i,:],1), classes)
+        out[i, :] = row_fun(squeeze(X[i,:],1))
     end
     return out
 end    
@@ -77,7 +81,7 @@ function apply_tree_prob(tree::Node, features::Vector, classes)
 end
 
 apply_tree_prob(tree::Node, features::Matrix, classes) =
-    stack_function_results(apply_tree_prob, tree, features, classes)
+    stack_function_results(row->apply_tree_prob(tree, row, classes), features)
 
 predict_proba(dt::DecisionTreeClassifier, X) =
     apply_tree_prob(dt.root, X, dt.classes)
@@ -144,7 +148,8 @@ function apply_forest_prob(forest::Ensemble, features::Vector, classes)
 end
 
 apply_forest_prob(forest::Ensemble, features::Matrix, classes) =
-    stack_function_results(apply_forest_prob, forest, features, classes)
+    stack_function_results(row->apply_forest_prob(forest, row, classes),
+                           features)
 
 predict_proba(rf::RandomForestClassifier, X) = 
     apply_forest_prob(rf.ensemble, X, rf.classes)
