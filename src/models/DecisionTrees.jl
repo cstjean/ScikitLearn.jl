@@ -94,6 +94,51 @@ end
 predict(dt::DecisionTreeRegressor, X) = apply_tree(dt.root, X)
 
 ################################################################################
+# Random Forest Classification
+
+type RandomForestClassifier <: BaseClassifier
+    nsubfeatures::Int
+    ntrees::Int
+    partialsampling::Float64
+    ensemble::Ensemble
+    classes::Vector
+    RandomForestClassifier(; nsubfeatures=0, ntrees=10, partialsampling=0.7) = 
+        new(nsubfeatures, ntrees, partialsampling)
+end
+
+get_classes(dt::DecisionTreeClassifier) = dt.classes
+declare_hyperparameters(DecisionTreeClassifier,
+                        [:nsubfeatures, :ntrees, :partialsampling])
+
+function fit!(rf::RandomForestClassifier, X::Matrix, y::Vector)
+    rf.ensemble = build_forest(y, X, rf.nsubfeatures, rf.ntrees,
+                               rf.partialsampling)
+    rf.classes = sort(unique(y))
+    rf
+end
+
+function apply_forest_prob(forest::Ensemble, features::Vector, classes)
+    votes = [apply_tree(tree, features) for tree in forest.trees]
+    # Also O(N^2). Would be O(N) if classes was a Label=>Int dictionary
+    return [count(x->x==cl, votes) / length(forest.trees) for cl in classes]
+end
+
+function apply_forest_prob(forest::Ensemble, features::Matrix, classes)
+    N = size(features,1)
+    predictions = Array(Float64, N, length(classes))
+    for i in 1:N
+        predictions[i, :] = apply_forest_prob(forest, squeeze(features[i,:],1),
+                                              classes)
+    end
+    return predictions
+end
+
+predict_proba(rf::RandomForestClassifier, X) = 
+    apply_forest_prob(rf.ensemble, X, rf.classes)
+
+predict(rf::RandomForestClassifier, X) = apply_forest(rf.ensemble, X)
+
+################################################################################
 # Random Forest Regression
 
 type RandomForestRegressor <: BaseRegressor
@@ -115,3 +160,4 @@ function fit!{T<:Real}(rf::RandomForestRegressor, X::Matrix, y::Vector{T})
 end
 
 predict(rf::RandomForestRegressor, X) = apply_forest(rf.ensemble, X)
+
