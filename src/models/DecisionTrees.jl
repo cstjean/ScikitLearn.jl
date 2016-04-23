@@ -93,3 +93,25 @@ end
 
 predict(dt::DecisionTreeRegressor, X) = apply_tree(dt.root, X)
 
+################################################################################
+# Random Forest Regression
+
+type RandomForestRegressor <: BaseRegressor
+    nsubfeatures::Int
+    ntrees::Int
+    partialsampling::Float64
+    ensemble::Ensemble
+    RandomForestRegressor(; nsubfeatures=0, ntrees=10, partialsampling=0.7) = 
+        new(nsubfeatures, ntrees, partialsampling)
+end
+
+declare_hyperparameters(DecisionTreeRegressor,
+                        [:nsubfeatures, :ntrees, :partialsampling])
+
+function fit!{T<:Real}(rf::RandomForestRegressor, X::Matrix, y::Vector{T})
+    rf.ensemble = build_forest(y, convert(Matrix{Float64}, X), rf.nsubfeatures,
+                               rf.ntrees, rf.partialsampling)
+    rf
+end
+
+predict(rf::RandomForestRegressor, X) = apply_forest(rf.ensemble, X)
