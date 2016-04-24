@@ -40,8 +40,22 @@ end
 ################################################################################
 # Classifier
 
+"""
+    DecisionTreeClassifier(; pruning_purity_threshold=nothing,
+                           nsubfeatures::Int=0)
+
+Decision tree classifier. See [DecisionTree.jl's documentation](https://github.com/bensadeghi/DecisionTree.jl)
+
+Hyperparameters:
+
+- `pruning_purity_threshold`: merge leaves having `>=thresh` combined purity (default: no pruning)
+- `nsubfeatures`: number of features to select at random (default: keep all)
+
+Implements `fit!`, `predict`, `predict_proba`, `get_classes`
+"""
 type DecisionTreeClassifier <: BaseClassifier
     pruning_purity_threshold::Nullable{Float64} # no pruning if null
+    # Does nsubfeatures make sense for a stand-alone decision tree?
     nsubfeatures::Int
     root::Node
     classes::Vector   # an arbitrary ordering of the labels 
@@ -92,6 +106,19 @@ predict_log_proba(dt::DecisionTreeClassifier, X) =
 ################################################################################
 # Regression
 
+"""
+    DecisionTreeRegressor(; pruning_purity_threshold=nothing,
+                          nsubfeatures::Int=0)
+
+Decision tree regression. See
+[DecisionTree.jl's documentation](https://github.com/bensadeghi/DecisionTree.jl)
+
+Hyperparameters:
+
+- `pruning_purity_threshold`: merge leaves having `>=thresh` combined purity (default: no pruning)
+- `nsubfeatures`: number of features to select at random (default: keep all)
+Implements `fit!`, `predict`, `predict_proba`, `get_classes`
+"""
 type DecisionTreeRegressor <: BaseRegressor
     pruning_purity_threshold::Nullable{Float64}
     nsubfeatures::Int
@@ -121,6 +148,21 @@ predict(dt::DecisionTreeRegressor, X) = apply_tree(dt.root, X)
 ################################################################################
 # Random Forest Classification
 
+"""
+    RandomForestClassifier(; nsubfeatures=0,
+                           ntrees=10,
+                           partialsampling=0.7)
+
+Random forest classification. See
+[DecisionTree.jl's documentation](https://github.com/bensadeghi/DecisionTree.jl)
+
+Hyperparameters:
+
+- `nsubfeatures`: number of features to select in each tree at random (default:
+  keep all)
+- `ntrees`: number of trees to train
+- `partialsampling`: fraction of samples to train each tree on
+"""
 type RandomForestClassifier <: BaseClassifier
     nsubfeatures::Int
     ntrees::Int
@@ -159,6 +201,21 @@ predict(rf::RandomForestClassifier, X) = apply_forest(rf.ensemble, X)
 ################################################################################
 # Random Forest Regression
 
+"""
+    RandomForestRegressor(; nsubfeatures=0,
+                          ntrees=10,
+                          partialsampling=0.7)
+
+Random forest regression. See
+[DecisionTree.jl's documentation](https://github.com/bensadeghi/DecisionTree.jl)
+
+Hyperparameters:
+
+- `nsubfeatures`: number of features to select in each tree at random (default:
+  keep all)
+- `ntrees`: number of trees to train
+- `partialsampling`: fraction of samples to train each tree on
+"""
 type RandomForestRegressor <: BaseRegressor
     nsubfeatures::Int
     ntrees::Int
@@ -182,6 +239,16 @@ predict(rf::RandomForestRegressor, X) = apply_forest(rf.ensemble, X)
 ################################################################################
 # AdaBoost Stump Classifier
 
+"""
+    AdaBoostStumpClassifier(; niterations=0)
+
+Adaboosted decision tree stumps. See
+[DecisionTree.jl's documentation](https://github.com/bensadeghi/DecisionTree.jl)
+
+Hyperparameters:
+
+- `niterations`: number of iterations of AdaBoost
+"""
 type AdaBoostStumpClassifier <: BaseClassifier
     niterations::Int
     ensemble::Ensemble
@@ -201,7 +268,8 @@ end
 predict(ada::AdaBoostStumpClassifier, X) =
     apply_adaboost_stumps(ada.ensemble, ada.coeffs, X)
 
-function apply_adaboost_stumps_prob(stumps::Ensemble, coeffs::Vector{Float64}, features::Vector, classes::Vector)
+function apply_adaboost_stumps_prob(stumps::Ensemble, coeffs::Vector{Float64},
+                                    features::Vector, classes::Vector)
     votes = [apply_tree(stump, features) for stump in stumps.trees]
     compute_probabilities(classes, votes, coeffs)
 end
