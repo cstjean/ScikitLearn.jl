@@ -17,7 +17,7 @@ Supporting more models
 ------
 There are three ways to make a library compatible with ScikitLearnBase.jl
 
-- Make a PR to that library (file an issue first to see if there's an interest)
+- Make a PR to that library
 - Create a new library that wraps the type and implements the interface
 - Make a PR to ScikitLearn.jl, and use @require to avoid adding the library as a dependency
 
@@ -28,13 +28,14 @@ Interesting libraries
 - Mocha.jl (or MXNet, Merlin). It's a good candidate for being a separate library (SkMocha.jl?). [sklearn-theano](https://github.com/sklearn-theano/sklearn-theano) is a good starting point.
 - LowRankModels.jl
 - RegERM.jl (looks maintained + has an SVM implementation)
-- DA.jl has an LDA and QDA implementation, and is currently maintained
+- DiscriminantAnalysis.jl has an LDA and QDA implementation, and is currently
+  maintained
 - Clustering.jl
 - GLM
 - MixedModels (also consider FixedEffectModels)
 - Mamba/Lora. Then we can have BayesianLinearRegression, BayesianHierarchicalModel, etc.
 - BNP.jl is a recently-built package, pretty solid. Hard to tell if it will be
-maintained, but looks great.
+maintained, but looks great. Not released though.
 - MultivariateStats.jl has some interesting algorithms. Eg. Lasso
 - Make some NLP utilities available? TextAnalysis
 - KernelDensity.jl
