@@ -1,5 +1,5 @@
-site_name:           scikit-learn.jl
-repo_url:            https://github.com/cstjean/scikit-learn.jl
+site_name:           ScikitLearn.jl
+repo_url:            https://github.com/cstjean/ScikitLearn.jl
 site_description:    Julia implementation of the scikit-learn API
 site_author:         Cedric St-Jean
 theme:               readthedocs
