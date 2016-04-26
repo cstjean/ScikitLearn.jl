@@ -7,7 +7,6 @@ Catching up with Python
 
 - Write tests (translate the relevant ones from scikit-learn)
 - Support parallel execution. I'm not sure if njobs=2 is the right way to do this, but I don't have any experience with the Julia primitives
-- Write more example notebooks
 - Review docstrings. They still contain Python code.
 - Support sparse matrices (grep for 'sparse' in /test). This might require work on PyCall.jl
 - Model serialization (possibly by implementing JLD serialization for PyObjects
@@ -36,7 +35,7 @@ Interesting libraries
 - Mamba/Lora. Then we can have BayesianLinearRegression, BayesianHierarchicalModel, etc.
 - BNP.jl is a recently-built package, pretty solid. Hard to tell if it will be
 maintained, but looks great. Not released though.
-- MultivariateStats.jl has some interesting algorithms. Eg. Lasso
+- MultivariateStats.jl has some interesting algorithms. Eg. Lasso, ICA
 - Make some NLP utilities available? TextAnalysis
 - KernelDensity.jl
 - OnlineAI.jl
