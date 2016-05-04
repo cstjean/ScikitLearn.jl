@@ -27,19 +27,26 @@ classifiers) or the predicted value (for regressors).
 #### predict_proba
 
 `predict_proba(model, X)` returns an `(N, C)` matrix containing the probability
-that the n_th sample belongs to the c_th class.
+that the n_th sample belongs to the c_th class. Call `get_classes(model)` to
+get the ordering of the classes.
 
 #### predict_log_proba
 
 `predict_log_proba(model, X)` is equivalent to `log(predict_proba(model, X))`
-but can be either more accurate (for small probabilities) or faster (avoiding the
-exponential).
+but can be either more accurate (for small probabilities) or faster (avoiding
+the exponential).
 
 #### transform
 
 For unsupervised learning models and for preprocessing, `transform(model, X)`
 applies the transformation from `model` to `X`, and returns a similar array
 (same number of rows, possibly different number of columns).
+
+#### get_components
+
+For unsupervised learning models, `get_components(model)` returns the matrix of
+the latent space, in (n_components, n_features) form. For matrix factorization
+methods, this corresponds to the principal components or latent vectors.
 
 #### fit_transform!
 
@@ -81,4 +88,4 @@ decision boundary.
   changed with `set_params!`
 - `is_classifier(model)` is true if `model` is a classifier.
 - `get_feature_names(model)` returns the name of the output features
-- `get_classes(preprocessor)` returns the label of each class
+- `get_classes(model)` returns the label of each class

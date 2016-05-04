@@ -39,6 +39,7 @@ is_pairwise(py_model::PyObject) =
     haskey(py_model, "_pairwise") ? py_model[:_pairwise] : false
 
 get_classes(py_estimator::PyObject) = py_estimator[:classes_]
+get_components(py_estimator::PyObject) = py_estimator[:components_]
 ################################################################################
 
 # Julia => Python
