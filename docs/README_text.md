@@ -4,8 +4,8 @@
 
 ScikitLearn.jl implements the popular
 [scikit-learn](http://scikit-learn.org/stable/) interface and algorithms in
-Julia. It provides the same functionality, while supporting both models
-defined in Julia and those of the [scikit-learn
+Julia. It provides the same functionality, and supports both models
+from the Julia ecosystem and those of the [scikit-learn
 library](http://scikit-learn.org/stable/modules/classes.html) (via PyCall.jl).
 
 **Disclaimer**: ScikitLearn.jl borrows code and documentation from
