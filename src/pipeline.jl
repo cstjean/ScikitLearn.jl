@@ -21,21 +21,21 @@ export Pipeline, named_steps, make_pipeline
 
 """Pipeline of transforms with a final estimator.
 
-    Sequentially apply a list of transforms and a final estimator.
-    Intermediate steps of the pipeline must be 'transforms', that is, they
-    must implement fit! and transform methods.
-    The final estimator only needs to implement fit!.
-    The purpose of the pipeline is to assemble several steps that can be
-    cross-validated together while setting different parameters.
+Sequentially apply a list of transforms and a final estimator.
+Intermediate steps of the pipeline must be 'transforms', that is, they
+must implement fit! and transform methods.
+The final estimator only needs to implement fit!.
+The purpose of the pipeline is to assemble several steps that can be
+cross-validated together while setting different parameters.
 
-    Read more in the :ref:`User Guide <pipeline>`.
+Read more in the :ref:`User Guide <pipeline>`.
 
-    Parameters
-    ----------
-    steps : vector
-        List of (name, transform) tuples (implementing fit/transform) that are
-        chained, in the order in which they are chained, with the last object
-        an estimator. """
+Parameters
+----------
+steps : vector
+    List of (name, transform) tuples (implementing fit/transform) that are
+    chained, in the order in which they are chained, with the last object
+    an estimator. """
 type Pipeline <: CompositeEstimator
     steps::Vector{Tuple{Any, Any}} # of tuples(string, model)
     function Pipeline(steps)
