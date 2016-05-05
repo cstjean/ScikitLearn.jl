@@ -1,6 +1,12 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
+# Python code authors: Alexandre Gramfort <alexandre.gramfort@inria.fr>,
+#                      Gael Varoquaux <gael.varoquaux@normalesup.org>
+#                      Andreas Mueller <amueller@ais.uni-bonn.de>
+#                      Olivier Grisel <olivier.grisel@ensta.org>
+# License: BSD 3 clause
+
 
 ## module GridSearch
 
@@ -13,7 +19,7 @@
 
 abstract BaseSearchCV
 
-@pyimport2 sklearn.grid_search: (ParameterGrid, _check_param_grid, Sized,
+@pyimport2 sklearn.grid_search: (_check_param_grid, Sized,
                                  ParameterSampler)
 
 immutable CVScoreTuple
@@ -21,6 +27,126 @@ immutable CVScoreTuple
     mean_validation_score
     cv_validation_scores
 end
+
+"""Grid of parameters with a discrete number of values for each.
+
+Can be used to iterate over parameter value combinations with the
+Python built-in function iter.
+
+Read more in the :ref:`User Guide <grid_search>`.
+
+Parameters
+----------
+param_grid : dict of string to sequence, or sequence of such
+    The parameter grid to explore, as a dictionary mapping estimator
+    parameters to sequences of allowed values.
+
+    An empty dict signifies default parameters.
+
+    A sequence of dicts signifies a sequence of grids to search, and is
+    useful to avoid exploring parameter combinations that make no sense
+    or have no effect. See the examples below.
+
+Examples
+--------
+>>> from sklearn.grid_search import ParameterGrid
+>>> param_grid = {'a': [1, 2], 'b': [True, False]}
+>>> list(ParameterGrid(param_grid)) == (
+...    [{'a': 1, 'b': True}, {'a': 1, 'b': False},
+...     {'a': 2, 'b': True}, {'a': 2, 'b': False}])
+True
+
+>>> grid = [{'kernel': ['linear']}, {'kernel': ['rbf'], 'gamma': [1, 10]}]
+>>> list(ParameterGrid(grid)) == [{'kernel': 'linear'},
+...                               {'kernel': 'rbf', 'gamma': 1},
+...                               {'kernel': 'rbf', 'gamma': 10}]
+True
+>>> ParameterGrid(grid)[1] == {'kernel': 'rbf', 'gamma': 1}
+True
+
+See also
+--------
+:class:`GridSearchCV`:
+    uses ``ParameterGrid`` to perform a full parallelized parameter search.
+"""
+immutable ParameterGrid
+    param_grid::Vector
+end
+# wrap dictionary in a singleton list to support either dict or list of dicts
+ParameterGrid(param_grid::Dict) = ParameterGrid([param_grid])
+
+    ## def __iter__(self):
+    ##     """Iterate over the points in the grid.
+
+    ##     Returns
+    ##     -------
+    ##     params : iterator over dict of string to any
+    ##         Yields dictionaries mapping each estimator parameter to one of its
+    ##         allowed values.
+    ##     """
+    ##     for p in self.param_grid:
+    ##         # Always sort the keys of a dictionary, for reproducibility
+    ##         items = sorted(p.items())
+    ##         if not items:
+    ##             yield {}
+    ##         else:
+    ##             keys, values = zip(*items)
+    ##             for v in product(*values):
+    ##                 params = dict(zip(keys, v))
+    ##                 yield params
+
+"""Number of points on the grid."""
+function Base.length(self::ParameterGrid)
+    return sum([length(p)>0 ? product([length(v) for v in p.values()]) : 1
+                for p in self.param_grid])
+end
+
+"""Get the parameters that would be ``ind``th in iteration
+
+Parameters
+----------
+ind : int
+    The iteration index
+
+Returns
+-------
+params : dict of string to any
+    Equal to list(self)[ind]
+"""
+function Base.getindex(self::ParameterGrid, ind)
+    # This is used to make discrete sampling without replacement memory
+    # efficient.
+    for sub_grid in self.param_grid
+        # XXX: could memoize information used here
+        if length(sub_grid) == 0
+            if ind == 0
+                return Dict()
+            else
+                ind -= 1
+                continue
+            end
+
+            # Reverse so most frequent cycling parameter comes first
+            keys, values_lists = zip(sort(sub_grid, rev=true)...)
+            sizes = [length(v_list) for v_list in values_lists]
+            total = product(sizes)
+
+            if ind >= total
+                # Try the next grid
+                ind -= total
+            else
+                out = Dict()
+                for (key, v_list, n) in zip(keys, values_lists, sizes)
+                    ind, offset = div(ind, n), mod(ind, n)
+                    out[key] = v_list[offset]
+                end
+                return out
+            end
+        end
+        throw(ArgumentError("ParameterGrid index out of range"))
+    end
+end
+
 
 
 """Actual fitting,  performing the search over parameters."""
@@ -281,7 +407,7 @@ See Also
     best_estimator_=nothing
 end
 function GridSearchCV(estimator, param_grid; kwargs...)
-    _check_param_grid(param_grid)
+    #_check_param_grid(param_grid)
     GridSearchCV(estimator=estimator, param_grid=param_grid; kwargs...)
 end
 
