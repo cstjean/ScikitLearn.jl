@@ -14,15 +14,15 @@ include("sk_utils.jl")
 
 importall ScikitLearnBase
 
-@pyimport2 sklearn
-@pyimport sklearn.base as sk_base
+# These definitions are potentially costly. Get rid of the pywrap?
+sklearn() = pywrap(pyimport("sklearn"))
+sk_base() = pywrap(pyimport("sklearn.base"))
 
 # This should be in ScikitLearn.jl, maybe?
 translated_modules =
     Dict(:cross_validation => :CrossValidation,
          :pipeline => :Pipelines,
-         :grid_search => :GridSearch
-         )
+         :grid_search => :GridSearch)
 
 for f in ScikitLearnBase.api
     # Export all the API. Not sure if we should do that...
@@ -31,8 +31,8 @@ end
 
 
 # Note that I don't know the rationale for the `safe` argument - cstjean Feb2016
-clone(py_model::PyObject) = sklearn.clone(py_model, safe=true)
-is_classifier(py_model::PyObject) = sk_base.is_classifier(py_model)
+clone(py_model::PyObject) = sklearn().clone(py_model, safe=true)
+is_classifier(py_model::PyObject) = sk_base().is_classifier(py_model)
 
 is_pairwise(estimator) = false # global default - override for specific models
 is_pairwise(py_model::PyObject) =
