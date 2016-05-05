@@ -59,13 +59,12 @@ api_map = Dict(:decision_function => :decision_function,
                :transform => :transform,
                :set_params! => :set_params)
 
-@pyimport numpy
-
 # PyCall does not always convert everything back into a Julia value,
 # unfortunately, so we have some post-evaluation logic. These should be fixed
 # in PyCall.jl
 tweak_rval(x) = x
 function tweak_rval(x::PyObject)
+    @pyimport numpy
     if pyisinstance(x, numpy.ndarray) && length(x[:shape]) == 1
         return collect(x)
     else
