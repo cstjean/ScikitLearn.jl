@@ -33,7 +33,7 @@ macro reexportsk(identifiers...)
 end
 
 module CrossValidation
-using ..@reexportsk, ..@sk_import
+using ..@reexportsk
 using ScikitLearn.Skcore: @pyimport2
 @reexportsk(cross_val_score, cross_val_predict)
 @pyimport2 sklearn.cross_validation: train_test_split

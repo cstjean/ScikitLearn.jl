@@ -6,10 +6,6 @@ include("Ndgrid.jl")
 
 export @pyimport2
 
-@pyimport types as py_types
-ispymodule(obj::PyObject) = pyisinstance(mm, py_types.ModuleType)
-
-
 # TODO: this should be in PyCall.jl
 """
     @pyimport2 sklearn: (decomposition, clone)
