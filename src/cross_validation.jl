@@ -2,10 +2,6 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 
-@pyimport2 sklearn.cross_validation: (# TODO: translate typeoftarget
-                                      type_of_target)
-@pyimport sklearn.cross_validation as sk_cv
-
 ################################################################################
 # Defining the cross-validation iterators (eg. KFold)
 
@@ -25,6 +21,7 @@ cv_iterator_syms = [:KFold, :StratifiedKFold, :LabelKFold, :LeaveOneOut,
 # things), but we could do better.
 for cv_iter in cv_iterator_syms
     @eval function $cv_iter(args...; kwargs...)
+        @pyimport sklearn.cross_validation as sk_cv
         fix_cv_iter_indices(sk_cv.$cv_iter(args...; kwargs...))
     end
 end
@@ -234,7 +231,6 @@ function cross_val_predict(estimator, X, y=nothing; cv=nothing, n_jobs=1,
 
     check_consistent_length(X, y)
 
-    #cv = sk_cv.KFold(length(y), cv)
     cv = check_cv(cv, X, y, classifier=is_classifier(estimator))
     # We clone the estimator to make sure that all the folds are
     # independent

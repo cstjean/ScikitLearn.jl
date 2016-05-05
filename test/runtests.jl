@@ -12,4 +12,6 @@ all_test_pipeline()
 include("test_crossvalidation.jl")
 all_test_crossvalidation()
 
+include("test_utils.jl")
+
 nothing

@@ -4,7 +4,7 @@ using PyCall
 # We don't strictly need this, but it's convenient for writing examples
 include("Ndgrid.jl")
 
-export @pyimport2
+export @pyimport2, type_of_target
 
 # TODO: this should be in PyCall.jl
 """
@@ -81,3 +81,123 @@ end
 kwargify(assoc::Associative) =
     Dict([Symbol(k)=>v for (k, v) in assoc])
 
+""" Check if ``y`` is in a multilabel format.
+
+Parameters
+----------
+y : numpy array of shape [n_samples]
+    Target values.
+
+Returns
+-------
+out : bool,
+    Return ``True``, if ``y`` is in a multilabel format, else ```False``.
+
+Examples
+--------
+>>> import numpy as np
+>>> from sklearn.utils.multiclass import is_multilabel
+>>> is_multilabel([0, 1, 0, 1])
+False
+>>> is_multilabel([[1], [0, 2], []])
+False
+>>> is_multilabel(np.array([[1, 0], [0, 0]]))
+True
+>>> is_multilabel(np.array([[1], [0], [0]]))
+False
+>>> is_multilabel(np.array([[1, 0, 0]]))
+True
+"""
+function is_multilabel{T}(y::AbstractArray{T})
+    if !(ndims(y) == 2 && size(y, 2) > 1)
+        return false
+    end
+
+    if issparse(y)
+        TODO()
+        ## if isinstance(y, (dok_matrix, lil_matrix)):
+        ##     y = y.tocsr()
+        ## return (len(y.data) == 0 or np.unique(y.data).size == 1 and
+        ##         (y.dtype.kind in 'biu' or  # bool, int, uint
+        ##          _is_integral_float(np.unique(y.data))))
+    else
+        labels = unique(y)
+
+        return length(labels) < 3 && (T <: Union{Bool, Integer})
+    end
+end
+
+
+"""Determine the type of data indicated by target `y`
+
+Parameters
+----------
+y : array-like
+
+Returns
+-------
+target_type : string
+    One of:
+    * 'continuous': `y` is an array-like of floats that are not all
+      integers, and is 1d or a column vector.
+    * 'continuous-multioutput': `y` is a 2d array of floats that are
+      not all integers, and both dimensions are of size > 1.
+    * 'binary': `y` contains <= 2 discrete values and is 1d or a column
+      vector.
+    * 'multiclass': `y` contains more than two discrete values, is not a
+      sequence of sequences, and is 1d or a column vector.
+    * 'multiclass-multioutput': `y` is a 2d array that contains more
+      than two discrete values, is not a sequence of sequences, and both
+      dimensions are of size > 1.
+    * 'multilabel-indicator': `y` is a label indicator matrix, an array
+      of two dimensions with at least two columns, and at most 2 unique
+      values.
+    * 'unknown': `y` is array-like but none of the above, such as a 3d
+      array, sequence of sequences, or an array of non-sequence objects.
+
+Examples
+--------
+type_of_target([0.1, 0.6]) == "continuous"
+type_of_target([1, -1, -1, 1]) == "binary"
+type_of_target(["a", "b", "a"]) == "binary"
+type_of_target([1.0, 2.0]) == "continuous"
+type_of_target([1, 0, 2]) == "multiclass"
+type_of_target([1.0, 0.0, 3.0]) == "continuous"
+type_of_target(["a", "b", "c"]) == "multiclass"
+type_of_target([1 2; 3 1]) == "multiclass-multioutput"
+type_of_target([1.5 2.0; 3.0 1.6]) == "continuous-multioutput"
+type_of_target([0 1; 1 1]) == "multilabel-indicator"
+"""
+function type_of_target{T}(y::AbstractArray{T})
+    # Julia note: various compromises were made in translating this function
+    if is_multilabel(y)
+        return "multilabel-indicator"
+    end
+
+    if ndims(y) > 2
+        return "unknown"
+    end
+
+    if ndims(y) == 2 && size(y, 2) == 0
+        return "unknown"
+    end
+
+    if ndims(y) == 2 && size(y, 2) > 1
+        suffix = "-multioutput"  # [[1, 2], [1, 2]]
+    else
+        suffix = ""  # [1, 2, 3] or [[1], [2], [3]]
+    end
+
+    # Julia note: Python used to check whether all elements were "round floats".
+    # Julia is more strongly typed than Python, so I don't do that.
+    if T <: AbstractFloat
+        # [.1, .2, 3] or [[.1, .2, 3]] or [[1., .2]]
+        return "continuous" * suffix
+    end
+
+    if (length(unique(y)) > 2) || (ndims(y) >= 2 && size(y, 2) > 1)
+        return "multiclass" * suffix  # [1, 2, 3] or [[1., 2., 3]] or [[1, 2]]
+    else
+        return "binary"  # [1, 2] or [["a"], ["b"]]
+    end
+end    
