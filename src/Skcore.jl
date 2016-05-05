@@ -15,8 +15,8 @@ include("sk_utils.jl")
 importall ScikitLearnBase
 
 # These definitions are potentially costly. Get rid of the pywrap?
-sklearn() = pywrap(pyimport("sklearn"))
-sk_base() = pywrap(pyimport("sklearn.base"))
+sklearn() = pyimport("sklearn")
+sk_base() = pyimport("sklearn.base")
 
 # This should be in ScikitLearn.jl, maybe?
 translated_modules =
@@ -31,8 +31,8 @@ end
 
 
 # Note that I don't know the rationale for the `safe` argument - cstjean Feb2016
-clone(py_model::PyObject) = sklearn().clone(py_model, safe=true)
-is_classifier(py_model::PyObject) = sk_base().is_classifier(py_model)
+clone(py_model::PyObject) = sklearn()[:clone](py_model, safe=true)
+is_classifier(py_model::PyObject) = sk_base()[:is_classifier](py_model)
 
 is_pairwise(estimator) = false # global default - override for specific models
 is_pairwise(py_model::PyObject) =
@@ -64,8 +64,8 @@ api_map = Dict(:decision_function => :decision_function,
 # in PyCall.jl
 tweak_rval(x) = x
 function tweak_rval(x::PyObject)
-    @pyimport numpy
-    if pyisinstance(x, numpy.ndarray) && length(x[:shape]) == 1
+    numpy = pyimport("numpy")
+    if pyisinstance(x, numpy[:ndarray]) && length(x[:shape]) == 1
         return collect(x)
     else
         x

@@ -66,37 +66,19 @@ See also
 :class:`GridSearchCV`:
     uses ``ParameterGrid`` to perform a full parallelized parameter search.
 """
-immutable ParameterGrid
+immutable ParameterGrid <: AbstractVector{Any}
     param_grid::Vector
 end
 # wrap dictionary in a singleton list to support either dict or list of dicts
 ParameterGrid(param_grid::Dict) = ParameterGrid([param_grid])
 
-    ## def __iter__(self):
-    ##     """Iterate over the points in the grid.
-
-    ##     Returns
-    ##     -------
-    ##     params : iterator over dict of string to any
-    ##         Yields dictionaries mapping each estimator parameter to one of its
-    ##         allowed values.
-    ##     """
-    ##     for p in self.param_grid:
-    ##         # Always sort the keys of a dictionary, for reproducibility
-    ##         items = sorted(p.items())
-    ##         if not items:
-    ##             yield {}
-    ##         else:
-    ##             keys, values = zip(*items)
-    ##             for v in product(*values):
-    ##                 params = dict(zip(keys, v))
-    ##                 yield params
-
 """Number of points on the grid."""
 function Base.length(self::ParameterGrid)
-    return sum([length(p)>0 ? product([length(v) for v in p.values()]) : 1
+    return sum([length(p)>0 ? prod([length(v) for v in values(p)]) : 1
                 for p in self.param_grid])
 end
+
+Base.size(self::ParameterGrid) = (Base.length(self), )
 
 """Get the parameters that would be ``ind``th in iteration
 
@@ -110,9 +92,13 @@ Returns
 params : dict of string to any
     Equal to list(self)[ind]
 """
-function Base.getindex(self::ParameterGrid, ind)
+function Base.getindex(self::ParameterGrid, ind::Int)
+    # ***JULIA NOTE***: This is how we iterate over all parameters (via
+    #                   AbstractVector). It's pretty hideously inefficient,
+    #                   but I doubt it matters at all.
     # This is used to make discrete sampling without replacement memory
     # efficient.
+    ind -= 1   # Julia's indices are 1-based, so we -1 here and +1 the offset
     for sub_grid in self.param_grid
         # XXX: could memoize information used here
         if length(sub_grid) == 0
@@ -122,26 +108,27 @@ function Base.getindex(self::ParameterGrid, ind)
                 ind -= 1
                 continue
             end
-
-            # Reverse so most frequent cycling parameter comes first
-            keys, values_lists = zip(sort(sub_grid, rev=true)...)
-            sizes = [length(v_list) for v_list in values_lists]
-            total = product(sizes)
-
-            if ind >= total
-                # Try the next grid
-                ind -= total
-            else
-                out = Dict()
-                for (key, v_list, n) in zip(keys, values_lists, sizes)
-                    ind, offset = div(ind, n), mod(ind, n)
-                    out[key] = v_list[offset]
-                end
-                return out
-            end
         end
-        throw(ArgumentError("ParameterGrid index out of range"))
+        # Reverse so most frequent cycling parameter comes first
+        keys, values_lists = zip(sort(collect(sub_grid), rev=true,
+                                      # Julia arrays are not comparable
+                                      by=arr->tuple(arr...))...)
+        sizes = [length(v_list) for v_list in values_lists]
+        total = prod(sizes)
+
+        if ind >= total
+            # Try the next grid
+            ind -= total
+        else
+            out = Dict()
+            for (key, v_list, n) in zip(keys, values_lists, sizes)
+                ind, offset = div(ind, n), mod(ind, n)
+                out[key] = v_list[offset+1]
+            end
+            return out
+        end
     end
+    throw(ArgumentError("ParameterGrid index out of range"))
 end
 
 _check_param_grid(param_grid::Dict) = _check_param_grid([param_grid])
@@ -227,39 +214,35 @@ immutable ParameterSampler
     n_iter::Int
     random_state::MersenneTwister
 end
+ParameterSampler(param_distributions, n_iter::Int;
+                 random_state=MersenneTwister(42)) =
+    ParameterSampler(param_distributions, n_iter, random_state)
 
-    ## def __iter__(self):
-    ##     # check if all distributions are given as lists
-    ##     # in this case we want to sample without replacement
-    ##     all_lists = np.all([not hasattr(v, "rvs")
-    ##                         for v in self.param_distributions.values()])
-    ##     rnd = check_random_state(self.random_state)
+function Base.start(ps::ParameterSampler)
+    # Julia note: sklearn has some code to sample without replacement when
+    # all distributions are specified as lists. TODO
+    return 1
+end
 
-    ##     if all_lists:
-    ##         # look up sampled parameter settings in parameter grid
-    ##         param_grid = ParameterGrid(self.param_distributions)
-    ##         grid_size = len(param_grid)
+function Base.next(ps::ParameterSampler, state::Int)
+    # state isn't used - we're sampling at random
+    # Always sort the keys of a dictionary, for reproducibility
+    items = sort(collect(ps.param_distributions), by=x->x[1])
+    params = Dict()
+    for (k, v) in items
+        # Julia note: That's how we detect numpy random distributions (gaussian,
+        # ...) TODO: We should support Distributions.jl!
+        if isa(v, PyObject)
+            params[k] = v[:rvs]()
+        else
+            @assert isa(v, AbstractVector)
+            params[k] = rand(ps.random_state, v)
+        end
+    end
+    return params, state+1
+end
 
-    ##         if grid_size < self.n_iter:
-    ##             raise ValueError(
-    ##                 "The total space of parameters %d is smaller "
-    ##                 "than n_iter=%d." % (grid_size, self.n_iter)
-    ##                 + " For exhaustive searches, use GridSearchCV.")
-    ##         for i in sample_without_replacement(grid_size, self.n_iter,
-    ##                                             random_state=rnd):
-    ##             yield param_grid[i]
-
-    ##     else:
-    ##         # Always sort the keys of a dictionary, for reproducibility
-    ##         items = sorted(self.param_distributions.items())
-    ##         for _ in six.moves.range(self.n_iter):
-    ##             params = dict()
-    ##             for k, v in items:
-    ##                 if hasattr(v, "rvs"):
-    ##                     params[k] = v.rvs()
-    ##                 else:
-    ##                     params[k] = v[rnd.randint(len(v))]
-    ##             yield params
+Base.done(ps::ParameterSampler, state::Int) = state > ps.n_iter
 
 """Number of points that will be sampled."""
 Base.length(self::ParameterSampler) = self.n_iter
@@ -689,7 +672,7 @@ See Also
     refit=true
     cv=nothing
     verbose=0
-    random_state=nothing
+    random_state::AbstractRNG=MersenneTwister(42)
     error_score="raise"
 
     scorer_=nothing

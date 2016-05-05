@@ -21,8 +21,8 @@ cv_iterator_syms = [:KFold, :StratifiedKFold, :LabelKFold, :LeaveOneOut,
 # things), but we could do better.
 for cv_iter in cv_iterator_syms
     @eval function $cv_iter(args...; kwargs...)
-        @pyimport sklearn.cross_validation as sk_cv
-        fix_cv_iter_indices(sk_cv.$cv_iter(args...; kwargs...))
+        sk_cv = pyimport("sklearn.cross_validation")
+        fix_cv_iter_indices(sk_cv[$(Expr(:quote, cv_iter))](args...; kwargs...))
     end
 end
 
@@ -508,7 +508,8 @@ end
 
 
 function train_test_split(args...; kwargs...)
-    @pyimport sklearn.cross_validation as cv
+    cv = pyimport("sklearn.cross_validation")
     # This is totally cheating - TODO: rewrite in Julia
-    cv.train_test_split(args...; kwargs...)
+    # It's used in Classifier_Comparison
+    cv[:train_test_split](args...; kwargs...)
 end
