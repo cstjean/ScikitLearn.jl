@@ -122,17 +122,6 @@ end
 
 ################################################################################
 
-imported_python_modules =
-    Dict(:LinearModels => :linear_model,
-         :Datasets => :datasets,
-         :Preprocessing => :preprocessing)
-
-for (jl_module, py_module) in imported_python_modules
-    @eval @pyimport sklearn.$py_module as $jl_module
-end
-
-
-
 include("pipeline.jl")
 include("scorer.jl")
 include("cross_validation.jl")
