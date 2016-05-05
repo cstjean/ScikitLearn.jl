@@ -35,9 +35,7 @@ end
 module CrossValidation
 using ..@reexportsk
 using ScikitLearn.Skcore: @pyimport2
-@reexportsk(cross_val_score, cross_val_predict)
-@pyimport2 sklearn.cross_validation: train_test_split
-export train_test_split
+@reexportsk(cross_val_score, cross_val_predict, train_test_split)
 
 using ..Skcore: cv_iterator_syms
 

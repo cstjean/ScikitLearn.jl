@@ -505,3 +505,10 @@ function _score(estimator, X_test, y_test, scorer)
     end
     return score
 end
+
+
+function train_test_split(args...; kwargs...)
+    @pyimport sklearn.cross_validation as cv
+    # This is totally cheating - TODO: rewrite in Julia
+    cv.train_test_split(args...; kwargs...)
+end
