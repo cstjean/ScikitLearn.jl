@@ -19,9 +19,6 @@
 
 abstract BaseSearchCV
 
-@pyimport2 sklearn.grid_search: (_check_param_grid, Sized,
-                                 ParameterSampler)
-
 immutable CVScoreTuple
     parameters
     mean_validation_score
@@ -147,7 +144,125 @@ function Base.getindex(self::ParameterGrid, ind)
     end
 end
 
+_check_param_grid(param_grid::Dict) = _check_param_grid([param_grid])
+function _check_param_grid(param_grid::Vector)
+    for p in param_grid
+        for v in values(p)
+            if isa(v, AbstractArray) && ndims(v) > 1
+                throw(ArgumentError("Parameter array should be one-dimensional."))
+            end
 
+            if !isa(v, AbstractVector)
+                throw(ArgumentError("Parameter values should be a vector."))
+            end
+
+            if isempty(v)
+                throw(ArgumentError("Parameter values should be a non-empty " *
+                                    "vector."))
+            end
+        end
+    end
+end
+
+################################################################################
+# ParameterSampler
+
+"""Generator on parameters sampled from given distributions.
+
+Non-deterministic iterable over random candidate combinations for hyper-
+parameter search. If all parameters are presented as a list,
+sampling without replacement is performed. If at least one parameter
+is given as a distribution, sampling with replacement is used.
+It is highly recommended to use continuous distributions for continuous
+parameters.
+
+Note that as of SciPy 0.12, the ``scipy.stats.distributions`` do not accept
+a custom RNG instance and always use the singleton RNG from
+``numpy.random``. Hence setting ``random_state`` will not guarantee a
+deterministic iteration whenever ``scipy.stats`` distributions are used to
+define the parameter search space.
+
+Read more in the :ref:`User Guide <grid_search>`.
+
+Parameters
+----------
+param_distributions : dict
+    Dictionary where the keys are parameters and values
+    are distributions from which a parameter is to be sampled.
+    Distributions either have to provide a ``rvs`` function
+    to sample from them, or can be given as a list of values,
+    where a uniform distribution is assumed.
+
+n_iter : integer
+    Number of parameter settings that are produced.
+
+random_state : int or RandomState
+    Pseudo random number generator state used for random uniform sampling
+    from lists of possible values instead of scipy.stats distributions.
+
+Returns
+-------
+params : dict of string to any
+    **Yields** dictionaries mapping each estimator parameter to
+    as sampled value.
+
+Examples
+--------
+>>> from sklearn.grid_search import ParameterSampler
+>>> from scipy.stats.distributions import expon
+>>> import numpy as np
+>>> np.random.seed(0)
+>>> param_grid = {'a':[1, 2], 'b': expon()}
+>>> param_list = list(ParameterSampler(param_grid, n_iter=4))
+>>> rounded_list = [dict((k, round(v, 6)) for (k, v) in d.items())
+...                 for d in param_list]
+>>> rounded_list == [{'b': 0.89856, 'a': 1},
+...                  {'b': 0.923223, 'a': 1},
+...                  {'b': 1.878964, 'a': 2},
+...                  {'b': 1.038159, 'a': 2}]
+True
+"""
+immutable ParameterSampler
+    param_distributions
+    n_iter::Int
+    random_state::MersenneTwister
+end
+
+    ## def __iter__(self):
+    ##     # check if all distributions are given as lists
+    ##     # in this case we want to sample without replacement
+    ##     all_lists = np.all([not hasattr(v, "rvs")
+    ##                         for v in self.param_distributions.values()])
+    ##     rnd = check_random_state(self.random_state)
+
+    ##     if all_lists:
+    ##         # look up sampled parameter settings in parameter grid
+    ##         param_grid = ParameterGrid(self.param_distributions)
+    ##         grid_size = len(param_grid)
+
+    ##         if grid_size < self.n_iter:
+    ##             raise ValueError(
+    ##                 "The total space of parameters %d is smaller "
+    ##                 "than n_iter=%d." % (grid_size, self.n_iter)
+    ##                 + " For exhaustive searches, use GridSearchCV.")
+    ##         for i in sample_without_replacement(grid_size, self.n_iter,
+    ##                                             random_state=rnd):
+    ##             yield param_grid[i]
+
+    ##     else:
+    ##         # Always sort the keys of a dictionary, for reproducibility
+    ##         items = sorted(self.param_distributions.items())
+    ##         for _ in six.moves.range(self.n_iter):
+    ##             params = dict()
+    ##             for k, v in items:
+    ##                 if hasattr(v, "rvs"):
+    ##                     params[k] = v.rvs()
+    ##                 else:
+    ##                     params[k] = v[rnd.randint(len(v))]
+    ##             yield params
+
+"""Number of points that will be sampled."""
+Base.length(self::ParameterSampler) = self.n_iter
 
 """Actual fitting,  performing the search over parameters."""
 function _fit!(self::BaseSearchCV, X::AbstractArray, y,
@@ -167,10 +282,8 @@ function _fit!(self::BaseSearchCV, X::AbstractArray, y,
                   classifier=is_classifier(estimator))
 
     if self.verbose > 0
-        if pyisinstance(parameter_iterable, Sized)
-            n_candidates = length(parameter_iterable)
-            println("Fitting $(length(cv)) folds for each of $n_candidates candidates, totalling $(n_candidates * length(cv)) fits")
-        end
+        n_candidates = length(parameter_iterable)
+        println("Fitting $(length(cv)) folds for each of $n_candidates candidates, totalling $(n_candidates * length(cv)) fits")
     end
 
 
