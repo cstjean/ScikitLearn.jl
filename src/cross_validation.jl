@@ -82,26 +82,24 @@ random_state : None, int or RandomState
 
 Examples
 --------
->>> from sklearn.cross_validation import KFold
->>> X = np.array([[1, 2], [3, 4], [1, 2], [3, 4]])
->>> y = np.array([1, 2, 3, 4])
+>>> using ScikitLearn.CrossValidation: KFold
+>>> X = [1 2; 3 4; 1 2; 3 4])
+>>> y = [1, 2, 3, 4]
 >>> kf = KFold(4, n_folds=2)
->>> len(kf)
+>>> length(kf)
 2
->>> print(kf)  # doctest: +NORMALIZE_WHITESPACE
-sklearn.cross_validation.KFold(n=4, n_folds=2, shuffle=False,
-                               random_state=None)
->>> for train_index, test_index in kf:
-...    print("TRAIN:", train_index, "TEST:", test_index)
+>>> for (train_index, test_index) in kf
+...    println("TRAIN:", train_index, "TEST:", test_index)
 ...    X_train, X_test = X[train_index], X[test_index]
 ...    y_train, y_test = y[train_index], y[test_index]
+... end
 TRAIN: [2 3] TEST: [0 1]
 TRAIN: [0 1] TEST: [2 3]
 
 Notes
 -----
-The first n % n_folds folds have size n // n_folds + 1, other folds have
-size n // n_folds.
+The first mod(n, n_folds) folds have size div(n, n_folds) + 1, other folds have
+size div(n, n_folds)
 
 See also
 --------

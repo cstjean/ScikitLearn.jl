@@ -15,7 +15,7 @@ We support all the [scikit-learn cross-validation iterators](http://scikit-learn
 StratifiedKFold, etc.) For example:
 
 ```julia
-> ScikitLearn.CrossValidation.KFold(10, 3)
+> ScikitLearn.CrossValidation.KFold(10, n_folds=3)
 
 3-element Array{Tuple{Array{Int64,1},Array{Int64,1}},1}:
  ([5,6,7,8,9,10],[1,2,3,4])
@@ -24,6 +24,9 @@ StratifiedKFold, etc.) For example:
 ```
 
 These iterators can be passed to `cross_val_score`'s `cv` argument.
+
+Note: the most common iterators have been translated to Julia. The others still
+require scikit-learn (python) to be installed.
 
 ### Examples
 
