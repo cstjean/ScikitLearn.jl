@@ -14,9 +14,23 @@ include("sk_utils.jl")
 
 importall ScikitLearnBase
 
+""" Like `pyimport` but gives a more informative error message """
+function importpy(name::AbstractString)
+    try
+        return pyimport(name)
+    catch e
+        if isa(e, PyCall.PyError)
+            error("This ScikitLearn.jl functionality ($name) requires installing the Python scikit-learn library. See instructions on https://github.com/cstjean/ScikitLearn.jl")
+        else
+            rethrow()
+        end
+    end
+end
+        
+
 # These definitions are potentially costly. Get rid of the pywrap?
-sklearn() = pyimport("sklearn")
-sk_base() = pyimport("sklearn.base")
+sklearn() = importpy("sklearn")
+sk_base() = importpy("sklearn.base")
 
 # This should be in ScikitLearn.jl, maybe?
 translated_modules =
@@ -64,7 +78,7 @@ api_map = Dict(:decision_function => :decision_function,
 # in PyCall.jl
 tweak_rval(x) = x
 function tweak_rval(x::PyObject)
-    numpy = pyimport("numpy")
+    numpy = importpy("numpy")
     if pyisinstance(x, numpy[:ndarray]) && length(x[:shape]) == 1
         return collect(x)
     else

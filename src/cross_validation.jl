@@ -38,7 +38,7 @@ julia_iterators = [:KFold]
 # things), but we could do better.
 for cv_iter in setdiff(cv_iterator_syms, julia_iterators)
     @eval function $cv_iter(args...; kwargs...)
-        sk_cv = pyimport("sklearn.cross_validation")
+        sk_cv = importpy("sklearn.cross_validation")
         fix_cv_iter_indices(sk_cv[$(Expr(:quote, cv_iter))](args...; kwargs...))
     end
 end
@@ -167,13 +167,13 @@ function check_cv(cv, X=nothing, y=nothing; classifier=false)
     if isa(cv, Number)
         if classifier
             if type_of_target(y) in ["binary", "multiclass"]
-                cv = StratifiedKFold(y, cv)
+                cv = StratifiedKFold(y; n_folds=cv)
             else
-                cv = KFold(size(y, 1), cv)
+                cv = KFold(size(y, 1); n_folds=cv)
             end
         else
             n_samples = size(X, 1)
-            cv = KFold(n_samples, cv)
+            cv = KFold(n_samples; n_folds=cv)
         end
     end
     return cv
@@ -613,7 +613,7 @@ end
 
 
 function train_test_split(args...; kwargs...)
-    cv = pyimport("sklearn.cross_validation")
+    cv = importpy("sklearn.cross_validation")
     # This is totally cheating - TODO: rewrite in Julia
     # It's used in Classifier_Comparison
     cv[:train_test_split](args...; kwargs...)
