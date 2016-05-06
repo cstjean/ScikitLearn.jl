@@ -9,6 +9,7 @@ If seed is an int, return a new RandomState instance seeded with seed.
 If seed is already a RandomState instance, return it.
 Otherwise raise ValueError.
 """
+check_random_state(seed::Void) = Base.GLOBAL_RNG
 check_random_state(seed::Int) = MersenneTwister(seed)
 check_random_state(seed::MersenneTwister) = seed
 check_random_state(seed::Any) =
@@ -28,15 +29,106 @@ fix_cv_iter_indices(cv::PyObject) =
 cv_iterator_syms = [:KFold, :StratifiedKFold, :LabelKFold, :LeaveOneOut,
                     :LeavePOut, :LeaveOneLabelOut, :LeavePLabelOut,
                     :ShuffleSplit, :LabelShuffleSplit, :StratifiedShuffleSplit]
+# Those that are implemented in Julia (so don't need to be imported from
+# Python)
+julia_iterators = [:KFold]
 
 # The current procedure collects the value in order to fix them.
 # I don't worry about that much (should be marginal in the grand scheme of
 # things), but we could do better.
-for cv_iter in cv_iterator_syms
+for cv_iter in setdiff(cv_iterator_syms, julia_iterators)
     @eval function $cv_iter(args...; kwargs...)
         sk_cv = pyimport("sklearn.cross_validation")
         fix_cv_iter_indices(sk_cv[$(Expr(:quote, cv_iter))](args...; kwargs...))
     end
+end
+
+# Note: scikit-learn-python defines a whole class for each cross-validation
+# iterator type. That seems like over-engineering to me, but maybe there's
+# a deeper reason for it (are the results the same under GridSearchCV, for
+# example?) - cstjean May 2016
+
+function folds_from_test_sets(n, test_sets)
+    ind = 1:n
+    return [(setdiff(ind, test_index), convert(Vector{Int}, test_index))
+            for test_index in test_sets]
+end
+
+
+"""K-Folds cross validation iterator.
+
+Provides train/test indices to split data in train test sets. Split
+dataset into k consecutive folds (without shuffling by default).
+
+Each fold is then used a validation set once while the k - 1 remaining
+fold form the training set.
+
+Read more in the :ref:`User Guide <cross_validation>`.
+
+Parameters
+----------
+n : int
+    Total number of elements.
+
+n_folds : int, default=3
+    Number of folds. Must be at least 2.
+
+shuffle : boolean, optional
+    Whether to shuffle the data before splitting into batches.
+
+random_state : None, int or RandomState
+    When shuffle=True, pseudo-random number generator state used for
+    shuffling. If None, use default numpy RNG for shuffling.
+
+Examples
+--------
+>>> from sklearn.cross_validation import KFold
+>>> X = np.array([[1, 2], [3, 4], [1, 2], [3, 4]])
+>>> y = np.array([1, 2, 3, 4])
+>>> kf = KFold(4, n_folds=2)
+>>> len(kf)
+2
+>>> print(kf)  # doctest: +NORMALIZE_WHITESPACE
+sklearn.cross_validation.KFold(n=4, n_folds=2, shuffle=False,
+                               random_state=None)
+>>> for train_index, test_index in kf:
+...    print("TRAIN:", train_index, "TEST:", test_index)
+...    X_train, X_test = X[train_index], X[test_index]
+...    y_train, y_test = y[train_index], y[test_index]
+TRAIN: [2 3] TEST: [0 1]
+TRAIN: [0 1] TEST: [2 3]
+
+Notes
+-----
+The first n % n_folds folds have size n // n_folds + 1, other folds have
+size n // n_folds.
+
+See also
+--------
+StratifiedKFold: take label information into account to avoid building
+folds with imbalanced class distributions (for binary or multiclass
+classification tasks).
+
+LabelKFold: K-fold iterator variant with non-overlapping labels.
+"""
+function KFold(n; n_folds=3, shuffle=false, random_state=nothing)
+    inds = collect(1:n)
+    if shuffle
+        rng = check_random_state(random_state)
+        Base.shuffle!(rng, inds)
+    end
+    fold_sizes = div(n, n_folds) * ones(Int, n_folds)
+    fold_sizes[1:mod(n, n_folds)] += 1
+    @assert sum(fold_sizes) == n # sanity check
+    current = 1
+    test_sets = Any[]
+    for fold_size in fold_sizes
+        start, stop = current, current + fold_size
+        push!(test_sets, inds[start:stop-1])
+        current = stop
+    end
+    @assert sum(map(length, test_sets)) == n
+    return folds_from_test_sets(n, test_sets)
 end
 
 ################################################################################
