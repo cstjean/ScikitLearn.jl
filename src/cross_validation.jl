@@ -1,6 +1,7 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
+using StatsBase: counts
 
 """Turn seed into a np.random.RandomState instance
 
@@ -31,7 +32,7 @@ cv_iterator_syms = [:KFold, :StratifiedKFold, :LabelKFold, :LeaveOneOut,
                     :ShuffleSplit, :LabelShuffleSplit, :StratifiedShuffleSplit]
 # Those that are implemented in Julia (so don't need to be imported from
 # Python)
-julia_iterators = [:KFold]
+julia_iterators = [:KFold, :StratifiedKFold]
 
 # The current procedure collects the value in order to fix them.
 # I don't worry about that much (should be marginal in the grand scheme of
@@ -48,8 +49,9 @@ end
 # a deeper reason for it (are the results the same under GridSearchCV, for
 # example?) - cstjean May 2016
 
-function folds_from_test_sets(n, test_sets)
+function folds_from_test_sets(n::Int, test_sets::AbstractVector)
     ind = 1:n
+    @assert sum(map(length, test_sets)) == n # sanity check
     return [(setdiff(ind, test_index), convert(Vector{Int}, test_index))
             for test_index in test_sets]
 end
@@ -125,8 +127,53 @@ function KFold(n; n_folds=3, shuffle=false, random_state=nothing)
         push!(test_sets, inds[start:stop-1])
         current = stop
     end
-    @assert sum(map(length, test_sets)) == n
     return folds_from_test_sets(n, test_sets)
+end
+
+function StratifiedKFold(y::AbstractArray; n_folds=3, shuffle=false,
+                         random_state=nothing)
+    n_samples = size(y, 1)
+    unique_labels = unique(y)
+    y_inversed = Int[findfirst(unique_labels, a) for a in y] # O(N²)
+    label_counts = counts(y_inversed, 1:length(unique_labels))
+    min_labels = minimum(label_counts)
+    if n_folds > min_labels
+        warn("The least populated class in y has only $min_labels" *
+             " members, which is too few. The minimum" *
+             " number of labels for any class cannot" *
+             " be less than n_folds=$n_folds.")
+    end
+
+    # don't want to use the same seed in each label's shuffle
+    if shuffle
+        rng = check_random_state(random_state)
+    else
+        rng = random_state
+    end
+
+    # pre-assign each sample to a test fold index using individual KFold
+    # splitting strategies for each label so as to respect the
+    # balance of labels
+    per_label_cvs = [KFold(max(c, n_folds), n_folds=n_folds, shuffle=shuffle,
+                           random_state=rng)
+                     for c in label_counts]
+    test_folds = zeros(Int, n_samples)
+    for (test_fold_idx, per_label_splits) in enumerate(zip(per_label_cvs...))
+        for (label, (_, test_split)) in zip(unique_labels, per_label_splits)
+            label_test_folds = test_folds[y .== label]
+            # the test split can be too big because we used
+            # KFold(max(c, self.n_folds), self.n_folds) instead of
+            # KFold(c, self.n_folds) to make it possible to not crash even
+            # if the data is not 100% stratifiable for all the labels
+            # (we use a warning instead of raising an exception)
+            # If this is the case, let's trim it:
+            test_split = test_split[test_split .<= length(label_test_folds)]
+            label_test_folds[test_split] = test_fold_idx
+            test_folds[y .== label] = label_test_folds
+        end
+    end
+    return folds_from_test_sets(n_samples,
+                                [find(test_folds.==i) for i in 1:n_folds])
 end
 
 ################################################################################

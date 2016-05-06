@@ -26,6 +26,12 @@ tour.
 
 ## Installation
 
+To install ScikitLearn.jl, 
+
+```julia
+Pkg.add("ScikitLearn")
+```
+
 This package requires Python 2.7 with numpy, which is easiest to get through
 [Anaconda](https://www.continuum.io/downloads), and [scikit-learn](http://scikit-learn.org/stable/install.html):
 
@@ -35,11 +41,11 @@ or
 
 `pip install -U scikit-learn`
 
-(if you have issues, check out [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)). To install ScikitLearn.jl, 
+(if you have issues, check out [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)).
 
-```julia
-Pkg.add("ScikitLearn")
-```
+**NOTE**: The current version of ScikitLearn.jl (which can be installed with
+`Pkg.checkout("ScikitLearn.jl")`) does not require `scikit-learn`. Please report
+any issues.
 
 Finally, if you would like to run the examples, you will need [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 

@@ -6,3 +6,4 @@ MacroTools 0.3.0
 Conda
 Requires 0.2.0
 ScikitLearnBase 0.0.4
+StatsBase 0.8.0
