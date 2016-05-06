@@ -15,7 +15,7 @@ into Julia. See [ScikitLearn.Pipelines](pipelines.md) for details.
 Python estimators are imported with `@sk_import`. For example, here's how to import
 and fit `sklearn.linear_regression.LogisticRegression`
 
-```
+```julia
 using ScikitLearn
 @sk_import linear_model: LogisticRegression
 
@@ -34,9 +34,9 @@ Julia models
 Julia models are hosted in other packages, and need to be installed separately
 with `Pkg.add` or `Pkg.checkout`. They all implement the [common api](api.md).
 
-### Gaussian Mixtures
+### GaussianMixtures.jl
 
-```
+```julia
 Pkg.checkout("GaussianMixtures.jl")   # install the package
 using GaussianMixtures: GMM
 using ScikitLearn
@@ -48,6 +48,33 @@ predict_proba(gmm, X)
 ```
 
 Documentation at [GaussianMixtures.jl](https://github.com/davidavdav/GaussianMixtures.jl). See also this [density estimation example](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
+
+### GaussianProcesses.jl
+
+```julia
+Pkg.checkout("GaussianProcesses.jl")   # install the package
+using GaussianProcesses: GP
+using ScikitLearn
+
+gp = fit!(GP(; m=MeanZero(), k=SE(0.0, 0.0), logNoise=-1e8),
+          X, y)
+predict(gp, X)
+```
+
+Documentation at [GaussianProcesses.jl](https://github.com/STOR-i/GaussianProcesses.jl) and in the `?GP` docstring. [Example notebook](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Gaussian_Processes_Julia.ipynb)
+
+Gaussian Processes have a lot of tunable hyperparameters, see `get_params(GP)`
+for a list of parameters that can be [tuned](model_selection.md)
+
+### DecisionTree.jl
+
+- `DecisionTreeClassifier`
+- `DecisionTreeRegressor`
+- `RandomForestClassifier`
+- `RandomForestRegressor`
+- `AdaBoostStumpClassifier`
+
+Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl) and in this [classification](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb), examples in these [regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
 
 ### Contributing
 
