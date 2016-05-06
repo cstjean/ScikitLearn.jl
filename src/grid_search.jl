@@ -216,7 +216,8 @@ immutable ParameterSampler
 end
 ParameterSampler(param_distributions, n_iter::Int;
                  random_state=MersenneTwister(42)) =
-    ParameterSampler(param_distributions, n_iter, random_state)
+    ParameterSampler(param_distributions, n_iter,
+                     check_random_state(random_state))
 
 function Base.start(ps::ParameterSampler)
     # Julia note: sklearn has some code to sample without replacement when

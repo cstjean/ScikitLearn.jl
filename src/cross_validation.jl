@@ -2,6 +2,19 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 
+"""Turn seed into a np.random.RandomState instance
+
+If seed is None, return the RandomState singleton used by np.random.
+If seed is an int, return a new RandomState instance seeded with seed.
+If seed is already a RandomState instance, return it.
+Otherwise raise ValueError.
+"""
+check_random_state(seed::Int) = MersenneTwister(seed)
+check_random_state(seed::MersenneTwister) = seed
+check_random_state(seed::Any) =
+    throw(ArgumentError("$seed cannot be used to seed a MersenneTwister"))
+
+
 ################################################################################
 # Defining the cross-validation iterators (eg. KFold)
 
