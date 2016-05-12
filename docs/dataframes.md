@@ -122,19 +122,18 @@ Multiple transformers can be applied to the same column specifying them in a lis
 
 
 ```julia
-@sk_import preprocessing: Imputer
-mapper3 = DataFrameMapper([([:age], [Imputer()])]; NA2NaN=true)
+@sk_import preprocessing: (Imputer, StandardScaler)
+mapper3 = DataFrameMapper([([:age], [Imputer(),
+                                     StandardScaler()])]; NA2NaN=true)
 data_3 = DataFrame(age= @data([1, NA, 3]))
 fit_transform!(mapper3, data_3)
 ```
 
 
-
-
     3x1 Array{Float64,2}:
-     1.0
-     2.0
-     3.0
+     -1.22474
+      0.0    
+      1.22474
 
 
 
