@@ -26,6 +26,20 @@ predict(X_test)
 Reminder: `?LogisticRegression` contains a lot of information about the model
 parameters.
 
+#### Installation
+
+Importing the Python models requires Python 2.7 with numpy, which is easiest to
+get through [Anaconda](https://www.continuum.io/downloads), and
+[scikit-learn](http://scikit-learn.org/stable/install.html):
+
+`conda install scikit-learn`
+
+or 
+
+`pip install -U scikit-learn`
+
+(if you have any issues, check out
+[PyCall.jl](https://github.com/stevengj/PyCall.jl#installation))
 
 
 Julia models
@@ -63,8 +77,8 @@ predict(gp, X)
 
 Documentation at [GaussianProcesses.jl](https://github.com/STOR-i/GaussianProcesses.jl) and in the `?GP` docstring. [Example notebook](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Gaussian_Processes_Julia.ipynb)
 
-Gaussian Processes have a lot of tunable hyperparameters, see `get_params(GP)`
-for a list of parameters that can be [tuned](model_selection.md)
+Gaussian Processes have a lot of hyperparameters, see `get_params(GP)`
+for a list. They can all be [tuned](model_selection.md)
 
 ### DecisionTree.jl
 
@@ -74,7 +88,7 @@ for a list of parameters that can be [tuned](model_selection.md)
 - `RandomForestRegressor`
 - `AdaBoostStumpClassifier`
 
-Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl) and in this [classification](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb), examples in these [regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
+Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl), and in this [classification](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb) and [regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
 
 ### Contributing
 

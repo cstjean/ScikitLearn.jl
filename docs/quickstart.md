@@ -20,6 +20,8 @@ Next, we load the LogisticRegression model from scikit-learn's [library](models.
 ```julia
 using ScikitLearn
 
+# This model requires scikit-learn. See
+# http://scikitlearnjl.readthedocs.io/en/latest/models/#Installation
 @sk_import linear_model: LogisticRegression
 ```
 

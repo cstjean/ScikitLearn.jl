@@ -4,9 +4,9 @@
 
 ScikitLearn.jl implements the popular
 [scikit-learn](http://scikit-learn.org/stable/) interface and algorithms in
-Julia. It provides the same functionality, and supports both models
-from the Julia ecosystem and those of the [scikit-learn
-library](http://scikit-learn.org/stable/modules/classes.html) (via PyCall.jl).
+Julia. It supports both models from the Julia ecosystem and those of the
+[scikit-learn library](http://scikit-learn.org/stable/modules/classes.html)
+(via PyCall.jl).
 
 **Disclaimer**: ScikitLearn.jl borrows code and documentation from
 [scikit-learn](http://scikit-learn.org/stable/), but *it is not an official part
@@ -14,7 +14,7 @@ of that project*. It is licensed under [BSD-3](LICENSE).
 
 Main features:
 
-- Around 150 machine learning and statistical [models](http://scikitlearnjl.readthedocs.org/en/latest/models/) accessed through a uniform [interface](http://scikitlearnjl.readthedocs.org/en/latest/api/)
+- Around 150 [Julia](http://scikitlearnjl.readthedocs.org/en/latest/models/#Julia) and [Python] models(http://scikitlearnjl.readthedocs.org/en/latest/models/) accessed through a uniform [interface](http://scikitlearnjl.readthedocs.org/en/latest/api/)
 - [Pipelines and FeatureUnions](http://scikitlearnjl.readthedocs.org/en/latest/pipelines/)
 - [Cross-validation](http://scikitlearnjl.readthedocs.org/en/latest/cross_validation/)
 - [Hyperparameter tuning](http://scikitlearnjl.readthedocs.org/en/latest/model_selection/)
@@ -26,28 +26,9 @@ tour.
 
 ## Installation
 
-To install ScikitLearn.jl, 
+To install ScikitLearn.jl, run `Pkg.add("ScikitLearn")` at the REPL.
 
-```julia
-Pkg.add("ScikitLearn")
-```
-
-This package requires Python 2.7 with numpy, which is easiest to get through
-[Anaconda](https://www.continuum.io/downloads), and [scikit-learn](http://scikit-learn.org/stable/install.html):
-
-`conda install scikit-learn`
-
-or 
-
-`pip install -U scikit-learn`
-
-(if you have issues, check out [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation)).
-
-**NOTE**: The current version of ScikitLearn.jl (which can be installed with
-`Pkg.checkout("ScikitLearn.jl")`) does not require `scikit-learn`. Please report
-any issues.
-
-Finally, if you would like to run the examples, you will need [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
+To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](http://scikitlearnjl.readthedocs.io/en/latest/models/#Installation). Finally, some of the examples make use of [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 
 ## Documentation
 

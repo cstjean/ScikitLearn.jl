@@ -93,6 +93,10 @@ end
 
 ################################################################################
 
+symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
+symbols_in(e::Symbol) = Set([e])
+symbols_in(::Any) = Set()
+
 """
 @sk_import imports models from the Python version of scikit-learn. Example:
 
@@ -103,6 +107,22 @@ macro sk_import(expr)
     @assert @capture(expr, mod_:what_) "`@sk_import` syntax error. Try something like: @sk_import linear_model: (LinearRegression, LogisticRegression)"
     if haskey(translated_modules, mod)
         warn("Module $mod has been ported to Julia - try `import ScikitLearn: $(translated_modules[mod])` instead")
+    end
+    if :sklearn in symbols_in(expr)
+        error("Bad @sk_import: please remove `sklearn.` (it is implicit)")
+    end
+    # Check that sklearn is installed.
+    # We have to do it at macroexpansion time because @pyimport2 imports at
+    # macroexpansion time too (... which sucks - FIXME)
+    try
+        PyCall.pyimport(:sklearn)
+    catch e2
+        if isa(e2, PyCall.PyError)
+            warn("Please install scikit-learn (Python). See http://scikitlearnjl.readthedocs.io/en/latest/models/#Installation for instructions.")
+            rethrow()
+        else
+            rethrow()
+        end
     end
     :(Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what))))
 end

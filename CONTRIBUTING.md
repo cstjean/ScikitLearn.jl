@@ -33,6 +33,7 @@ Interesting libraries
 - GLM
 - MixedModels (also consider FixedEffectModels)
 - Mamba/Lora. Then we can have BayesianLinearRegression, BayesianHierarchicalModel, etc.
+- XGBoost.jl - actively maintained
 - BNP.jl is a recently-built package, pretty solid. Hard to tell if it will be
 maintained, but looks great. Not released though.
 - MultivariateStats.jl has some interesting algorithms. Eg. Lasso, ICA
