@@ -118,7 +118,7 @@ macro sk_import(expr)
         PyCall.pyimport(:sklearn)
     catch e2
         if isa(e2, PyCall.PyError)
-            warn("Please install scikit-learn (Python). See http://scikitlearnjl.readthedocs.io/en/latest/models/#Installation for instructions.")
+            warn("Please install scikit-learn (Python). See http://scikitlearnjl.readthedocs.io/en/latest/models/#installation for instructions.")
             rethrow()
         else
             rethrow()

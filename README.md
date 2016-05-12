@@ -16,7 +16,7 @@ of that project*. It is licensed under [BSD-3](LICENSE).
 
 Main features:
 
-- Around 150 [Julia](http://scikitlearnjl.readthedocs.org/en/latest/models/#Julia) and [Python] models(http://scikitlearnjl.readthedocs.org/en/latest/models/) accessed through a uniform [interface](http://scikitlearnjl.readthedocs.org/en/latest/api/)
+- Around 150 [Julia](http://scikitlearnjl.readthedocs.org/en/latest/models/#Julia) and [Python](http://scikitlearnjl.readthedocs.io/en/latest/models/#python-models) models accessed through a uniform [interface](http://scikitlearnjl.readthedocs.org/en/latest/api/)
 - [Pipelines and FeatureUnions](http://scikitlearnjl.readthedocs.org/en/latest/pipelines/)
 - [Cross-validation](http://scikitlearnjl.readthedocs.org/en/latest/cross_validation/)
 - [Hyperparameter tuning](http://scikitlearnjl.readthedocs.org/en/latest/model_selection/)
@@ -30,7 +30,7 @@ tour.
 
 To install ScikitLearn.jl, run `Pkg.add("ScikitLearn")` at the REPL.
 
-To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](http://scikitlearnjl.readthedocs.io/en/latest/models/#Installation). Finally, some of the examples make use of [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
+To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](http://scikitlearnjl.readthedocs.io/en/latest/models/#installation). Finally, some of the examples make use of [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 
 ## Documentation
 

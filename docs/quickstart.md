@@ -21,7 +21,7 @@ Next, we load the LogisticRegression model from scikit-learn's [library](models.
 using ScikitLearn
 
 # This model requires scikit-learn. See
-# http://scikitlearnjl.readthedocs.io/en/latest/models/#Installation
+# http://scikitlearnjl.readthedocs.io/en/latest/models/#installation
 @sk_import linear_model: LogisticRegression
 ```
 

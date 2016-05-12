@@ -33,7 +33,7 @@ get the ordering of the classes.
 #### predict_log_proba
 
 `predict_log_proba(model, X)` is equivalent to `log(predict_proba(model, X))`
-but can be either more accurate (for small probabilities) or faster (avoiding
+but can be more accurate (for small probabilities) and faster (avoiding
 the exponential).
 
 #### transform
