@@ -111,20 +111,11 @@ macro sk_import(expr)
     if :sklearn in symbols_in(expr)
         error("Bad @sk_import: please remove `sklearn.` (it is implicit)")
     end
-    # Check that sklearn is installed.
-    # We have to do it at macroexpansion time because @pyimport2 imports at
-    # macroexpansion time too (... which sucks - FIXME)
-    try
-        PyCall.pyimport(:sklearn)
-    catch e2
-        if isa(e2, PyCall.PyError)
-            warn("Please install scikit-learn (Python). See http://scikitlearnjl.readthedocs.io/en/latest/models/#installation for instructions.")
-            rethrow()
-        else
-            rethrow()
-        end
-    end
-    :(Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what))))
+    :(begin
+        # Make sure that sklearn is installed.
+        PyCall.pyimport_conda("sklearn", "scikit-learn")
+        Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what)))
+    end)
 end
 
 ################################################################################
