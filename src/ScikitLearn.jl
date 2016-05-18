@@ -4,6 +4,8 @@
 # experiment with different submodule structures without breaking everything.
 # TODO: get rid of Skcore
 
+__precompile__()
+
 module ScikitLearn
 
 include("Skcore.jl")

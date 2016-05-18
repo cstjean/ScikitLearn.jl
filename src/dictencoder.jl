@@ -16,8 +16,7 @@ type DictEncoder <: BaseEstimator
     DictEncoder() = new(Dict{Any, Int}())
 end
 
-declare_hyperparameters(DictEncoder, Symbol[])
-
+@declare_hyperparameters(DictEncoder, Symbol[])
 
 function fit!(de::DictEncoder, X::AbstractMatrix, y=nothing)
     count = 1

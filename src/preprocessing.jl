@@ -8,6 +8,6 @@ type TransformerFunction <: BaseEstimator
     f::Function
     TransformerFunction(; f=error("Missing argument f")) = new(f)
 end
-declare_hyperparameters(TransformerFunction, [:f])
+@declare_hyperparameters(TransformerFunction, [:f])
 fit!(tf::TransformerFunction, X, y=nothing) = tf
 transform(tf::TransformerFunction, X) = tf.f(X)

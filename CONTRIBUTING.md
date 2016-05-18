@@ -25,10 +25,10 @@ Option 1 is generally preferable where possible.
 Interesting libraries
 ------
 - Mocha.jl (or MXNet, Merlin). It's a good candidate for being a separate library (SkMocha.jl?). [sklearn-theano](https://github.com/sklearn-theano/sklearn-theano) is a good starting point.
-- LowRankModels.jl
 - RegERM.jl (looks maintained + has an SVM implementation)
 - DiscriminantAnalysis.jl has an LDA and QDA implementation, and is currently
   maintained
+- SALSA: SVMs, maintained
 - Clustering.jl
 - GLM
 - MixedModels (also consider FixedEffectModels)
