@@ -1,4 +1,4 @@
-type LinearRegression{T <: Array}
+type LinearRegression{T <: Array} <: BaseRegressor
     coefs::T
     LinearRegression() = new()
 end
