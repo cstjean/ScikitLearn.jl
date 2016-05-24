@@ -29,11 +29,13 @@ type DataFrameMapper <: BaseEstimator
     features::Vector{Tuple}
     sparse::Bool
     NA2NaN::Bool
-    function DataFrameMapper(features; sparse=false, NA2NaN=false)
+    output_type::Type
+    function DataFrameMapper(features; sparse=false, NA2NaN=false,
+                             output_type=Array{Float64})
         @assert !sparse "TODO: support sparse"
         features = [(columns, _build_transformer(transformers))
                     for (columns, transformers) in features]
-        new(features, sparse, NA2NaN)
+        new(features, sparse, NA2NaN, output_type)
     end
 end
 
@@ -57,7 +59,8 @@ cols    a string or list of strings representing the columns
         to select
 Returns a matrix with the data from the selected columns
 """
-function _get_col_subset(X, cols::Vector{Symbol}; return_vector=false)
+function _get_col_subset(X, cols::Vector{Symbol}, output_type;
+                         return_vector=false)
     if isa(X, Vector)
         X = [x[cols] for x in X]
         X = DataFrame(X)
@@ -67,11 +70,11 @@ function _get_col_subset(X, cols::Vector{Symbol}; return_vector=false)
     ##     X = X.df
     end
 
-    return convert(DataArray, return_vector ? X[cols[1]] : X[cols])
+    return convert(output_type, return_vector ? X[cols[1]] : X[cols])
 end
 
-_get_col_subset(X, col::Symbol) =
-    _get_col_subset(X, [col], return_vector=true)
+_get_col_subset(X, col::Symbol, output_type) =
+    _get_col_subset(X, [col], output_type, return_vector=true)
 
 function _maybe_convert_NA(dfm::DataFrameMapper, X::DataFrame)
     # The type to promote to (must be able to contain NaN)
@@ -102,7 +105,7 @@ function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
     X = _maybe_convert_NA(self, X)
     for (columns, transformers) in self.features
         if transformers !== nothing
-            fit!(transformers, _get_col_subset(X, columns))
+            fit!(transformers, _get_col_subset(X, columns, self.output_type))
         end
     end
     return self
@@ -114,7 +117,7 @@ function transform(self, X)
     for (columns, transformers) in self.features
         # columns could be a string or list of strings; we don't care because
         # DataFrame indexing handles both
-        Xt = _get_col_subset(X, columns)
+        Xt = _get_col_subset(X, columns, self.output_type)
         if transformers !== nothing
             Xt = transform(transformers, Xt)
         end
