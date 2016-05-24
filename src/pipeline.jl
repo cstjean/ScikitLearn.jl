@@ -37,7 +37,7 @@ steps : vector
     chained, in the order in which they are chained, with the last object
     an estimator. """
 type Pipeline <: CompositeEstimator
-    steps::Vector{Tuple{Any, Any}} # of tuples(string, model)
+    steps::Vector{Tuple{String, Any}} # of tuples(string, model)
     function Pipeline(steps)
         @assert(nunique(map(first, steps)) == length(steps),
                 "Pipeline's models' names must all be unique")
