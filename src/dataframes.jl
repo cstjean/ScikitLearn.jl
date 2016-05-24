@@ -55,13 +55,15 @@ _handle_feature(fea::DataArray) = _handle_feature(convert(Array, fea))
 """
 Get a subset of columns from the given table X.
 X       a dataframe; the table to select columns from
-cols    a string or list of strings representing the columns
+cols    a symbol or vector of symbols representing the columns
         to select
 Returns a matrix with the data from the selected columns
 """
 function _get_col_subset(X, cols::Vector{Symbol}, output_type;
                          return_vector=false)
     if isa(X, Vector)
+        TODO() # I'm not sure that this pathway has ever been tried. Not even
+               # sure what it's trying to accomplish! - @cstjean
         X = [x[cols] for x in X]
         X = DataFrame(X)
     # Julia note: not sure what role DataWrapper serves, ignoring it for now
@@ -70,7 +72,7 @@ function _get_col_subset(X, cols::Vector{Symbol}, output_type;
     ##     X = X.df
     end
 
-    return convert(output_type, return_vector ? X[cols[1]] : X[cols])
+    return convert(output_type, return_vector ? X[:, cols[1]] : X[:, cols])
 end
 
 _get_col_subset(X, col::Symbol, output_type) =
