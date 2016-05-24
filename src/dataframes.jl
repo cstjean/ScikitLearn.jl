@@ -85,6 +85,10 @@ function _maybe_convert_NA(dfm::DataFrameMapper, X::DataFrame)
         # There might be a much simpler way of doing this with DataFrames
         for col in names(X)
             values = X[col]
+            if isa(values, Array)
+                # Only DataArrays contain NA, so don't waste time with Arrays
+                continue
+            end
             na_inds = isna(values)
             # We can't put a NaN in an array of Int. This is ugly code, FIXME
             if any(na_inds)
