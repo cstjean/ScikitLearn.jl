@@ -38,17 +38,19 @@ steps : vector
     an estimator. """
 type Pipeline <: CompositeEstimator
     steps::Vector{Tuple{String, Any}} # of tuples(string, model)
+    models::Vector{Any}
     function Pipeline(steps)
         @assert(nunique(map(first, steps)) == length(steps),
                 "Pipeline's models' names must all be unique")
-        new(steps)
+        new(steps, map(x->x[2], steps))
     end
 end
 
-get_models(pip::Pipeline) = map(x->x[2], pip.steps)
-get_transforms(pip::Pipeline) = get_models(pip)[1:end-1]
+get_models(pip::Pipeline) = pip.models
+get_transforms(pip::Pipeline) = slice(get_models(pip), 1:length(pip)-1)
 get_final_estimator(pip::Pipeline) = get_models(pip)[end]
 named_steps(pip::Pipeline) = Dict(pip.steps)
+Base.length(pip::Pipeline) = length(pip.steps)
 
 is_classifier(pip::Pipeline) = is_classifier(get_final_estimator(pip))
 clone(pip::Pipeline) =
