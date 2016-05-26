@@ -59,6 +59,7 @@ get_components(py_estimator::PyObject) = py_estimator[:components_]
 # Julia => Python
 api_map = Dict(:decision_function => :decision_function,
                :fit! => :fit,
+               :fit_predict! => :fit_predict,
                :fit_transform! => :fit_transform,
                :get_feature_names => :get_feature_names,
                :get_params => :get_params,
