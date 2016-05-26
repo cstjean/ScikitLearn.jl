@@ -37,7 +37,8 @@ Julia models
 ------
 
 Julia models are hosted in other packages, and need to be installed separately
-with `Pkg.add` or `Pkg.checkout`. They all implement the [common api](api.md).
+with `Pkg.add` or `Pkg.checkout`. They all implement the [common api](api.md),
+and provide hyperparameter information in their `?docstrings`.
 
 ### GaussianMixtures.jl
 
@@ -80,6 +81,19 @@ for a list. They can all be [tuned](model_selection.md)
 - `AdaBoostStumpClassifier`
 
 Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl), and in this [classification](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb) and [regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
+
+### LowRankModels.jl
+
+- `SkGLRM`: Generalized Low Rank Model
+- `PCA`: Principal Component Analysis
+- `QPCA`: Quadratically Regularized PCA
+- `RPCA`: Robust PCA
+- `NNMF`: Non-negative matrix factorization
+- `KMeans`: The k-means algorithm
+
+Please note that these algorithms are all special cases of the Generalized Low Rank Model algorithm, whose main goal is to provide flexible loss and regularization for heterogeneous data. Specialized algorithms will achieve faster convergence in general.
+
+Documentation at [LowRankModels.jl](https://github.com/madeleineudell/LowRankModels.jl#scikitlearn). K-Means example [here](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Plot_Kmeans_Digits_Julia.ipynb).
 
 ### Contributing
 
