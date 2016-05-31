@@ -25,6 +25,8 @@ Option 1 is generally preferable where possible.
 Interesting libraries
 ------
 - Mocha.jl (or MXNet, Merlin). It's a good candidate for being a separate library (SkMocha.jl?). [sklearn-theano](https://github.com/sklearn-theano/sklearn-theano) is a good starting point.
+ * Flimsy is very actively maintained
+ * KNet.jl is very actively maintained too, well-documented
 - RegERM.jl (looks maintained + has an SVM implementation)
 - DiscriminantAnalysis.jl has an LDA and QDA implementation, and is currently
   maintained

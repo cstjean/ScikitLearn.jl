@@ -14,16 +14,22 @@ function _build_transformer(transformers::Vector)
 end
 
 """
+    DataFrameMapper(features; sparse=false, NA2NaN=false,
+                    output_type=Array{Float64})
+
 Map DataFrame column subsets to their own scikit-learn transformation.
 
-Params:
-features    a vector of pairs. The first element is the column name.
-            This can be a symbol (for one column) or a list
-            of symbols. The second element is an object that supports
-            sklearn's transform interface, or a list of such objects.
-sparse      will return sparse matrix if set to true and any of the
-            extracted features is sparse. Defaults to False.
-NA2NaN      will convert NAs to NaNs (necessary for Python models)
+Arguments:
+
+- **features**:    a vector of pairs. The first element is the column name.
+                   This can be a symbol (for one column) or a list
+                   of symbols. The second element is an object that supports
+                   sklearn's transform interface, or a list of such objects.
+- **sparse**       will return sparse matrix if set to true and any of the
+                   extracted features is sparse. Defaults to False.
+- **NA2NaN**       will convert DataArray NAs to NaNs (necessary for Python
+                   models)
+- **output_type**: the type of the result (usually a matrix of Float64)
 """
 type DataFrameMapper <: BaseEstimator
     features::Vector{Tuple}
