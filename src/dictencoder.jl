@@ -2,14 +2,14 @@ importall ScikitLearnBase
 
 export DictEncoder
 
-""" DictEncoder()
+"""    DictEncoder()
 
-For every different row in the training set, associate a 0/1 binary column.
-This is similar to OneHotEncoder, but considers the entire row as a single
-value for one-hot-encoding. It works with any hashable datatype.
+For every unique row in the input matrix, associate a 0/1 binary column in the
+output matrix. This is similar to OneHotEncoder, but considers the entire row
+as a single value for one-hot-encoding. It works with any hashable datatype.
 
-This is particularly useful in conjunction with DataFrameMapper to select a
-subset of the columns.
+It is common to use it inside a DataFrameMapper, with a particular subset of
+the columns.
 """
 type DictEncoder <: BaseEstimator
     di::Dict{Any, Int}
