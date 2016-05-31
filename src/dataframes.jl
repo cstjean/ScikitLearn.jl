@@ -65,8 +65,7 @@ cols    a symbol or vector of symbols representing the columns
         to select
 Returns a matrix with the data from the selected columns
 """
-function _get_col_subset(X, cols::Vector{Symbol}, output_type;
-                         return_vector=false)
+function _get_col_subset(X, cols::Vector{Symbol}; return_vector=false)
     if isa(X, Vector)
         TODO() # I'm not sure that this pathway has ever been tried. Not even
                # sure what it's trying to accomplish! - @cstjean
@@ -78,11 +77,11 @@ function _get_col_subset(X, cols::Vector{Symbol}, output_type;
     ##     X = X.df
     end
 
-    return convert(output_type, return_vector ? X[:, cols[1]] : X[:, cols])
+    return convert(DataArray, return_vector ? X[:, cols[1]] : X[:, cols])
 end
 
-_get_col_subset(X, col::Symbol, output_type) =
-    _get_col_subset(X, [col], output_type, return_vector=true)
+_get_col_subset(X, col::Symbol) =
+    _get_col_subset(X, [col], return_vector=true)
 
 function _maybe_convert_NA(dfm::DataFrameMapper, X::DataFrame)
     # The type to promote to (must be able to contain NaN)
@@ -117,7 +116,7 @@ function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
     X = _maybe_convert_NA(self, X)
     for (columns, transformers) in self.features
         if transformers !== nothing
-            fit!(transformers, _get_col_subset(X, columns, self.output_type))
+            fit!(transformers, _get_col_subset(X, columns))
         end
     end
     return self
@@ -129,9 +128,9 @@ function transform(self, X)
     for (columns, transformers) in self.features
         # columns could be a string or list of strings; we don't care because
         # DataFrame indexing handles both
-        Xt = _get_col_subset(X, columns, self.output_type)
+        Xt = _get_col_subset(X, columns)
         if transformers !== nothing
-            Xt = transform(transformers, Xt)
+            Xt = convert(self.output_type, transform(transformers, Xt))
         end
         push!(extracted, _handle_feature(Xt))
     end
