@@ -22,9 +22,9 @@ Map DataFrame column subsets to their own scikit-learn transformation.
 Arguments:
 
 - **features**:    a vector of pairs. The first element is the column name.
-                   This can be a symbol (for one column) or a list
+                   This can be a symbol (for one column) or a vector
                    of symbols. The second element is an object that supports
-                   sklearn's transform interface, or a list of such objects.
+                   sklearn's transform interface, or a vector of such objects.
 - **sparse**       will return sparse matrix if set to true and any of the
                    extracted features is sparse. Defaults to False.
 - **NA2NaN**       will convert DataArray NAs to NaNs (necessary for Python
@@ -38,6 +38,13 @@ type DataFrameMapper <: BaseEstimator
     output_type::Type
     function DataFrameMapper(features; sparse=false, NA2NaN=false,
                              output_type=Array{Float64})
+        for (col_name, transformer) in features
+            @assert(isa(col_name, Symbol) || isa(col_name, Vector),
+                    "Bad DataFrameMapper features, see docstring")
+            @assert(isa(transformer, Vector) ||
+                    ScikitLearn.Utils.is_transformer(transformer),
+                    "Bad DataFrameMapper features, see docstring")
+        end
         @assert !sparse "TODO: support sparse"
         features = [(columns, _build_transformer(transformers))
                     for (columns, transformers) in features]

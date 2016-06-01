@@ -54,6 +54,10 @@ is_pairwise(py_model::PyObject) =
 
 get_classes(py_estimator::PyObject) = py_estimator[:classes_]
 get_components(py_estimator::PyObject) = py_estimator[:components_]
+
+# Not the cleanest of definitions
+is_transformer(estimator::Type) = !isempty(methods(transform, (estimator, Any)))
+is_transformer(estimator::Any) = is_transformer(typeof(estimator))
 ################################################################################
 
 # Julia => Python
