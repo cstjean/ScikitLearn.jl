@@ -38,6 +38,7 @@ type DataFrameMapper <: BaseEstimator
     output_type::Type
     function DataFrameMapper(features; sparse=false, NA2NaN=false,
                              output_type=Array{Float64})
+        # Input validation
         for (col_name, transformer) in features
             @assert(isa(col_name, Symbol) || isa(col_name, Vector),
                     "Bad DataFrameMapper features, see docstring")

@@ -1,5 +1,6 @@
 using MacroTools
 using PyCall
+importall ScikitLearnBase
 
 # We don't strictly need this, but it's convenient for writing examples
 include("Ndgrid.jl")
@@ -56,6 +57,22 @@ macro pyimport2(expr, optional_varname...)
     end
 end
 
+""" `delegate(f, typfield)` delegates `f(::T, args...)` to `f(t.field, args...)`
+
+    type AA
+        a
+    end
+
+    @delegate(Base.length, AA.a)
+    length(AA([1,2,3]))    # -> 3
+"""
+macro delegate(f, typfield)
+    @assert typfield.head == :.
+    typ = typfield.args[1]
+    field = typfield.args[2].args[1]
+    :($(esc(f))(obj::$(esc(typ)), args...; kwargs...) =
+      $(esc(f))(getfield(obj, $(esc(Expr(:quote, field)))), args...; kwargs...))
+end
 
 nunique(iter) = length(Set(iter)) # slow definition
 
@@ -201,3 +218,28 @@ function type_of_target{T}(y::AbstractArray{T})
         return "binary"  # [1, 2] or [["a"], ["b"]]
     end
 end    
+
+################################################################################
+
+""" `FitBit(model)` will behave just like `model`, but also supports
+`isfit(fb)`, which returns true IFF `fit!(model, ...)` has been called """
+type FitBit
+    model
+    isfit::Bool
+    FitBit(model) = new(model, false)
+end
+clone(fb::FitBit) = FitBit(clone(fb.model))
+
+@delegate(transform, FitBit.model)
+@delegate(predict, FitBit.model)
+
+function fit!(fb::FitBit, args...; kwargs...)
+    fit!(fb.model, args...; kwargs...)
+    fb.isfit = true
+    fb
+end
+
+isfit(fb::FitBit) = fb.isfit
+
+
+################################################################################

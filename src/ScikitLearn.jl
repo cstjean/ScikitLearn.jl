@@ -60,7 +60,7 @@ end
 module Utils
 using ..@reexportsk
 using ScikitLearn.Skcore: @pyimport2
-@reexportsk(meshgrid, is_transformer)
+@reexportsk(meshgrid, is_transformer, FitBit, isfit)
 export @pyimport2
 end
 
