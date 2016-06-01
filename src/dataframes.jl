@@ -84,7 +84,13 @@ function _get_col_subset(X, cols::Vector{Symbol}; return_vector=false)
     ##     X = X.df
     end
 
-    return convert(DataArray, return_vector ? X[:, cols[1]] : X[:, cols])
+    try
+        return convert(DataArray, return_vector ? X[:, cols[1]] : X[:, cols])
+    catch e
+        if isa(e, KeyError)
+            throw(KeyError("DataFrameMapper: in dataframe (size=$(size(X)), cols=$(names(X))), $cols")) # not found
+        else rethrow() end
+    end
 end
 
 _get_col_subset(X, col::Symbol) =
