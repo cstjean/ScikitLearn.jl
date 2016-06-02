@@ -96,6 +96,12 @@ for (jl_fun, py_fun) in api_map
         tweak_rval(py_model[$(Expr(:quote, py_fun))](args...; kwargs...))
 end
 
+""" `predict_nc(model, X)` calls predict on the Python `model`, but returns
+the result as a `PyArray`, which is more efficient than the usual path. See
+PyCall.jl """
+predict_nc(model::PyObject, X) = pycall(model[:predict], PyArray, X)
+predict_nc(model::Any, X) = predict(model, X) # default
+
 ################################################################################
 
 symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
