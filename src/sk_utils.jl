@@ -243,3 +243,15 @@ isfit(fb::FitBit) = fb.isfit
 
 
 ################################################################################
+
+function bincount(arr::AbstractVector{Int}; minlength=0)
+    n = max(minlength, maximum(arr))
+    out = zeros(Int, n)
+    for x in arr
+        if x < 1
+            error("bincount first argument must be greater than or equal to 1")
+        end
+        out[x] += 1
+    end
+    out
+end

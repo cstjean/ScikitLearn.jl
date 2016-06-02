@@ -71,6 +71,7 @@ module Preprocessing
 # elsewhere. - cstjean
 include("dictencoder.jl")
 include("preprocessing.jl")
+export DictEncoder, PolynomialFeatures
 end
 
 
