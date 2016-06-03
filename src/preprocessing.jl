@@ -122,8 +122,8 @@ function fit!(self::PolynomialFeatures, X, y=nothing)
     return self
 end
 
-function transform{T<:AbstractFloat}(self::PolynomialFeatures, X::Array{T},
-                                     y=nothing)
+function transform{T<:AbstractFloat}(self::PolynomialFeatures,
+                                     X::AbstractArray{T}, y=nothing)
     ## Transform data to polynomial features
     ## Parameters
     ## ----------

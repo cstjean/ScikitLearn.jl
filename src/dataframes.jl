@@ -40,9 +40,9 @@ type DataFrameMapper <: BaseEstimator
                              output_type=Array{Float64})
         # Input validation
         for (col_name, transformer) in features
-            @assert(isa(col_name, Symbol) || isa(col_name, Vector),
+            @assert(isa(col_name, Union{Symbol, Vector}),
                     "Bad DataFrameMapper features, see docstring")
-            @assert(isa(transformer, Vector) ||
+            @assert(isa(transformer, Union{Void, Vector}) ||
                     ScikitLearn.Utils.is_transformer(transformer),
                     "Bad DataFrameMapper features, see docstring")
         end
@@ -136,7 +136,7 @@ function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
     return self
 end
 
-function transform(self, X)
+function transform(self::DataFrameMapper, X)
     X = _maybe_convert_NA(self, X)
     extracted = []
     for (columns, transformers) in self.features
