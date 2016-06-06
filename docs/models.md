@@ -40,6 +40,11 @@ Julia models are hosted in other packages, and need to be installed separately
 with `Pkg.add` or `Pkg.checkout`. They all implement the [common api](api.md),
 and provide hyperparameter information in their `?docstrings`.
 
+### ScikitLearn models
+
+- `ScikitLearn.Models.LinearRegression()` implements linear regression using
+  `\`, optimized for speed. See `?LinearRegression` for fitting options.
+
 ### GaussianMixtures.jl
 
 ```julia

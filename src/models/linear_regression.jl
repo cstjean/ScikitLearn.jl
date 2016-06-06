@@ -3,7 +3,7 @@ type LinearRegression{T <: Array} <: BaseRegressor
     LinearRegression() = new()
 end
 
-"""    LinearRegression(; eltype=Float64, dim=nothing)
+"""    LinearRegression(; eltype=Float64, multi_output=nothing)
 
 Linear regression. Supports both single-output and multiple-output regression.
 Optimized for speed.
