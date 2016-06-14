@@ -16,7 +16,7 @@ end
 
 """
     DataFrameMapper(features; sparse=false, NA2NaN=false,
-                    output_type=Array{Float64})
+                    output_type=Matrix{Float64})
 
 Map DataFrame column subsets to their own scikit-learn transformation.
 
@@ -38,7 +38,9 @@ type DataFrameMapper <: BaseEstimator
     NA2NaN::Bool
     output_type::Type
     function DataFrameMapper(features; sparse=false, NA2NaN=false,
-                             output_type=Array{Float64})
+                             # In scikit-learn, accepting 1D arguments is
+                             # deprecated. See scikit-learn/pull/4511
+                             output_type=Matrix{Float64})
         # Input validation
         for (col_name, transformer) in features
             @assert(isa(col_name, Union{Symbol, Vector}),
@@ -137,7 +139,7 @@ function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
     return self
 end
 
-function transform(self::DataFrameMapper, X)
+function transform(self::DataFrameMapper, X::DataFrame)
     X = _maybe_convert_NA(self, X)
     extracted = []
     for (columns, transformers) in self.features
@@ -172,7 +174,7 @@ Base.issparse(::DataFrame) = false
 
 ################################################################################
 
-"""    DataFrameColSelector(colums::Vector{Symbol}; output_type=Array{Float64}
+"""    DataFrameColSelector(colums::Vector{Symbol}; output_type=Matrix{Float64}
 
 This is a pared-down, less featureful version of `DataFrameMapper`, but it
 also runs faster. It only allows selecting columns from the input `DataFrame`.
@@ -180,7 +182,7 @@ Use in a pipeline. """
 immutable DataFrameColSelector <: BaseEstimator
     cols::Vector{Symbol}
     output_type::Type
-    DataFrameColSelector(cols; output_type=Array{Float64}) = 
+    DataFrameColSelector(cols; output_type=Matrix{Float64}) = 
         new(cols, output_type)
 end
 
