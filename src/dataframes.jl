@@ -1,7 +1,7 @@
 # Python Author: Paul Butler (https://github.com/paulgb/sklearn-pandas)
 # Julia adaptation: Cedric St-Jean
 
-export DataFrameMapper
+export DataFrameMapper, DataFrameColSelector
 
 importall ScikitLearnBase
 
@@ -168,3 +168,23 @@ function transform(self::DataFrameMapper, X)
 end
 
 Base.issparse(::DataFrame) = false
+
+################################################################################
+
+"""    DataFrameColSelector(colums::Vector{Symbol}; output_type=Array{Float64}
+
+This is a pared-down, less featureful version of `DataFrameMapper`, but it
+also runs faster. It only allows selecting columns from the input `DataFrame`.
+Use in a pipeline. """
+immutable DataFrameColSelector <: BaseEstimator
+    cols::Vector{Symbol}
+    output_type::Type
+    DataFrameColSelector(cols; output_type=Array{Float64}) = 
+        new(cols, output_type)
+end
+
+clone(dfcs::DataFrameColSelector) =
+    DataFrameColSelector(dfcs.cols; output_type=dfcs.output_type)
+fit!(dfcs::DataFrameColSelector, X, y=nothing) = dfcs
+transform(dfcs::DataFrameColSelector, X::DataFrame) =
+    convert(dfcs.output_type, X[:, dfcs.cols])
