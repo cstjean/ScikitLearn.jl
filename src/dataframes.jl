@@ -5,7 +5,8 @@ export DataFrameMapper, DataFrameColSelector
 
 importall ScikitLearnBase
 
-using DataFrames: DataFrame, DataArray, DataVector, isna, eachcol
+using DataFrames: DataFrame, DataArray, DataVector, isna, eachcol,
+                  AbstractDataFrame, DataFrameRow
 
 _build_transformer(transformers) = transformers
 
@@ -186,5 +187,12 @@ end
 clone(dfcs::DataFrameColSelector) =
     DataFrameColSelector(dfcs.cols; output_type=dfcs.output_type)
 fit!(dfcs::DataFrameColSelector, X, y=nothing) = dfcs
-transform(dfcs::DataFrameColSelector, X::DataFrame) =
+transform(dfcs::DataFrameColSelector, X::AbstractDataFrame) =
     convert(dfcs.output_type, X[:, dfcs.cols])
+
+transform(dfcs::DataFrameColSelector, X::DataFrameRow) =
+    _transform(dfcs, X, dfcs.output_type)
+_transform{T}(dfcs::DataFrameColSelector, X::DataFrameRow, ::Type{Array{T}}) =
+    _transform(dfcs, X, Vector{T})
+_transform{T}(dfcs::DataFrameColSelector, X::DataFrameRow, ::Type{Vector{T}}) =
+    T[X[col] for col in dfcs.cols]
