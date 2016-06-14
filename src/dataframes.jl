@@ -170,6 +170,13 @@ function transform(self::DataFrameMapper, X::DataFrame)
     return hcat(extracted...)
 end
 
+transform{T<:Dict}(dfm::DataFrameMapper, X::Vector{T}) =
+    # This could be handled better...
+    transform(dfm, DataFrame(X))
+transform{T<:DataFrameRow}(dfm::DataFrameMapper, X::Vector{T}) =
+    # This could be handled much, much better...
+    transform(dfm, [Dict(dfr) for dfr in X])
+
 Base.issparse(::DataFrame) = false
 
 ################################################################################
@@ -192,9 +199,8 @@ fit!(dfcs::DataFrameColSelector, X, y=nothing) = dfcs
 transform(dfcs::DataFrameColSelector, X::AbstractDataFrame) =
     convert(dfcs.output_type, X[:, dfcs.cols])
 
-transform(dfcs::DataFrameColSelector, X::DataFrameRow) =
+transform(dfcs::DataFrameColSelector, X) =
     _transform(dfcs, X, dfcs.output_type)
-_transform{T}(dfcs::DataFrameColSelector, X::DataFrameRow, ::Type{Array{T}}) =
-    _transform(dfcs, X, Vector{T})
-_transform{T}(dfcs::DataFrameColSelector, X::DataFrameRow, ::Type{Vector{T}}) =
-    T[X[col] for col in dfcs.cols]
+_transform{T<:DataFrameRow, O}(dfcs::DataFrameColSelector, X::Vector{T},
+                            ::Type{Matrix{O}}) =
+    O[dfr[col] for dfr in X, col in dfcs.cols]
