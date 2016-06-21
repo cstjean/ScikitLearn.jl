@@ -8,12 +8,9 @@ scikit-learn has on the order of 100 to 200 models (more generally called
 - [Unsupervised Learning](http://scikit-learn.org/stable/unsupervised_learning.html) (clustering, PCA, mixture models, manifold learning, ...)
 - [Dataset Transformation](http://scikit-learn.org/stable/data_transforms.html) (preprocessing, text feature extraction, one-hot encoding, ...)
 
-Nearly all of those estimators will work with ScikitLearn.jl,
-except for estimators that contain other estimators. Those had to be translated
-into Julia. See [ScikitLearn.Pipelines](pipelines.md) for details.
-
-Python estimators are imported with `@sk_import`. For example, here's how to import
-and fit `sklearn.linear_regression.LogisticRegression`
+All of those estimators will work with ScikitLearn.jl. They are imported with
+`@sk_import`. For example, here's how to import and fit
+`sklearn.linear_regression.LogisticRegression`
 
 ```julia
 using ScikitLearn
