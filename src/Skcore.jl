@@ -8,7 +8,6 @@ using ScikitLearnBase
 
 using PyCall
 using Parameters
-using SymDict
 
 include("sk_utils.jl")
 

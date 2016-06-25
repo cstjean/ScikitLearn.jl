@@ -536,7 +536,7 @@ function _fit_and_score(estimator, X, y, scorer,
                         # Vector{Int} is defensive programming. Could be
                         # changed.
                         train::Vector{Int}, test::Vector{Int}, verbose,
-                        parameters, fit_params::Union{Void, SymbolDict};
+                        parameters, fit_params::Union{Void, Dict{Symbol}};
                         return_train_score=false,
                         return_parameters=false, error_score="raise")
     # Julia TODO
