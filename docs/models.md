@@ -34,8 +34,13 @@ Julia models
 ------
 
 Julia models are hosted in other packages, and need to be installed separately
-with `Pkg.add` or `Pkg.checkout`. They all implement the [common api](api.md),
-and provide hyperparameter information in their `?docstrings`.
+with `Pkg.add` or `Pkg.checkout` (to get the latest version - sometimes
+necessary). They all implement the [common api](api.md), and provide
+hyperparameter information in their `?docstrings`.
+
+Unfortunately, some packages export a `fit!` function that conflicts with
+ScikitLearn's `fit!`. I recommend importing selectively, i.e. `using
+LowRankModels: GLRM, PCA, KMeans` instead of `using LowRankModels`.
 
 ### ScikitLearn models
 
@@ -55,7 +60,7 @@ gmm = fit!(GMM(n_components=3, # number of Gaussians to fit
 predict_proba(gmm, X)
 ```
 
-Documentation at [GaussianMixtures.jl](https://github.com/davidavdav/GaussianMixtures.jl). See also this [density estimation example](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
+Documentation at [GaussianMixtures.jl](https://github.com/davidavdav/GaussianMixtures.jl). Example: [density estimation](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
 
 ### GaussianProcesses.jl
 
@@ -69,7 +74,7 @@ gp = fit!(GP(; m=MeanZero(), k=SE(0.0, 0.0), logNoise=-1e8),
 predict(gp, X)
 ```
 
-Documentation at [GaussianProcesses.jl](https://github.com/STOR-i/GaussianProcesses.jl) and in the `?GP` docstring. [Example notebook](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Gaussian_Processes_Julia.ipynb)
+Documentation at [GaussianProcesses.jl](https://github.com/STOR-i/GaussianProcesses.jl) and in the `?GP` docstring. Example: [Gaussian Processes](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Gaussian_Processes_Julia.ipynb)
 
 Gaussian Processes have a lot of hyperparameters, see `get_params(GP)`
 for a list. They can all be [tuned](model_selection.md)
@@ -82,7 +87,7 @@ for a list. They can all be [tuned](model_selection.md)
 - `RandomForestRegressor`
 - `AdaBoostStumpClassifier`
 
-Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl), and in this [classification](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb) and [regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
+Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl). Examples: [Classifier Comparison](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb), [Decision Tree Regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
 
 ### LowRankModels.jl
 
@@ -95,7 +100,7 @@ Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl
 
 Please note that these algorithms are all special cases of the Generalized Low Rank Model algorithm, whose main goal is to provide flexible loss and regularization for heterogeneous data. Specialized algorithms will achieve faster convergence in general.
 
-Documentation at [LowRankModels.jl](https://github.com/madeleineudell/LowRankModels.jl#scikitlearn). K-Means example [here](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Plot_Kmeans_Digits_Julia.ipynb).
+Documentation at [LowRankModels.jl](https://github.com/madeleineudell/LowRankModels.jl#scikitlearn). Example: [KMeans Digit Classifier](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Plot_Kmeans_Digits_Julia.ipynb).
 
 ### Contributing
 
