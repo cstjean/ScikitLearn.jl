@@ -13,5 +13,6 @@ include("test_crossvalidation.jl")
 all_test_crossvalidation()
 
 include("test_utils.jl")
+include("test_quickstart.jl")
 
 nothing
