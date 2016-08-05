@@ -30,7 +30,7 @@ Arguments:
                    extracted features is sparse. Defaults to False.
 - **NA2NaN**       will convert DataArray NAs to NaNs (necessary for Python
                    models)
-- **output_type**: the type of the result (usually a matrix of Float64)
+- **output_type**: the type of the result (default: Matrix{Float64})
 """
 type DataFrameMapper <: BaseEstimator
     features::Vector{Tuple}

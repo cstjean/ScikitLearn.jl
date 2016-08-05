@@ -2,7 +2,8 @@
 # defined here by importing from Skcore and reexporting what we want in the
 # interface. This arrangement simplifies the codebase and allowed us to
 # experiment with different submodule structures without breaking everything.
-# TODO: get rid of Skcore
+# TODO: I believe that we should get rid of most of the nested package
+# structure, but that will be a pain to transition out of.
 
 __precompile__()
 
