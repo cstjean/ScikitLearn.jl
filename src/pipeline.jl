@@ -384,4 +384,13 @@ function make_pipeline(steps...)
     return Pipeline(_name_estimators(steps))
 end
 
+# This is an unexported hack for my own personal use - cstjean
+dummy_input(pip::Pipeline) =
+    dummy_input(first(get_transforms(pip)))
+
+function fit_to_constant!(pip::Pipeline, constant)
+    X = dummy_input(pip)
+    y = fill(constant, size(X, 1))
+    return fit!(pip, X, y)
+end
 ## end

@@ -204,3 +204,12 @@ transform(dfcs::DataFrameColSelector, X) =
 _transform{T<:DataFrameRow, O}(dfcs::DataFrameColSelector, X::Vector{T},
                             ::Type{Matrix{O}}) =
     O[dfr[col] for dfr in X, col in dfcs.cols]
+
+################################################################################
+
+# This is an unexported hack for my own personal use - cstjean
+function dummy_input(dfm::DataFrameMapper)
+    rng = MersenneTwister(11)
+    N = length(dfm.features)
+    DataFrame(Dict([col=>rand(rng, N) for (col, _) in dfm.features]))
+end
