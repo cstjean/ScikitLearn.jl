@@ -210,6 +210,12 @@ _transform{T<:DataFrameRow, O}(dfcs::DataFrameColSelector, X::Vector{T},
 # This is an unexported hack for my own personal use - cstjean
 function dummy_input(dfm::DataFrameMapper)
     rng = MersenneTwister(11)
-    N = length(dfm.features)
-    DataFrame(Dict([col=>rand(rng, N) for (col, _) in dfm.features]))
+    N = sum([length(cols) for (cols, _) in dfm.features])
+    df = DataFrame()
+    for (cols, _) in dfm.features
+        for col in cols
+            df[col] = rand(rng, N)
+        end
+    end
+    df
 end
