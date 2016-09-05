@@ -27,8 +27,10 @@ parameters.
 
 Importing the Python models requires Python 2.7 with numpy, and the
 scikit-learn library. This is easiest to get through [Conda.jl](https://github.com/Luthaf/Conda.jl), which is already
-installed on your system.  Calling `@sk_import linear_model: LinearRegression` should automatically install everything. If you have issues, please
-refer to [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation).
+installed on your system.  Calling `@sk_import linear_model: LinearRegression` should automatically install everything. You can also install `scikit-learn`
+manually with `Conda.add("scikit-learn")`. If you have other issues, please
+refer to [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation), or
+[post an issue](https://github.com/cstjean/ScikitLearn.jl/issues/new)
 
 Julia models
 ------
