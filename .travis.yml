@@ -15,6 +15,7 @@ env:
 before_install:
     #install scikit-learn to test functionallity
   - julia -e 'Pkg.add("Conda")'
+  - julia -e 'Pkg.add("RDatasets")'
   - julia -e 'using Conda; Conda.add("scikit-learn")'
 #script:
 #    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
