@@ -3,6 +3,8 @@
 
 include("../src/Skcore.jl")  # a bit awkward - FIXME
 
+include("test_models.jl") # runs tests automatically
+
 include("test_base.jl")
 all_test_base()
 
