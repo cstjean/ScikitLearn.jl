@@ -1,3 +1,5 @@
+import ..Utils: isfit  # should isfit be moved to ScikitLearnBase?
+
 """ `FixedFunctionRegressor(predict_fn::Function=row->...)` is a regression
 model specified entirely by `fn`, for testing
 purposes. `fit!(::FixedFunctionRegressor, ...)` is a no-op.
@@ -15,3 +17,5 @@ end
 fit!(ffr::FixedFunctionRegressor, X, y) = ffr
 predict(ffr::FixedFunctionRegressor, X) =
     squeeze(mapslices(ffr.predict_fn, X, 2), 2)
+
+isfit(ffr::FixedFunctionRegressor) = true
