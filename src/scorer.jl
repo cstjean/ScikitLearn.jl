@@ -36,8 +36,8 @@ type PredictScorer <: BaseScorer
     kwargs
 end
 
-function Base.call(self::PredictScorer, estimator, X, y_true;
-                   sample_weight=nothing)
+@compat function (self::PredictScorer)(estimator, X, y_true;
+                                       sample_weight=nothing)
     y_pred = predict(estimator, X)
     if sample_weight !== nothing
         return self.sign .* self.score_func(y_true, y_pred;

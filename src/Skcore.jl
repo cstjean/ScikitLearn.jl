@@ -8,6 +8,7 @@ using ScikitLearnBase
 
 using PyCall
 using Parameters
+using Compat
 
 include("sk_utils.jl")
 

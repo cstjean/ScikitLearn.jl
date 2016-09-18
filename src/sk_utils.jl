@@ -96,7 +96,7 @@ end
 
 """ Turns `Dict("x"=>10, "y"=>40)` into `Dict(:x=>10, :y=>40)` """
 kwargify(assoc::Associative) =
-    convert(Dict{Symbol, Any}, [Symbol(k)=>v for (k, v) in assoc])
+    convert(Dict{Symbol, Any}, [Pair(Symbol(k),v) for (k, v) in assoc])
 
 """ Check if ``y`` is in a multilabel format.
 

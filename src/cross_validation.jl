@@ -322,7 +322,7 @@ This is the value of the test parameter
 function _fit_and_predict(estimator, X, y, train, test, verbose, fit_params)
     fit_params = fit_params !== nothing ? fit_params : Dict()
     # Adjust length of sample weights
-    fit_params = Dict([(k => _index_param_value(X, v, train))
+    fit_params = Dict([Pair(k, _index_param_value(X, v, train))
                        for (k, v) in fit_params])
 
     X_train, y_train = _safe_split(estimator, X, y, train)
@@ -552,7 +552,7 @@ function _fit_and_score(estimator, X, y, scorer,
 
     # Adjust length of sample weights
     fit_params = fit_params!==nothing ? fit_params : Dict()
-    fit_params = Dict([k => _index_param_value(X, v, train)
+    fit_params = Dict([Pair(k, _index_param_value(X, v, train))
                        for (k, v) in fit_params])
 
     if parameters !== nothing
