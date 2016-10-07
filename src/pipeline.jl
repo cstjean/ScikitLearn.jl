@@ -47,7 +47,7 @@ type Pipeline <: CompositeEstimator
 end
 
 get_models(pip::Pipeline) = pip.models
-get_transforms(pip::Pipeline) = view(get_models(pip), 1:length(pip)-1)
+get_transforms(pip::Pipeline) = get_models(pip)[1:length(pip)-1]
 get_final_estimator(pip::Pipeline) = get_models(pip)[end]
 named_steps(pip::Pipeline) = Dict(pip.steps)
 Base.length(pip::Pipeline) = length(pip.steps)
