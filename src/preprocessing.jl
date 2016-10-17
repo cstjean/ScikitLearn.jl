@@ -15,7 +15,10 @@ end
 fit!(tf::TransformerFunction, X, y=nothing) = tf
 transform(tf::TransformerFunction, X) = tf.f(X)
 
-
+""" `TypeConverter(; new_type=Float64)` will transform the input array from
+one type to another (useful in pipelines) """
+TypeConverter{T}(; new_type::Type{T}=Float64) =
+    TransformerFunction(; f=arr->convert(Array{T}, arr))
 
 ################################################################################
 
