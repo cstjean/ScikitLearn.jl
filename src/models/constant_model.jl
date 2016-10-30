@@ -1,5 +1,5 @@
 # This is useful in part because it completely ignores X - so X can be a
-# dataframe, an empty array, whatever.
+# dataframe, an empty array, or anything.
 type ConstantRegressor{T} <: BaseRegressor
     value::T
     ConstantRegressor() = new()
