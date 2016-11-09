@@ -50,8 +50,8 @@ type DataFrameMapper <: BaseEstimator
                     "Bad DataFrameMapper features, see docstring")
         end
         @assert !sparse "TODO: support sparse"
-        features = [(columns, _build_transformer(transformers))
-                    for (columns, transformers) in features]
+        features = Tuple[(columns, _build_transformer(transformers))
+                         for (columns, transformers) in features]
         new(features, sparse, NA2NaN, output_type)
     end
 end

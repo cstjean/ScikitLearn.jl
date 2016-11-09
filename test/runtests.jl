@@ -20,5 +20,6 @@ all_test_crossvalidation()
 
 include("test_utils.jl")
 include("test_quickstart.jl")
+include("test_dataframes.jl")
 
 nothing

@@ -232,6 +232,9 @@ clone(fb::FitBit) = FitBit(clone(fb.model))
 
 @delegate(transform, FitBit.model)
 @delegate(predict, FitBit.model)
+@delegate(predict_proba, FitBit.model)
+@delegate(predict_dist, FitBit.model)
+@delegate(get_classes, FitBit.model)
 
 function fit!(fb::FitBit, args...; kwargs...)
     fit!(fb.model, args...; kwargs...)
