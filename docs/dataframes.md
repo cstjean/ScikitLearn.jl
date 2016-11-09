@@ -171,11 +171,12 @@ Now that we can combine features from a DataFrame, we may want to use cross-vali
 
 ```julia
 @sk_import linear_model: LinearRegression
+using ScikitLearn.CrossValidation: cross_val_score
 
 pipe = Pipelines.Pipeline([
      (:featurize, mapper),
      (:lm, LinearRegression())])
-round(CrossValidation.cross_val_score(pipe, data, data[:salary]), 2)
+round(cross_val_score(pipe, data, data[:salary]), 2)
 ```
 
 

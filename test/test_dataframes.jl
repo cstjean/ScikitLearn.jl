@@ -1,5 +1,7 @@
 # Code from http://scikitlearnjl.readthedocs.io/en/latest/dataframes/
 
+module TestingDataFrames
+
 using ScikitLearn
 using DataFrames: DataFrame, NA, DataArray
 using DataArrays: @data
@@ -37,8 +39,11 @@ round(fit_transform!(mapper3, copy(data)))
 
 
 @sk_import linear_model: LinearRegression
+using ScikitLearn.CrossValidation: cross_val_score
 
 pipe = Pipelines.Pipeline([
      (:featurize, mapper),
      (:lm, LinearRegression())])
-round(CrossValidation.cross_val_score(pipe, data, data[:salary]), 2)
+round(cross_val_score(pipe, data, data[:salary]), 2)
+
+end
