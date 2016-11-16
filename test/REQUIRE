@@ -5,3 +5,5 @@ DecisionTree
 GaussianProcesses
 GaussianMixtures
 LowRankModels
+PyPlot
+DataFrames
