@@ -22,4 +22,6 @@ include("test_utils.jl")
 include("test_quickstart.jl")
 include("test_dataframes.jl")
 
+include("run_examples.jl")
+
 nothing
