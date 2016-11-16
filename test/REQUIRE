@@ -1,3 +1,7 @@
 Conda
 RDatasets
 NBInclude
+DecisionTree
+GaussianProcesses
+GaussianMixtures
+LowRankModels
