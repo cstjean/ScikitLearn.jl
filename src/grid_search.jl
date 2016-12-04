@@ -249,8 +249,7 @@ Base.done(ps::ParameterSampler, state::Int) = state > ps.n_iter
 Base.length(self::ParameterSampler) = self.n_iter
 
 """Actual fitting,  performing the search over parameters."""
-function _fit!(self::BaseSearchCV, X::AbstractArray, y,
-               parameter_iterable)
+function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
     estimator = self.estimator
     cv = self.cv
     self.scorer_ = check_scoring(self.estimator, self.scoring)
