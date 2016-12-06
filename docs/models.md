@@ -41,8 +41,11 @@ necessary). They all implement the [common api](api.md), and provide
 hyperparameter information in their `?docstrings`.
 
 Unfortunately, some packages export a `fit!` function that conflicts with
-ScikitLearn's `fit!`. I recommend importing selectively, i.e. `using
-LowRankModels: GLRM, PCA, KMeans` instead of `using LowRankModels`.
+ScikitLearn's `fit!`. This can be fixed by adding this line:
+
+```julia
+using ScikitLearn: fit!, predict
+```
 
 ### ScikitLearn models
 
