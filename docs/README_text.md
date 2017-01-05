@@ -35,8 +35,6 @@ To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Py
 See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
 [example gallery](docs/examples.md).
 
-## Goal
+## Support
 
-ScikitLearn.jl aims for feature parity with scikit-learn. If you
-encounter any problem that is solved by that library but not this one, [file an
-issue](https://github.com/cstjean/ScikitLearn.jl/issues).
+The primary venues for getting support on ScikitLearn.jl are [Discourse](https://discourse.julialang.org) and [Github issues](https://github.com/cstjean/ScikitLearn.jl/issues).
