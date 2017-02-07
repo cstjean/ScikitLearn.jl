@@ -213,11 +213,17 @@ immutable ParameterSampler
     param_distributions
     n_iter::Int
     random_state::MersenneTwister
+    scipy_random_state::PyObject
 end
-ParameterSampler(param_distributions, n_iter::Int;
-                 random_state=MersenneTwister(42)) =
-    ParameterSampler(param_distributions, n_iter,
-                     check_random_state(random_state))
+function ParameterSampler(param_distributions, n_iter::Int;
+                          random_state=MersenneTwister(42))
+    random_state = check_random_state(random_state)
+    # We create a seed for the scipy RNG.
+    seed = rand(random_state, 1:100000)
+    RandomState = pyimport("numpy.random")[:RandomState]
+    return ParameterSampler(param_distributions, n_iter, random_state,
+                            RandomState(seed))
+end
 
 function Base.start(ps::ParameterSampler)
     # Julia note: sklearn has some code to sample without replacement when
@@ -234,7 +240,7 @@ function Base.next(ps::ParameterSampler, state::Int)
         # Julia note: That's how we detect numpy random distributions (gaussian,
         # ...) TODO: We should support Distributions.jl!
         if isa(v, PyObject)
-            params[k] = v[:rvs]()
+            params[k] = v[:rvs](random_state=ps.scipy_random_state)
         else
             @assert isa(v, AbstractVector)
             params[k] = rand(ps.random_state, v)
