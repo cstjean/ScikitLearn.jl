@@ -157,12 +157,14 @@ function set_params!(estimator::CompositeEstimator; params...) # from base.py
         if length(sp) > 1
             name, sub_name = sp
             if !haskey(valid_params, name::AbstractString)
-                throw(ArgumentError("Invalid parameter $name for estimator $estimator"))
+                throw(ArgumentError("Invalid parameter ($name) for estimator $estimator"))
             end
             sub_object = valid_params[name]
             set_params!(sub_object; Dict(Symbol(sub_name)=>value)...)
         else
-            TODO() # should be straight-forward
+            # TODO: AFAICT this is supported by sklearn, but I'd have to check how it's
+            # handled.
+            error("Bad parameter name: $key. For a $(typeof(estimator)), parameter names should be of the form :componentname__feature")
         end
     end
     estimator
