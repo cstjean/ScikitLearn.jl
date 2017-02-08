@@ -108,6 +108,19 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
+import_already_warned = false
+function import_sklearn()
+    global import_already_warned
+    mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+    version = VersionNumber(mod[:__version__])
+    min_version = v"0.18.0"
+    if version < min_version && !import_already_warned
+        warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
+        import_already_warned = true
+    end
+    return mod
+end
+
 """
 @sk_import imports models from the Python version of scikit-learn. Example:
 
@@ -124,8 +137,8 @@ macro sk_import(expr)
     end
     :(begin
         # Make sure that sklearn is installed.
-        PyCall.pyimport_conda("sklearn", "scikit-learn")
-        Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what)))
+        $Skcore.import_sklearn()
+        $Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what)))
     end)
 end
 

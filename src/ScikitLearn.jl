@@ -3,7 +3,7 @@
 # interface. This arrangement simplifies the codebase and allowed us to
 # experiment with different submodule structures without breaking everything.
 # TODO: I believe that we should get rid of most of the nested package
-# structure, but that will be a pain to transition out of.
+# structure, but the transition will be painful.
 
 __precompile__()
 
