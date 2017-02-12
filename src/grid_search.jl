@@ -5,17 +5,9 @@
 #                      Gael Varoquaux <gael.varoquaux@normalesup.org>
 #                      Andreas Mueller <amueller@ais.uni-bonn.de>
 #                      Olivier Grisel <olivier.grisel@ensta.org>
+# Julia port: Cedric St-Jean
 # License: BSD 3 clause
 
-
-## module GridSearch
-
-## using PyCall
-## using Parameters: @with_kw
-
-## using ..nunique, ..BaseEstimator, ..@import_api, ..kwargify, ..@pyimport2
-## using ..CrossValidation.check_scoring, ..CrossValidation.check_cv
-## using ..CrossValidation._fit_and_score
 
 abstract BaseSearchCV
 
@@ -30,7 +22,7 @@ end
 Can be used to iterate over parameter value combinations with the
 Python built-in function iter.
 
-Read more in the :ref:`User Guide <grid_search>`.
+Read more in the User Guide.
 
 Parameters
 ----------
@@ -46,9 +38,9 @@ param_grid : dict of string to sequence, or sequence of such
 
 Examples
 --------
->>> from sklearn.grid_search import ParameterGrid
->>> param_grid = {'a': [1, 2], 'b': [True, False]}
->>> list(ParameterGrid(param_grid)) == (
+>>> @sk_import sklearn.grid_search: ParameterGrid
+>>> param_grid = Dict(:a: [1, 2], :b: [true, false]}
+>>> collect(ParameterGrid(param_grid)) == (
 ...    [{'a': 1, 'b': True}, {'a': 1, 'b': False},
 ...     {'a': 2, 'b': True}, {'a': 2, 'b': False}])
 True
@@ -340,6 +332,41 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
     end
     return self
 end
+
+function score(self::BaseSearchCV, X, y=nothing)
+    if self.scorer_ === nothing
+        error("No score function explicitly defined, and the estimator doesn't provide one $(self.best_estimator_)")
+    end
+    return self.scorer_(self.best_estimator_, X, y)
+end
+
+function _check_is_fitted(self::BaseSearchCV, method_name::Symbol)
+    if !self.refit
+        error("This GridSearchCV instance was initialized with refit=False. $method_name is available only after refitting on the best parameters.")
+    else
+        # TODO: write this function. It doesn't translate directly into Julia.
+        # https://github.com/scikit-learn/scikit-learn/blob/e5ceda88f2a24b3dd4f9a94404828f982cdf52ad/sklearn/utils/validation.py#L650
+        #check_is_fitted(self, 'best_estimator_')
+    end
+end
+
+
+# Helper for defining all the delegators of BaseSearchCV
+macro bscv_delegate(method_name::Symbol)
+    esc(quote
+        function $method_name(self, X)
+            _check_is_fitted(self, $(Expr(:quote, method_name)))
+            return $method_name(self.best_estimator_, X)
+        end
+    end)
+end
+
+@bscv_delegate predict
+@bscv_delegate predict_proba
+@bscv_delegate predict_log_proba
+@bscv_delegate decision_function
+@bscv_delegate transform
+@bscv_delegate inverse_transform
 
 
 """Exhaustive search over specified parameter values for an estimator.
@@ -714,4 +741,3 @@ function fit!(self::RandomizedSearchCV, X, y=nothing)
     return _fit!(self, X, y, sampled_params)
 end
 
-## end
