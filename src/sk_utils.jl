@@ -88,6 +88,8 @@ Parameters
     Objects that will be checked for consistent length.
 """
 function check_consistent_length(arrays...)
+    # We're using Compat.Iterators to avoid a deprecation warning. In Julia 1.0, we want
+    # to use Base.filter instead.
     nuni = nunique([size(X, 1) for X in collect(Compat.Iterators.filter(x->x!=nothing, arrays))])
     if nuni > 1
         throw(ArgumentError("Found arrays with inconsistent numbers of samples: $nuni"))
