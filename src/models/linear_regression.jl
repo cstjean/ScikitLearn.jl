@@ -1,6 +1,6 @@
 type LinearRegression{T <: Array} <: BaseRegressor
     coefs::T
-    LinearRegression() = new()
+    LinearRegression{T}() where T = new()
 end
 
 """    LinearRegression(; eltype=Float64, multi_output=nothing)
