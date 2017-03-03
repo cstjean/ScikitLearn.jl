@@ -1,6 +1,8 @@
+using Compat: @compat
+
 type LinearRegression{T <: Array} <: BaseRegressor
     coefs::T
-    LinearRegression{T}() where T = new()
+    (::Type{LinearRegression{T}}){T}() = new{T}()
 end
 
 """    LinearRegression(; eltype=Float64, multi_output=nothing)

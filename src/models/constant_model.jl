@@ -2,7 +2,7 @@
 # dataframe, an empty array, or anything.
 type ConstantRegressor{T} <: BaseRegressor
     value::T
-    ConstantRegressor() = new()
+    (::Type{ConstantRegressor{T}}){T}() = new{T}()
 end
 ConstantRegressor() = ConstantRegressor{Float64}()
 @declare_hyperparameters(ConstantRegressor, Symbol[])
@@ -18,7 +18,7 @@ predict(cr::ConstantRegressor, X) = cr.value
 
 type FixedConstant{T} <: BaseRegressor
     value::T
-    FixedConstant(; value=0.0) = new(value)
+    (::Type{FixedConstant{T}}){T}(; value=0.0) = new{T}(value)
 end
 FixedConstant{T}(; value::T=0.0) = FixedConstant{T}(value=value)
 @declare_hyperparameters(FixedConstant, Symbol[:value])
