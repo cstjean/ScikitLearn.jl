@@ -3,7 +3,7 @@
 
 using ScikitLearnBase: mean_squared_error
 
-abstract BaseScorer
+@compat abstract type BaseScorer end
 
 
 """Evaluate predicted target values for X relative to y_true.

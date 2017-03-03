@@ -145,7 +145,7 @@ end
 ################################################################################
 
 # A CompositeEstimator contains one or more estimators
-abstract CompositeEstimator <: BaseEstimator
+@compat abstract type CompositeEstimator <: BaseEstimator end
 
 function set_params!(estimator::CompositeEstimator; params...) # from base.py
     # Simple optimisation to gain speed (inspect is slow)

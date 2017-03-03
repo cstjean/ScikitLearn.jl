@@ -9,7 +9,7 @@
 # License: BSD 3 clause
 
 
-abstract BaseSearchCV
+@compat abstract type BaseSearchCV end
 
 immutable CVScoreTuple
     parameters
