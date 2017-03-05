@@ -2,17 +2,19 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 using Base.Test
-using Skcore
-using Skcore: Pipeline, FeatureUnion, make_pipeline
-using ScikitLearnBase: declare_hyperparameters
+importall ScikitLearnBase
+using ScikitLearn
+using ScikitLearn.Pipelines: Pipeline, FeatureUnion, make_pipeline
+using ScikitLearnBase: @declare_hyperparameters
+using ScikitLearn.Skcore: named_steps
 using PyCall: PyError
 
-@pyimport2 sklearn.svm: SVC
-@pyimport2 sklearn.feature_selection: (SelectKBest, f_classif)
-@pyimport2 sklearn.datasets: load_iris
-@pyimport2 sklearn.linear_model: (LogisticRegression, LinearRegression)
-@pyimport2 sklearn.decomposition: (PCA, RandomizedPCA, TruncatedSVD)
-@pyimport2 sklearn.preprocessing: StandardScaler
+@sk_import svm: SVC
+@sk_import feature_selection: (SelectKBest, f_classif)
+@sk_import datasets: load_iris
+@sk_import linear_model: (LogisticRegression, LinearRegression)
+@sk_import decomposition: (PCA, RandomizedPCA, TruncatedSVD)
+@sk_import preprocessing: StandardScaler
 
 
 JUNK_FOOD_DOCS = (
@@ -36,13 +38,13 @@ type T
     T(a=nothing, b=nothing) = new(a, b)
 end
 
-Skcore.fit!(self::T, X, y) = self
-Skcore.get_params(self::T; deep=false) = Dict("a"=>self.a, "b"=>self.b)
-function Skcore.set_params!(self::T; a=error("Missing value"))
+fit!(self::T, X, y) = self
+get_params(self::T; deep=false) = Dict("a"=>self.a, "b"=>self.b)
+function set_params!(self::T; a=error("Missing value"))
     self.a = a
     return self
 end
-Skcore.transform(self::T, X) = X
+transform(self::T, X) = X
 
 
 ############################################################
@@ -52,13 +54,13 @@ type FitParamT
     successful
     FitParamT(;successful=false) = new(successful)
 end
-declare_hyperparameters(FitParamT, [:successful])
+@declare_hyperparameters(FitParamT, [:successful])
 
-function Skcore.fit!(self::FitParamT, X, y; should_succeed=false)
+function fit!(self::FitParamT, X, y; should_succeed=false)
     self.successful = should_succeed
 end
 
-function Skcore.predict(self::FitParamT, X)
+function predict(self::FitParamT, X)
     return self.successful
 end
 

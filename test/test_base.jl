@@ -2,15 +2,16 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 using Base.Test
-using Skcore
-using Skcore: GridSearchCV
-using Skcore: Pipeline, is_classifier
-using PyCall: PyError
+using ScikitLearn
+using ScikitLearn.GridSearch: GridSearchCV
+using ScikitLearn.Pipelines: Pipeline
+using ScikitLearn.Utils
+using PyCall: @pyimport, PyError
 
-@pyimport2 sklearn.svm: SVC
-@pyimport2 sklearn.feature_selection: (SelectFpr, f_classif)
-@pyimport2 sklearn.tree: (DecisionTreeClassifier, DecisionTreeRegressor)
-@pyimport2 sklearn: datasets
+@sk_import svm: SVC
+@sk_import feature_selection: (SelectFpr, f_classif)
+@sk_import tree: (DecisionTreeClassifier, DecisionTreeRegressor)
+@pyimport sklearn.datasets as datasets
 
 
 function test_is_classifier()

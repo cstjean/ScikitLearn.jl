@@ -5,7 +5,7 @@
 import PyCall
 PyCall.pyimport_conda("sklearn", "scikit-learn")
 
-include("../src/Skcore.jl")  # a bit awkward - FIXME
+using ScikitLearn
 
 include("test_models.jl") # runs tests automatically
 

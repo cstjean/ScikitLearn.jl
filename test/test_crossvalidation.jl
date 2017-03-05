@@ -1,12 +1,13 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
+importall ScikitLearnBase
 using Base.Test
-using Skcore
-using Skcore: cross_val_score
+using ScikitLearn
+using ScikitLearn.CrossValidation: cross_val_score
 using PyCall: PyError
 
-@pyimport2 sklearn.cross_validation as cval
+## @pyimport2 sklearn.cross_validation as cval
 
 
 ## function check_valid_split(train, test, n_samples=None)
@@ -33,8 +34,8 @@ type MockClassifier
     MockClassifier(; a=0, allow_nd=false) =
         new(a, allow_nd, nothing, nothing, nothing)
 end
-declare_hyperparameters(MockClassifier, [:a, :allow_nd])
-Skcore.is_classifier(::MockClassifier) = true
+@declare_hyperparameters(MockClassifier, [:a, :allow_nd])
+is_classifier(::MockClassifier) = true
 
 
 """The dummy arguments are to test that this fit function can
@@ -44,7 +45,7 @@ accept non-array arguments through cross-validation, such as:
     - object
     - function
 """
-function Skcore.fit!(self::MockClassifier, X, Y=nothing; sample_weight=nothing,
+function fit!(self::MockClassifier, X, Y=nothing; sample_weight=nothing,
                      class_prior=nothing,
                      sparse_sample_weight=nothing, sparse_param=nothing,
                      dummy_int=nothing,
@@ -88,14 +89,14 @@ function Skcore.fit!(self::MockClassifier, X, Y=nothing; sample_weight=nothing,
 end
 
 
-function Skcore.predict(self::MockClassifier, T)
+function predict(self::MockClassifier, T)
     if self.allow_nd
         T = reshape(T, size(T, 1), Int(length(T) / size(T, 1)))
     end
     return size(T, 1)
 end
 
-Skcore.score(self::MockClassifier, X=nothing, Y=nothing) =
+score(self::MockClassifier, X=nothing, Y=nothing) =
     1. / (1 + abs(self.a))
 
 
