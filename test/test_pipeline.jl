@@ -13,7 +13,7 @@ using PyCall: PyError
 @sk_import feature_selection: (SelectKBest, f_classif)
 @sk_import datasets: load_iris
 @sk_import linear_model: (LogisticRegression, LinearRegression)
-@sk_import decomposition: (PCA, RandomizedPCA, TruncatedSVD)
+@sk_import decomposition: (PCA, TruncatedSVD)
 @sk_import preprocessing: StandardScaler
 
 
@@ -183,7 +183,7 @@ function test_pipeline_methods_preprocessing_svm()
     n_samples = size(X, 1)
     n_classes = length(unique(y))
     scaler = StandardScaler()
-    pca = RandomizedPCA(n_components=2, whiten=true)
+    pca = PCA(n_components=2, whiten=true, svd_solver="randomized")
     clf = SVC(probability=true, random_state=0)
 
     for preprocessing in [scaler, pca]
@@ -303,7 +303,7 @@ function test_feature_union_weights()
     iris = load_iris()
     X = iris["data"]
     y = iris["target"]
-    pca = RandomizedPCA(n_components=2, random_state=0)
+    pca = PCA(n_components=2, random_state=0, svd_solver="randomized"))
     select = SelectKBest(k=1)
     # test using fit followed by transform
     fs = FeatureUnion([("pca", pca), ("select", select)],
