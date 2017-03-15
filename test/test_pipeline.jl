@@ -303,7 +303,7 @@ function test_feature_union_weights()
     iris = load_iris()
     X = iris["data"]
     y = iris["target"]
-    pca = PCA(n_components=2, random_state=0, svd_solver="randomized"))
+    pca = PCA(n_components=2, random_state=0, svd_solver="randomized")
     select = SelectKBest(k=1)
     # test using fit followed by transform
     fs = FeatureUnion([("pca", pca), ("select", select)],
