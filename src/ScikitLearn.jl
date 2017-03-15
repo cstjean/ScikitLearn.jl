@@ -76,9 +76,9 @@ export DictEncoder, PolynomialFeatures
 end
 
 
-using Requires
-@require DataFrames include("dataframes.jl")
-
+## using Requires
+## @require DataFrames include("dataframes.jl")
+include("dataframes.jl")
 
 module Models
 include("models/models.jl")
