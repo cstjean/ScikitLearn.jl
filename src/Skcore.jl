@@ -144,6 +144,9 @@ macro sk_import(expr)
     :(begin
         # Make sure that sklearn is installed.
         $Skcore.import_sklearn()
+        # We used to rely on @pyimport2, but that macro unfortunately loads the Python
+        # module at macro-expansion-time, which happens before Skcore.import_sklearn().
+        # The new `pyimport`-based implementation is cleaner - Mar'17
         mod_obj = pyimport($mod_string)
         $([:(const $(esc(w)) = mod_obj[$(Expr(:quote, w))])
            for w in members]...)
