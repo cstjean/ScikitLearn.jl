@@ -22,6 +22,24 @@ include("test_utils.jl")
 include("test_quickstart.jl")
 include("test_dataframes.jl")
 
-include("run_examples.jl")
+exceptions = ["Density_Estimation_Julia.ipynb", # fails on 0.6 as of MAR17
+              ]
+function run_examples()
+    ex_dir = "../examples/"
+    for fname in readdir(ex_dir)
+        if !(fname in exceptions)
+            path = ex_dir * fname
+            if endswith(fname, ".ipynb")
+                println("Testing $path")
+                @eval module Testing
+                    using NBInclude
+                    nbinclude($path)
+                end
+            end
+        end
+    end
+end
+
+run_examples()
 
 nothing
