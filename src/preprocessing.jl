@@ -2,6 +2,7 @@ importall ScikitLearnBase
 
 using Iterators: chain
 import Iterators
+import Compat
 
 
 """ `TransformerFunction(f::Function)` is a non-learning transformer. It has a
@@ -108,7 +109,8 @@ end
 
 combinations_with_replacement(arr, degree) =
     (degree == 0 ? [()] : # needs to special-case
-     filter(issorted, Iterators.product(fill(arr, degree)...)))
+     # In 1.0, use Iterators.filter
+     Compat.Iterators.filter(issorted, Iterators.product(fill(arr, degree)...)))
 
 function _combinations(n_features, degree, interaction_only, include_bias)
     comb = interaction_only ? combinations : combinations_with_replacement
