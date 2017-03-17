@@ -22,7 +22,9 @@ include("test_utils.jl")
 include("test_quickstart.jl")
 include("test_dataframes.jl")
 
-exceptions = ["Density_Estimation_Julia.ipynb", # fails on 0.6 as of MAR17
+exceptions = ["Density_Estimation_Julia.ipynb", #GaussianMixtures fails on 0.6 as of MAR17
+              "Plot_Kmeans_Digits_Julia.ipynb", # LowRankModels fails on 0.6 as of MAR17
+              "Simple_1D_Kernel_Density.ipynb", # https://github.com/JuliaPy/PyCall.jl/issues/372
               ]
 function run_examples()
     ex_dir = "../examples/"
