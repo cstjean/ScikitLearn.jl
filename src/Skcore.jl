@@ -135,10 +135,18 @@ macro sk_import(expr)
     if :sklearn in symbols_in(expr)
         error("Bad @sk_import: please remove `sklearn.` (it is implicit)")
     end
+    if isa(what, Symbol)
+        members = [what]
+    else
+        @assert @capture(what, ((members__),)) "Bad @sk_import statement"
+    end
+    mod_string = "sklearn.$mod"
     :(begin
         # Make sure that sklearn is installed.
         $Skcore.import_sklearn()
-        $Skcore.@pyimport2($(esc(Expr(:., :sklearn, mod))): $(esc(what)))
+        mod_obj = pyimport($mod_string)
+        $([:(const $(esc(w)) = mod_obj[$(Expr(:quote, w))])
+           for w in members]...)
     end)
 end
 
