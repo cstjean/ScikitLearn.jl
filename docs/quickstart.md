@@ -96,6 +96,8 @@ plot([cv_res.parameters[:C] for cv_res in gridsearch.grid_scores_],
 Both Python and Julia models can be [saved to disk](jld.jl)
 
 ```julia
+import JLD, PyCallJLD
+
 JLD.save("my_model.jld", "model", model)
 model = JLD.load("my_model.jld", "model")    # Load it back
 ```
