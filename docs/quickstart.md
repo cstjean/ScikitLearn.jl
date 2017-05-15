@@ -90,3 +90,12 @@ using PyPlot
 plot([cv_res.parameters[:C] for cv_res in gridsearch.grid_scores_],
      [mean(cv_res.cv_validation_scores) for cv_res in gridsearch.grid_scores_])
 ```
+
+### Saving the model to disk
+
+Both Python and Julia models can be [saved to disk](jld.jl)
+
+```julia
+JLD.save("my_model.jld", "model", model)
+model = JLD.load("my_model.jld", "model")    # Load it back
+```

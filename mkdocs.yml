@@ -15,4 +15,5 @@ pages:
 - Model selection: model_selection.md
 - Pipelines and FeatureUnion: pipelines.md
 - DataFrames: dataframes.md
+- Saving models to disk: jld.md
 - Getting help: help.md
