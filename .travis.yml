@@ -4,12 +4,13 @@ os:
     - osx
 julia:
     - 0.5
+    - 0.6
     - nightly
 notifications:
     email: false
-#matrix:
-#    allow_failures:
-#    - julia: nightly
+matrix:
+    allow_failures:
+    - julia: nightly
 git:
     depth: 99999
 env:
