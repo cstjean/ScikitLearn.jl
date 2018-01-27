@@ -271,7 +271,9 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
     base_estimator = clone(self.estimator)
 
     @assert self.n_jobs == 1 "TODO: support n_jobs > 1"
-    out = vcat(Any[[_fit_and_score(clone(base_estimator), X, y, self.scorer_,
+    out = []
+    if nprocs() == 1
+        out = vcat(Any[[_fit_and_score(clone(base_estimator), X, y, self.scorer_,
                                    train, test, self.verbose,
                                    kwargify(parameters),
                                    kwargify(self.fit_params),
@@ -279,7 +281,18 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
                                    error_score=self.error_score)
                     for (train, test) in cv]
                    for parameters in parameter_iterable]...)
-
+    else
+        out = @sync @parallel (vcat) for parameters in parameter_iterable
+           [_fit_and_score(clone(base_estimator), X, y, self.scorer_,
+                                   train, test, self.verbose,
+                                   kwargify(parameters),
+                                   kwargify(self.fit_params),
+                                   return_parameters=true,
+                                   error_score=self.error_score)
+                    for (train, test) in cv]
+            end
+    end
+    println(out[1])
     # Out is a list of triplet: score, estimator, n_test_samples
     n_fits = length(out)
     n_folds = length(cv)
