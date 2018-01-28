@@ -752,6 +752,8 @@ function fit!(self::RandomizedSearchCV, X, y=nothing)
     sampled_params = ParameterSampler(self.param_distributions,
                                       self.n_iter,
                                       random_state=self.random_state)
+    #This is required for parallel execution
+    #(The iterable has to be indexable for @parallel for)
     parameter_grid = [params for params in sampled_params]
     return _fit!(self, X, y, parameter_grid)
 end
