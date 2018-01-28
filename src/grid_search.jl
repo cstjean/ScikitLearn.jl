@@ -58,6 +58,7 @@ See also
 :class:`GridSearchCV`:
     uses ``ParameterGrid`` to perform a full parallelized parameter search.
 """
+
 immutable ParameterGrid <: AbstractVector{Any}
     param_grid::Vector
 end
@@ -253,7 +254,7 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
     self.scorer_ = check_scoring(self.estimator, self.scoring)
 
     n_samples = size(X, 1)
-
+    typeof(parameter_iterable)
     if y !== nothing
         if size(y, 1) != n_samples
             throw(ArgumentError("Target variable (y) has a different number of samples ($(size(y, 1))) than data (X: $n_samples samples)"))
@@ -751,6 +752,7 @@ function fit!(self::RandomizedSearchCV, X, y=nothing)
     sampled_params = ParameterSampler(self.param_distributions,
                                       self.n_iter,
                                       random_state=self.random_state)
-    return _fit!(self, X, y, sampled_params)
+    parameter_grid = [params for params in sampled_params]
+    return _fit!(self, X, y, parameter_grid)
 end
 
