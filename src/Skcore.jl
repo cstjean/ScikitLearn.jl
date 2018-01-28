@@ -122,8 +122,9 @@ function import_sklearn()
 end
 
 """
-@sk_import imports models from the Python version of scikit-learn. Example:
-
+-@sk_import imports models from the Python version of scikit-learn. For instance, the
+-Julia equivalent of
+-`from sklearn.linear_model import LinearRegression, LogicisticRegression` is:
     @sk_import linear_model: (LinearRegression, LogisticRegression)
     model = fit!(LinearRegression(), X, y)
 """
@@ -187,5 +188,4 @@ include("pipeline.jl")
 include("scorer.jl")
 include("cross_validation.jl")
 include("grid_search.jl")
-
 end

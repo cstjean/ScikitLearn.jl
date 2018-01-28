@@ -9,7 +9,6 @@ __precompile__()
 
 module ScikitLearn
 
- 
 include("Skcore.jl")
 
 using PyCall: @pyimport

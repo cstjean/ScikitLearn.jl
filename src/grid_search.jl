@@ -254,7 +254,7 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
     self.scorer_ = check_scoring(self.estimator, self.scoring)
 
     n_samples = size(X, 1)
-    typeof(parameter_iterable)
+
     if y !== nothing
         if size(y, 1) != n_samples
             throw(ArgumentError("Target variable (y) has a different number of samples ($(size(y, 1))) than data (X: $n_samples samples)"))
