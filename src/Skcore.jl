@@ -34,7 +34,7 @@ sk_base() = importpy("sklearn.base")
 
 # This should be in ScikitLearn.jl, maybe?
 translated_modules =
-    Dict(:cross_validation => :CrossValidation,
+    Dict(:model_selection => :CrossValidation,
          :pipeline => :Pipelines,
          :grid_search => :GridSearch)
 

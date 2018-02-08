@@ -39,7 +39,7 @@ julia_iterators = [:KFold, :StratifiedKFold]
 # things), but we could do better.
 for cv_iter in setdiff(cv_iterator_syms, julia_iterators)
     @eval function $cv_iter(args...; kwargs...)
-        sk_cv = importpy("sklearn.cross_validation")
+        sk_cv = importpy("sklearn.model_selection")
         fix_cv_iter_indices(sk_cv[$(Expr(:quote, cv_iter))](args...; kwargs...))
     end
 end
@@ -658,7 +658,7 @@ end
 
 
 function train_test_split(args...; kwargs...)
-    cv = importpy("sklearn.cross_validation")
+    cv = importpy("sklearn.model_selection")
     # This is totally cheating - TODO: rewrite in Julia
     # It's used in Classifier_Comparison
     cv[:train_test_split](args...; kwargs...)
