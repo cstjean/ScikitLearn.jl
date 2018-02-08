@@ -5,7 +5,7 @@ export DataFrameMapper, DataFrameColSelector
 
 importall ScikitLearnBase
 
-using DataFrames: DataFrame, DataArray, DataVector, isna, eachcol,
+using DataFrames: DataFrame, ismissing, eachcol,
                   AbstractDataFrame, DataFrameRow
 
 _build_transformer(transformers) = transformers
@@ -15,7 +15,7 @@ function _build_transformer(transformers::Vector)
 end
 
 """
-    DataFrameMapper(features; sparse=false, NA2NaN=false,
+    DataFrameMapper(features; sparse=false, missing2NaN=false,
                     output_type=Matrix{Float64})
 
 Map DataFrame column subsets to their own scikit-learn transformation.
@@ -28,16 +28,16 @@ Arguments:
                    sklearn's transform interface, or a vector of such objects.
 - **sparse**       will return sparse matrix if set to true and any of the
                    extracted features is sparse. Defaults to False.
-- **NA2NaN**       will convert DataArray NAs to NaNs (necessary for Python
+- **missing2NaN**  will convert missing values to NaNs (necessary for Python
                    models)
 - **output_type**: the type of the result (default: Matrix{Float64})
 """
 type DataFrameMapper <: BaseEstimator
     features::Vector{Tuple}
     sparse::Bool
-    NA2NaN::Bool
+    missing2NaN::Bool
     output_type::Type
-    function DataFrameMapper(features; sparse=false, NA2NaN=false,
+    function DataFrameMapper(features; sparse=false, missing2NaN=false,
                              # In scikit-learn, accepting 1D arguments is
                              # deprecated. See scikit-learn/pull/4511
                              output_type=Matrix{Float64})
@@ -52,14 +52,14 @@ type DataFrameMapper <: BaseEstimator
         @assert !sparse "TODO: support sparse"
         features = Tuple[(columns, _build_transformer(transformers))
                          for (columns, transformers) in features]
-        new(features, sparse, NA2NaN, output_type)
+        new(features, sparse, missing2NaN, output_type)
     end
 end
 
 clone(dfm::DataFrameMapper) =
     DataFrameMapper([(col, feat===nothing ? feat : clone(feat))
                      for (col, feat) in dfm.features];
-                    sparse=dfm.sparse, NA2NaN=dfm.NA2NaN)
+                    sparse=dfm.sparse, missing2NaN=dfm.missing2NaN)
     
 
 """
@@ -67,7 +67,6 @@ Convert a vector to a matrix
 """
 _handle_feature(fea::Vector) = reshape(fea, length(fea), 1)
 _handle_feature(fea::Matrix) = fea
-_handle_feature(fea::DataArray) = _handle_feature(convert(Array, fea))
 
 """
 Get a subset of columns from the given table X.
@@ -89,7 +88,7 @@ function _get_col_subset(X, cols::Vector{Symbol}; return_vector=false)
     end
 
     try
-        return convert(DataArray, return_vector ? X[:, cols[1]] : X[:, cols])
+        return convert(Array, return_vector ? X[:, cols[1]] : X[:, cols])
     catch e
         if isa(e, KeyError)
             throw(KeyError("DataFrameMapper: in dataframe (size=$(size(X)), cols=$(names(X))), $cols")) # not found
@@ -100,25 +99,21 @@ end
 _get_col_subset(X, col::Symbol) =
     _get_col_subset(X, [col], return_vector=true)
 
-function _maybe_convert_NA(dfm::DataFrameMapper, X::DataFrame)
+function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
     # The type to promote to (must be able to contain NaN)
-    sup_type{T<:Number}(::Type{T}) = Float64
-    sup_type(::Type{Any}) = Any
-    if dfm.NA2NaN
+    sup_type(::Type{<:Number}) = Float64
+    sup_type(::Type) = Any
+    if dfm.missing2NaN
         X = copy(X)
         # There might be a much simpler way of doing this with DataFrames
         for col in names(X)
             values = X[col]
-            if isa(values, Array)
-                # Only DataArrays contain NA, so don't waste time with Arrays
-                continue
-            end
-            na_inds = isna(values)
+            na_inds = ismissing.(values)
             # We can't put a NaN in an array of Int. This is ugly code, FIXME
             if any(na_inds)
                 values = copy(values) # since we'll modify it
                 if !(eltype(values) <: AbstractFloat)
-                    values = convert(DataVector{sup_type(eltype(values))},
+                    values = convert(Vector{sup_type(eltype(values))},
                                      copy(values))
                 end
                 values[na_inds] = NaN
@@ -130,7 +125,7 @@ function _maybe_convert_NA(dfm::DataFrameMapper, X::DataFrame)
 end
 
 function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
-    X = _maybe_convert_NA(self, X)
+    X = _maybe_convert_missing(self, X)
     for (columns, transformers) in self.features
         if transformers !== nothing
             fit!(transformers, _get_col_subset(X, columns))
@@ -140,7 +135,7 @@ function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
 end
 
 function transform(self::DataFrameMapper, X::DataFrame)
-    X = _maybe_convert_NA(self, X)
+    X = _maybe_convert_missing(self, X)
     extracted = []
     for (columns, transformers) in self.features
         # columns could be a string or list of strings; we don't care because
