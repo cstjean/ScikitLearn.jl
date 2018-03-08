@@ -245,6 +245,17 @@ Base.done(ps::ParameterSampler, state::Int) = state > ps.n_iter
 
 """Number of points that will be sampled."""
 Base.length(self::ParameterSampler) = self.n_iter
+"""Simple function for assisting with iterating over folds during cross-validation fitting"""
+function fit_cv_rotations(self::BaseSearchCV, estimator, X, y, parameters, cv)
+    rotation_results = [_fit_and_score(estimator, X, y, self.scorer_,
+                                train, test, self.verbose,
+                                kwargify(parameters),
+                                kwargify(self.fit_params),
+                                return_parameters=true,
+                                error_score=self.error_score)
+                        for (train, test) in cv]
+    return rotation_results
+end
 
 """Actual fitting,  performing the search over parameters."""
 function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
@@ -271,15 +282,15 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
     base_estimator = clone(self.estimator)
 
     @assert self.n_jobs == 1 "TODO: support n_jobs > 1"
-    out = vcat(Any[[_fit_and_score(clone(base_estimator), X, y, self.scorer_,
-                                   train, test, self.verbose,
-                                   kwargify(parameters),
-                                   kwargify(self.fit_params),
-                                   return_parameters=true,
-                                   error_score=self.error_score)
-                    for (train, test) in cv]
+    out = []
+    if nprocs() == 1
+        out = vcat(Any[fit_cv_rotations(self, base_estimator, X, y, parameters, cv)
                    for parameters in parameter_iterable]...)
-
+    else
+        out = @sync @parallel (vcat) for parameters in parameter_iterable
+                fit_cv_rotations(self, base_estimator, X, y, parameters, cv)
+            end
+    end
     # Out is a list of triplet: score, estimator, n_test_samples
     n_fits = length(out)
     n_folds = length(cv)
@@ -738,6 +749,8 @@ function fit!(self::RandomizedSearchCV, X, y=nothing)
     sampled_params = ParameterSampler(self.param_distributions,
                                       self.n_iter,
                                       random_state=self.random_state)
-    return _fit!(self, X, y, sampled_params)
+    #This is required for parallel execution
+    #(The iterable has to be indexable for @parallel for)
+    return _fit!(self, X, y, collect(sampled_params))
 end
 
