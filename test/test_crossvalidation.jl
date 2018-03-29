@@ -6,6 +6,7 @@ using Base.Test
 using ScikitLearn
 using ScikitLearn.CrossValidation: cross_val_score
 using PyCall: PyError
+using RDatasets
 
 ## @pyimport2 sklearn.cross_validation as cval
 
@@ -106,6 +107,11 @@ X_sparse = sparse(X)
 ##                       shape=(10, 1))
 P_sparse = sparse(eye(5))
 y = [floor(Int, x / 2) for x in 0:9]
+
+
+boston = dataset("MASS", "Boston")
+X_reg = Matrix(boston[1:13])
+y_reg = Array(boston[:MedV])
 
 ################################################################################
 # Tests
@@ -219,10 +225,22 @@ function test_cross_val_score_score_func()
     @test length(_score_func_args) == 3
 end
 
+function test_corss_val_r2_score()
+    X = X_reg
+    y = y_reg
+    @sk_import linear_model: LinearRegression
+    @sk_import metrics: r2_score
+    lr = LinearRegression()
+    scores1 = cross_val_score(lr, X, y,  scoring="r2", cv=5)
+    r2_scorer = ScikitLearn.Skcore.make_scorer(r2_score)
+    scores2 = cross_val_score(lr, X, y,  scoring=r2_scorer, cv=5)
+    @test isapprox(scores1, scores2)
+end
 
 function all_test_crossvalidation()
     test_cross_val_score()
     test_cross_val_score_fit_params()
+    test_corss_val_r2_score()
     # Disabled until we have `make_scorer`
     #test_cross_val_score_score_func()
 end
