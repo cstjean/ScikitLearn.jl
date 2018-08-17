@@ -3,7 +3,7 @@
 
 using ScikitLearnBase: mean_squared_error
 
-@compat abstract type BaseScorer end
+abstract type BaseScorer end
 
 
 """Evaluate predicted target values for X relative to y_true.
@@ -28,7 +28,7 @@ Returns
 score : float
 Score function applied to prediction of estimator on X.
 """
-type PredictScorer <: BaseScorer
+mutable struct PredictScorer <: BaseScorer
     # score_func should ideally be ::Function, but we're still relying on the
     # Python functions. Not a big deal, but TODO
     score_func
@@ -36,8 +36,7 @@ type PredictScorer <: BaseScorer
     kwargs
 end
 
-@compat function (self::PredictScorer)(estimator, X, y_true;
-                                       sample_weight=nothing)
+function (self::PredictScorer)(estimator, X, y_true; sample_weight=nothing)
     y_pred = predict(estimator, X)
     if sample_weight !== nothing
         return self.sign .* self.score_func(y_true, y_pred;

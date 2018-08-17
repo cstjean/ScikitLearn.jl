@@ -9,7 +9,7 @@ as a single value for one-hot-encoding. It works with any hashable datatype.
 It is common to use it inside a DataFrameMapper, with a particular subset of
 the columns.
 """
-type DictEncoder <: BaseEstimator
+mutable struct DictEncoder <: BaseEstimator
     di::Dict{Any, Int}
     DictEncoder() = new(Dict{Any, Int}())
 end

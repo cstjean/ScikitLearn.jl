@@ -163,10 +163,10 @@ function ScikitLearnBase.transform(self::DataFrameMapper, X::DataFrame)
     return hcat(extracted...)
 end
 
-ScikitLearnBase.transform{T<:Dict}(dfm::DataFrameMapper, X::Vector{T}) =
+ScikitLearnBase.transform(dfm::DataFrameMapper, X::Vector{T}) where {T<:Dict} =
     # This could be handled better...
     transform(dfm, DataFrame(X))
-ScikitLearnBase.transform{T<:DataFrameRow}(dfm::DataFrameMapper, X::Vector{T}) =
+ScikitLearnBase.transform(dfm::DataFrameMapper, X::Vector{T}) where {T<:DataFrameRow} =
     # This could be handled much, much better...
     transform(dfm, [Dict(dfr) for dfr in X])
 
@@ -194,8 +194,8 @@ ScikitLearnBase.transform(dfcs::DataFrameColSelector, X::AbstractDataFrame) =
 
 ScikitLearnBase.transform(dfcs::DataFrameColSelector, X) =
     _transform(dfcs, X, dfcs.output_type)
-_transform{T<:DataFrameRow, O}(dfcs::DataFrameColSelector, X::Vector{T},
-                            ::Type{Matrix{O}}) =
+_transform(dfcs::DataFrameColSelector, X::Vector{T},
+           ::Type{Matrix{O}}) where {T<:DataFrameRow, O} =
     O[dfr[col] for dfr in X, col in dfcs.cols]
 
 ################################################################################

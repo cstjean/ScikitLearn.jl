@@ -2,7 +2,7 @@
 # dataframe, an empty array, or anything.
 mutable struct ConstantRegressor{T} <: BaseRegressor
     value::T
-    (::Type{ConstantRegressor{T}}){T}() = new{T}()
+    ConstantRegressor{T}() where T = new{T}()
 end
 ConstantRegressor() = ConstantRegressor{Float64}()
 @declare_hyperparameters(ConstantRegressor, Symbol[])
@@ -18,9 +18,9 @@ ScikitLearnBase.predict(cr::ConstantRegressor, X) = cr.value
 
 mutable struct FixedConstant{T} <: BaseRegressor
     value::T
-    (::Type{FixedConstant{T}}){T}(; value=0.0) = new{T}(value)
+    FixedConstant{T}(; value=0.0) where T = new{T}(value)
 end
-FixedConstant{T}(; value::T=0.0) = FixedConstant{T}(value=value)
+FixedConstant(; value::T=0.0) where T = FixedConstant{T}(value=value)
 @declare_hyperparameters(FixedConstant, Symbol[:value])
 
 ScikitLearnBase.fit!(fc::FixedConstant, X, y) = fc

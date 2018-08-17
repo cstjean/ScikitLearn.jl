@@ -6,7 +6,7 @@ import Compat
 """ `TransformerFunction(f::Function)` is a non-learning transformer. It has a
 no-op fit! function, and `transform(::TransformerFunction, X)` calls `f(X)`. It
 is meant as a convenience for use in a pipeline. """
-type TransformerFunction <: BaseEstimator
+mutable struct TransformerFunction <: BaseEstimator
     f::Function
     TransformerFunction(; f=error("Missing argument f")) = new(f)
 end
@@ -93,7 +93,7 @@ exponentially in the degree. High degrees can cause overfitting.
 See :ref:`examples/linear_model/plot_polynomial_interpolation.py
 <example_linear_model_plot_polynomial_interpolation.py>`
 """
-type PolynomialFeatures <: BaseEstimator
+mutable struct PolynomialFeatures <: BaseEstimator
     degree::Int
     interaction_only::Bool
     include_bias::Bool

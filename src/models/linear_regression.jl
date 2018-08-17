@@ -2,7 +2,7 @@ using Compat: @compat
 
 mutable struct LinearRegression{T <: Array} <: BaseRegressor
     coefs::T
-    (::Type{LinearRegression{T}}){T}() = new{T}()
+    LinearRegression{T}() where T = new{T}()
 end
 
 """    LinearRegression(; eltype=Float64, multi_output=nothing)
@@ -25,7 +25,8 @@ end
 
 @declare_hyperparameters(LinearRegression, Symbol[])
 
-function ScikitLearnBase.fit!{XT, yT}(lr::LinearRegression, X::Array{XT}, y::Array{yT})
+function ScikitLearnBase.fit!(lr::LinearRegression, X::Array{XT},
+                              y::Array{yT}) where {XT, yT}
     if XT == Float32 || yT == Float32
         warn("Regression on Float32 is prone to inaccuracy")
     end

@@ -4,6 +4,7 @@
 # change the public module structure.
 module Skcore
 
+using Random, LinearAlgebra
 using ScikitLearnBase
 
 using PyCall

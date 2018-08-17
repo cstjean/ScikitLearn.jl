@@ -9,9 +9,9 @@
 # License: BSD 3 clause
 
 
-@compat abstract type BaseSearchCV end
+abstract type BaseSearchCV end
 
-immutable CVScoreTuple
+struct CVScoreTuple
     parameters
     mean_validation_score
     cv_validation_scores
@@ -58,7 +58,7 @@ See also
 :class:`GridSearchCV`:
     uses ``ParameterGrid`` to perform a full parallelized parameter search.
 """
-immutable ParameterGrid <: AbstractVector{Any}
+struct ParameterGrid <: AbstractVector{Any}
     param_grid::Vector
 end
 # wrap dictionary in a singleton list to support either dict or list of dicts
@@ -201,7 +201,7 @@ Examples
 ...                  {'b': 1.038159, 'a': 2}]
 True
 """
-immutable ParameterSampler
+struct ParameterSampler
     param_distributions
     n_iter::Int
     random_state::MersenneTwister
@@ -526,7 +526,7 @@ See Also
     Make a scorer from a performance metric or loss function.
 
 """
-@with_kw type GridSearchCV <: BaseSearchCV
+@with_kw mutable struct GridSearchCV <: BaseSearchCV
     estimator
     param_grid
     scoring=nothing
@@ -705,7 +705,7 @@ See Also
     param_distributions.
 
 """
-@with_kw type RandomizedSearchCV <: BaseSearchCV
+@with_kw mutable struct RandomizedSearchCV <: BaseSearchCV
     estimator
     param_distributions
     n_iter=10
