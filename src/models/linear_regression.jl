@@ -1,6 +1,6 @@
 using Compat: @compat
 
-type LinearRegression{T <: Array} <: BaseRegressor
+mutable struct LinearRegression{T <: Array} <: BaseRegressor
     coefs::T
     (::Type{LinearRegression{T}}){T}() = new{T}()
 end
@@ -25,7 +25,7 @@ end
 
 @declare_hyperparameters(LinearRegression, Symbol[])
 
-function fit!{XT, yT}(lr::LinearRegression, X::Array{XT}, y::Array{yT})
+function ScikitLearnBase.fit!{XT, yT}(lr::LinearRegression, X::Array{XT}, y::Array{yT})
     if XT == Float32 || yT == Float32
         warn("Regression on Float32 is prone to inaccuracy")
     end
@@ -33,4 +33,4 @@ function fit!{XT, yT}(lr::LinearRegression, X::Array{XT}, y::Array{yT})
     return lr
 end
 
-predict(lr::LinearRegression, X) = X * lr.coefs
+ScikitLearnBase.predict(lr::LinearRegression, X) = X * lr.coefs

@@ -3,8 +3,6 @@
 
 export DataFrameMapper, DataFrameColSelector
 
-importall ScikitLearnBase
-
 using DataFrames: DataFrame, ismissing, eachcol,
                   AbstractDataFrame, DataFrameRow
 
@@ -32,7 +30,7 @@ Arguments:
                    models)
 - **output_type**: the type of the result (default: Matrix{Float64})
 """
-type DataFrameMapper <: BaseEstimator
+mutable struct DataFrameMapper <: BaseEstimator
     features::Vector{Tuple}
     sparse::Bool
     missing2NaN::Bool
@@ -56,7 +54,7 @@ type DataFrameMapper <: BaseEstimator
     end
 end
 
-clone(dfm::DataFrameMapper) =
+ScikitLearnBase.clone(dfm::DataFrameMapper) =
     DataFrameMapper([(col, feat===nothing ? feat : clone(feat))
                      for (col, feat) in dfm.features];
                     sparse=dfm.sparse, missing2NaN=dfm.missing2NaN)
@@ -124,7 +122,7 @@ function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
     return X
 end
 
-function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
+function ScikitLearnBase.fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
     X = _maybe_convert_missing(self, X)
     for (columns, transformers) in self.features
         if transformers !== nothing
@@ -134,7 +132,7 @@ function fit!(self::DataFrameMapper, X, y=nothing; kwargs...)
     return self
 end
 
-function transform(self::DataFrameMapper, X::DataFrame)
+function ScikitLearnBase.transform(self::DataFrameMapper, X::DataFrame)
     X = _maybe_convert_missing(self, X)
     extracted = []
     for (columns, transformers) in self.features
@@ -165,10 +163,10 @@ function transform(self::DataFrameMapper, X::DataFrame)
     return hcat(extracted...)
 end
 
-transform{T<:Dict}(dfm::DataFrameMapper, X::Vector{T}) =
+ScikitLearnBase.transform{T<:Dict}(dfm::DataFrameMapper, X::Vector{T}) =
     # This could be handled better...
     transform(dfm, DataFrame(X))
-transform{T<:DataFrameRow}(dfm::DataFrameMapper, X::Vector{T}) =
+ScikitLearnBase.transform{T<:DataFrameRow}(dfm::DataFrameMapper, X::Vector{T}) =
     # This could be handled much, much better...
     transform(dfm, [Dict(dfr) for dfr in X])
 
@@ -181,20 +179,20 @@ Base.issparse(::DataFrame) = false
 This is a pared-down, less featureful version of `DataFrameMapper`, but it
 also runs faster. It only allows selecting columns from the input `DataFrame`.
 Use in a pipeline. """
-immutable DataFrameColSelector <: BaseEstimator
+struct DataFrameColSelector <: BaseEstimator
     cols::Vector{Symbol}
     output_type::Type
     DataFrameColSelector(cols; output_type=Matrix{Float64}) = 
         new(cols, output_type)
 end
 
-clone(dfcs::DataFrameColSelector) =
+ScikitLearnBase.clone(dfcs::DataFrameColSelector) =
     DataFrameColSelector(dfcs.cols; output_type=dfcs.output_type)
-fit!(dfcs::DataFrameColSelector, X, y=nothing) = dfcs
-transform(dfcs::DataFrameColSelector, X::AbstractDataFrame) =
+ScikitLearnBase.fit!(dfcs::DataFrameColSelector, X, y=nothing) = dfcs
+ScikitLearnBase.transform(dfcs::DataFrameColSelector, X::AbstractDataFrame) =
     convert(dfcs.output_type, X[:, dfcs.cols])
 
-transform(dfcs::DataFrameColSelector, X) =
+ScikitLearnBase.transform(dfcs::DataFrameColSelector, X) =
     _transform(dfcs, X, dfcs.output_type)
 _transform{T<:DataFrameRow, O}(dfcs::DataFrameColSelector, X::Vector{T},
                             ::Type{Matrix{O}}) =

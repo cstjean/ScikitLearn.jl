@@ -1,6 +1,5 @@
 using MacroTools
 using PyCall
-importall ScikitLearnBase
 import Compat
 
 # We don't strictly need this, but it's convenient for writing examples

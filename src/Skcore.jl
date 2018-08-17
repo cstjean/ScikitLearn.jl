@@ -10,9 +10,9 @@ using PyCall
 using Parameters
 using Compat
 
-include("sk_utils.jl")
-
 importall ScikitLearnBase
+
+include("sk_utils.jl")
 
 """ Like `pyimport` but gives a more informative error message """
 function importpy(name::AbstractString)

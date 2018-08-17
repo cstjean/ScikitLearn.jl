@@ -13,6 +13,7 @@ include("Skcore.jl")
 
 using PyCall: @pyimport
 using ScikitLearnBase
+using ScikitLearnBase: BaseEstimator
 using ScikitLearn.Skcore: @sk_import
 
 export @sk_import, CrossValidation, Pipelines, GridSearch
@@ -70,6 +71,8 @@ module Preprocessing
 # These are my own extensions. I'd like to keep ScikitLearn close to
 # scikit-learn, which is why they are not exported so far. I might move them
 # elsewhere. - cstjean
+using ScikitLearnBase
+using ScikitLearnBase: BaseEstimator
 include("dictencoder.jl")
 include("preprocessing.jl")
 export DictEncoder, PolynomialFeatures

@@ -1,5 +1,3 @@
-importall ScikitLearnBase
-
 export DictEncoder
 
 """    DictEncoder()

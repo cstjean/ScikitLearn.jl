@@ -1,5 +1,3 @@
-importall ScikitLearnBase
-
 using Iterators: chain
 import Iterators
 import Compat
