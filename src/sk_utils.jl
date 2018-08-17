@@ -1,4 +1,5 @@
 using MacroTools
+using MacroTools: @forward
 using PyCall
 import Compat
 
@@ -55,23 +56,6 @@ macro pyimport2(expr, optional_varname...)
     else
         :(@pyimport($(esc(expr)), $(map(esc, optional_varname)...)))
     end
-end
-
-""" `delegate(f, typfield)` delegates `f(::T, args...)` to `f(t.field, args...)`
-
-    type AA
-        a
-    end
-
-    @delegate(Base.length, AA.a)
-    length(AA([1,2,3]))    # -> 3
-"""
-macro delegate(f, typfield)
-    @assert typfield.head == :.
-    typ = typfield.args[1]
-    field = typfield.args[2].args[1]
-    :($(esc(f))(obj::$(esc(typ)), args...; kwargs...) =
-      $(esc(f))(getfield(obj, $(esc(Expr(:quote, field)))), args...; kwargs...))
 end
 
 nunique(iter) = length(Set(iter)) # slow definition
@@ -225,18 +209,14 @@ end
 
 """ `FitBit(model)` will behave just like `model`, but also supports
 `isfit(fb)`, which returns true IFF `fit!(model, ...)` has been called """
-type FitBit
+mutable struct FitBit
     model
     isfit::Bool
     FitBit(model) = new(model, false)
 end
 clone(fb::FitBit) = FitBit(clone(fb.model))
 
-@delegate(transform, FitBit.model)
-@delegate(predict, FitBit.model)
-@delegate(predict_proba, FitBit.model)
-@delegate(predict_dist, FitBit.model)
-@delegate(get_classes, FitBit.model)
+@forward FitBit.model transform, predict, predict_proba, predict_dist, get_classes
 
 function fit!(fb::FitBit, args...; kwargs...)
     fit!(fb.model, args...; kwargs...)

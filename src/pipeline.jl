@@ -36,7 +36,7 @@ steps : vector
     List of (name, transform) tuples (implementing fit/transform) that are
     chained, in the order in which they are chained, with the last object
     an estimator. """
-type Pipeline <: CompositeEstimator
+mutable struct Pipeline <: CompositeEstimator
     steps::Vector{Tuple{Any, Any}} # of tuples(string, model)
     models::Vector{Any}
     function Pipeline(steps)
@@ -185,7 +185,7 @@ transformer_weights: dict, optional
     Keys are transformer names, values the weights.
 
 """
-type FeatureUnion <: CompositeEstimator
+mutable struct FeatureUnion <: CompositeEstimator
     transformer_list::Vector{Tuple{Any, Any}}
     n_jobs::Int
     transformer_weights
