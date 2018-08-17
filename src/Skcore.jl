@@ -10,7 +10,10 @@ using PyCall
 using Parameters
 using Compat
 
-importall ScikitLearnBase
+for f in ScikitLearnBase.api
+    # Used to be importall, but no longer exists in 0.7
+    @eval import ScikitLearnBase: $f
+end
 
 include("sk_utils.jl")
 
