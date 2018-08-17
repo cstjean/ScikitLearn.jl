@@ -127,7 +127,7 @@ False
 >>> is_multilabel(np.array([[1, 0, 0]]))
 True
 """
-function is_multilabel{T}(y::AbstractArray{T})
+function is_multilabel(y::AbstractArray{T}) where T
     if !(ndims(y) == 2 && size(y, 2) > 1)
         return false
     end
@@ -187,7 +187,7 @@ type_of_target([1 2; 3 1]) == "multiclass-multioutput"
 type_of_target([1.5 2.0; 3.0 1.6]) == "continuous-multioutput"
 type_of_target([0 1; 1 1]) == "multilabel-indicator"
 """
-function type_of_target{T}(y::AbstractArray{T})
+function type_of_target(y::AbstractArray{T}) where T
     # Julia note: various compromises were made in translating this function
     if is_multilabel(y)
         return "multilabel-indicator"
