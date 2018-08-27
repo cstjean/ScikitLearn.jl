@@ -1,12 +1,16 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
-importall ScikitLearnBase
 using Test
 using ScikitLearn
 using ScikitLearn.CrossValidation: cross_val_score
 using PyCall: PyError
 using SparseArrays
+
+for f in ScikitLearnBase.api
+    # Used to be importall, but no longer exists in 0.7
+    @eval import ScikitLearnBase: $f
+end
 
 ## @pyimport2 sklearn.cross_validation as cval
 
@@ -26,7 +30,7 @@ using SparseArrays
 
 
 """Dummy classifier to test the cross-validation"""
-type MockClassifier
+mutable struct MockClassifier
     a
     allow_nd
     dummy_int

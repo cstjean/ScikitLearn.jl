@@ -217,7 +217,7 @@ function test_feature_union()
     # basic sanity check for feature union
     iris = load_iris()
     X = iris["data"]
-    X = X .- mean(X, 1)
+    X = X .- mean(X, dims=1)
     y = iris["target"]
     svd = TruncatedSVD(n_components=2, random_state=0)
     select = SelectKBest(k=1)

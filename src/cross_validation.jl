@@ -121,7 +121,7 @@ function KFold(n; n_folds=3, shuffle=false, random_state=nothing)
         Random.shuffle!(rng, inds)
     end
     fold_sizes = div(n, n_folds) * ones(Int, n_folds)
-    fold_sizes[1:mod(n, n_folds)] += 1
+    fold_sizes[1:mod(n, n_folds)] .+= 1
     @assert sum(fold_sizes) == n # sanity check
     current = 1
     test_sets = Any[]
