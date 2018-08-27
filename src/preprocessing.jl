@@ -16,7 +16,7 @@ transform(tf::TransformerFunction, X) = tf.f(X)
 
 """ `TypeConverter(; new_type=Float64)` will transform the input array from
 one type to another (useful in pipelines) """
-TypeConverter{T}(; new_type::Type{T}=Float64) =
+TypeConverter(; new_type::Type{T}=Float64) where T =
     TransformerFunction(; f=arr->convert(Array{T}, arr))
 
 ################################################################################
@@ -136,8 +136,8 @@ function fit!(self::PolynomialFeatures, X, y=nothing)
     return self
 end
 
-function transform{T<:AbstractFloat}(self::PolynomialFeatures,
-                                     X::AbstractArray{T}, y=nothing)
+function transform(self::PolynomialFeatures,
+                   X::AbstractArray{T}, y=nothing) where {T<:AbstractFloat}
     ## Transform data to polynomial features
     ## Parameters
     ## ----------
@@ -155,7 +155,7 @@ function transform{T<:AbstractFloat}(self::PolynomialFeatures,
     end
 
     # allocate output data
-    XP = Matrix{T}(n_samples, self.n_output_features_)
+    XP = Matrix{T}(undef, n_samples, self.n_output_features_)
     
     combinations = _combinations(n_features, self.degree,
                                  self.interaction_only,

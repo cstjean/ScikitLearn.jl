@@ -6,6 +6,7 @@ module Skcore
 
 using Random, LinearAlgebra
 using ScikitLearnBase
+using SparseArrays
 
 using PyCall
 using Parameters

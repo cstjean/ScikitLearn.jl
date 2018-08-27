@@ -6,7 +6,8 @@ import PyCall
 PyCall.pyimport_conda("sklearn", "scikit-learn")
 
 using ScikitLearn
-using Base.Test
+using Test
+using LinearAlgebra
 
 @testset "ScikitLearnTests" begin
 
@@ -52,7 +53,7 @@ using Base.Test
                     println("Testing $path")
                     @eval module Testing
                     using NBInclude
-                    nbinclude($path)
+                    @nbinclude($path)
                     end
                 end
             end

@@ -2,7 +2,7 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 importall ScikitLearnBase
-using Base.Test
+using Test
 using ScikitLearn
 using ScikitLearn.CrossValidation: cross_val_score
 using PyCall: PyError

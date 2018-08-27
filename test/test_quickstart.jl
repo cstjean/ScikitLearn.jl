@@ -1,6 +1,6 @@
 # The quick-start guide code. Some of these are repro tests
 
-using Base.Test
+using Test
 using RDatasets: dataset
 
 iris = dataset("datasets", "iris")

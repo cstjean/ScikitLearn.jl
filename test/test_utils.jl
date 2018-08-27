@@ -1,4 +1,4 @@
-using Base.Test
+using Test
 using ScikitLearn.Skcore: type_of_target
 
 @test type_of_target([0.1, 0.6]) == "continuous"

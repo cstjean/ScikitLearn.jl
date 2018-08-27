@@ -2,6 +2,7 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 using StatsBase: counts
+using Printf
 
 """Turn seed into a np.random.RandomState instance
 
@@ -10,7 +11,7 @@ If seed is an int, return a new RandomState instance seeded with seed.
 If seed is already a RandomState instance, return it.
 Otherwise raise ValueError.
 """
-check_random_state(seed::Void) = Base.GLOBAL_RNG
+check_random_state(seed::Nothing) = Base.GLOBAL_RNG
 check_random_state(seed::Int) = MersenneTwister(seed)
 check_random_state(seed::MersenneTwister) = seed
 check_random_state(seed::Any) =
@@ -425,7 +426,7 @@ scoring : callable
     A scorer callable object / function with signature
     ``scorer(estimator, X, y)``.
 """
-function check_scoring{T}(estimator::T, scoring=nothing; allow_none=false)
+function check_scoring(estimator::T, scoring=nothing; allow_none=false) where T
     @assert !allow_none "TODO: allow_none=true"
     # sklearn asserts that estimator has a `fit` method. We should do that too.
     if scoring !== nothing
@@ -536,7 +537,7 @@ function _fit_and_score(estimator, X, y, scorer,
                         # Vector{Int} is defensive programming. Could be
                         # changed.
                         train::Vector{Int}, test::Vector{Int}, verbose,
-                        parameters, fit_params::Union{Void, Dict{Symbol}};
+                        parameters, fit_params::Union{Nothing, Dict{Symbol}};
                         return_train_score=false,
                         return_parameters=false, error_score="raise")
     # Julia TODO

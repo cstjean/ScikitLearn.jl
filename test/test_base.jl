@@ -1,7 +1,7 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
-using Base.Test
+using Test
 using ScikitLearn
 using ScikitLearn.GridSearch: GridSearchCV
 using ScikitLearn.Pipelines: Pipeline

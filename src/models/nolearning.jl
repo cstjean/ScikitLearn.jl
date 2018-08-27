@@ -17,7 +17,7 @@ end
 
 ScikitLearnBase.fit!(ffr::FixedFunctionRegressor, X, y) = ffr
 ScikitLearnBase.predict(ffr::FixedFunctionRegressor, X) =
-    squeeze(mapslices(ffr.predict_fn, X, 2), 2)
+    dropdims(mapslices(ffr.predict_fn, X, 2), dims=2)
 
 isfit(ffr::FixedFunctionRegressor) = true
 
@@ -43,8 +43,8 @@ end
 
 ScikitLearnBase.fit!(ffc::FixedFunctionClassifier, X, y) = ffc
 ScikitLearnBase.predict(ffc::FixedFunctionClassifier, X) =
-    squeeze(mapslices(ffc.predict_fn, X, 2), 2)
+    dropdims(mapslices(ffc.predict_fn, X, dims=2), dims=2)
 ScikitLearnBase.predict_dist(ffc::FixedFunctionClassifier, X) =
-    squeeze(mapslices(ffc.predict_dist_fn, X, 2), 2)
+    dropdims(mapslices(ffc.predict_dist_fn, X, dims=2), dims=2)
 
 isfit(ffc::FixedFunctionClassifier) = true

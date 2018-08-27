@@ -8,6 +8,7 @@
 # Julia port: Cedric St-Jean
 # License: BSD 3 clause
 
+using Distributed
 
 abstract type BaseSearchCV end
 
@@ -287,7 +288,7 @@ function _fit!(self::BaseSearchCV, X, y, parameter_iterable)
         out = vcat(Any[fit_cv_rotations(self, base_estimator, X, y, parameters, cv)
                    for parameters in parameter_iterable]...)
     else
-        out = @sync @parallel (vcat) for parameters in parameter_iterable
+        out = @sync @distributed (vcat) for parameters in parameter_iterable
                 fit_cv_rotations(self, base_estimator, X, y, parameters, cv)
             end
     end

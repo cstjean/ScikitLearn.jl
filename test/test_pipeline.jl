@@ -1,7 +1,7 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
-using Base.Test
+using Test
 importall ScikitLearnBase
 using ScikitLearn
 using ScikitLearn.Pipelines: Pipeline, FeatureUnion, make_pipeline
