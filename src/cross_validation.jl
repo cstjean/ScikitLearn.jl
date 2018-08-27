@@ -141,7 +141,7 @@ function StratifiedKFold(y::AbstractArray; n_folds=3, shuffle=false,
     label_counts = counts(y_inversed, 1:length(unique_labels))
     min_labels = minimum(label_counts)
     if n_folds > min_labels
-        warn("The least populated class in y has only $min_labels" *
+        @warn("The least populated class in y has only $min_labels" *
              " members, which is too few. The minimum" *
              " number of labels for any class cannot" *
              " be less than n_folds=$n_folds.")

@@ -120,7 +120,7 @@ function import_sklearn()
     version = VersionNumber(mod[:__version__])
     min_version = v"0.18.0"
     if version < min_version && !import_already_warned
-        warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
+        @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
         import_already_warned = true
     end
     return mod
@@ -137,7 +137,7 @@ Julia equivalent of
 macro sk_import(expr)
     @assert @capture(expr, mod_:what_) "`@sk_import` syntax error. Try something like: @sk_import linear_model: (LinearRegression, LogisticRegression)"
     if haskey(translated_modules, mod)
-        warn("Module $mod has been ported to Julia - try `import ScikitLearn: $(translated_modules[mod])` instead")
+        @warn("Module $mod has been ported to Julia - try `import ScikitLearn: $(translated_modules[mod])` instead")
     end
     if :sklearn in symbols_in(expr)
         error("Bad @sk_import: please remove `sklearn.` (it is implicit)")
