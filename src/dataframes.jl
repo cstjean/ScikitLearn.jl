@@ -44,7 +44,7 @@ mutable struct DataFrameMapper <: BaseEstimator
         for (col_name, transformer) in features
             @assert(isa(col_name, Union{Symbol, Vector}),
                     "Bad DataFrameMapper features, see docstring")
-            @assert(isa(transformer, Union{Void, Vector}) ||
+            @assert(isa(transformer, Union{Nothing, Vector}) ||
                     ScikitLearn.Utils.is_transformer(transformer),
                     "Bad DataFrameMapper features, see docstring")
         end
