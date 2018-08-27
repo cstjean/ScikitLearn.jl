@@ -137,7 +137,7 @@ function StratifiedKFold(y::AbstractArray; n_folds=3, shuffle=false,
                          random_state=nothing)
     n_samples = size(y, 1)
     unique_labels = unique(y)
-    y_inversed = Int[findfirst(unique_labels, a) for a in y] # O(N²)
+    y_inversed = Int[something(findfirst(isequal(a), unique_labels)) for a in y] # O(N²)
     label_counts = counts(y_inversed, 1:length(unique_labels))
     min_labels = minimum(label_counts)
     if n_folds > min_labels
@@ -171,8 +171,8 @@ function StratifiedKFold(y::AbstractArray; n_folds=3, shuffle=false,
             # (we use a warning instead of raising an exception)
             # If this is the case, let's trim it:
             test_split = test_split[test_split .<= length(label_test_folds)]
-            label_test_folds[test_split] = test_fold_idx
-            test_folds[y .== label] = label_test_folds
+            label_test_folds[test_split] .= test_fold_idx
+            test_folds[y .== label] .= label_test_folds
         end
     end
     return folds_from_test_sets(n_samples,

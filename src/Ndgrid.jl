@@ -6,7 +6,7 @@ function ndgrid(v1::AbstractVector{T}, v2::AbstractVector{T}) where T
     m, n = length(v1), length(v2)
     v1 = reshape(v1, m, 1)
     v2 = reshape(v2, 1, n)
-    (repmat(v1, 1, n), repmat(v2, m, 1))
+    (repeat(v1, 1, n), repeat(v2, m, 1))
 end
 
 function ndgrid_fill(a, v, s, snext)

@@ -5,6 +5,7 @@ export DataFrameMapper, DataFrameColSelector
 
 using DataFrames: DataFrame, ismissing, eachcol,
                   AbstractDataFrame, DataFrameRow
+using SparseArrays
 
 _build_transformer(transformers) = transformers
 
@@ -170,7 +171,7 @@ ScikitLearnBase.transform(dfm::DataFrameMapper, X::Vector{T}) where {T<:DataFram
     # This could be handled much, much better...
     transform(dfm, [Dict(dfr) for dfr in X])
 
-Base.issparse(::DataFrame) = false
+SparseArrays.issparse(::DataFrame) = false
 
 ################################################################################
 

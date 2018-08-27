@@ -2,6 +2,7 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 using Test
+import Random
 using ScikitLearn
 using ScikitLearn.GridSearch: GridSearchCV
 using ScikitLearn.Pipelines: Pipeline
@@ -52,7 +53,7 @@ end
 
 
 function test_score_sample_weight()
-    srand(0)
+    Random.seed!(0)
 
     # test both ClassifierMixin and RegressorMixin
     estimators = [DecisionTreeClassifier(max_depth=2),
