@@ -6,6 +6,7 @@ using Test
 using ScikitLearn
 using ScikitLearn.CrossValidation: cross_val_score
 using PyCall: PyError
+using SparseArrays
 
 ## @pyimport2 sklearn.cross_validation as cval
 
@@ -104,7 +105,7 @@ X = ones(10, 2)
 X_sparse = sparse(X)
 ## W_sparse = coo_matrix((np.array([1]), (np.array([1]), np.array([0]))),
 ##                       shape=(10, 1))
-P_sparse = sparse(eye(5))
+P_sparse = sparse(Matrix(1.0I, 5, 5))
 y = [floor(Int, x / 2) for x in 0:9]
 
 ################################################################################

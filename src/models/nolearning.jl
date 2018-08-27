@@ -17,7 +17,7 @@ end
 
 ScikitLearnBase.fit!(ffr::FixedFunctionRegressor, X, y) = ffr
 ScikitLearnBase.predict(ffr::FixedFunctionRegressor, X) =
-    dropdims(mapslices(ffr.predict_fn, X, 2), dims=2)
+    dropdims(mapslices(ffr.predict_fn, X, dims=2), dims=2)
 
 isfit(ffr::FixedFunctionRegressor) = true
 

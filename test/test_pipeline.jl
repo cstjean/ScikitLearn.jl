@@ -2,12 +2,17 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 using Test
-importall ScikitLearnBase
+import ScikitLearnBase
 using ScikitLearn
 using ScikitLearn.Pipelines: Pipeline, FeatureUnion, make_pipeline
 using ScikitLearnBase: @declare_hyperparameters
 using ScikitLearn.Skcore: named_steps
 using PyCall: PyError
+
+for f in ScikitLearnBase.api
+    # Used to be importall, but no longer exists in 0.7
+    @eval import ScikitLearnBase: $f
+end
 
 @sk_import svm: SVC
 @sk_import feature_selection: (SelectKBest, f_classif)
@@ -32,7 +37,7 @@ JUNK_FOOD_DOCS = (
 
 """Small class to test parameter dispatching.
 """
-type T
+mutable struct T
     a
     b
     T(a=nothing, b=nothing) = new(a, b)
@@ -50,7 +55,7 @@ transform(self::T, X) = X
 ############################################################
 
 """ Mock classifier """
-type FitParamT
+mutable struct FitParamT
     successful
     FitParamT(;successful=false) = new(successful)
 end

@@ -1,6 +1,8 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
+import Random
+using Random
 using StatsBase: counts
 using Printf
 
@@ -11,7 +13,7 @@ If seed is an int, return a new RandomState instance seeded with seed.
 If seed is already a RandomState instance, return it.
 Otherwise raise ValueError.
 """
-check_random_state(seed::Nothing) = Base.GLOBAL_RNG
+check_random_state(seed::Nothing) = Random.GLOBAL_RNG
 check_random_state(seed::Int) = MersenneTwister(seed)
 check_random_state(seed::MersenneTwister) = seed
 check_random_state(seed::Any) =
@@ -116,7 +118,7 @@ function KFold(n; n_folds=3, shuffle=false, random_state=nothing)
     inds = collect(1:n)
     if shuffle
         rng = check_random_state(random_state)
-        Base.shuffle!(rng, inds)
+        Random.shuffle!(rng, inds)
     end
     fold_sizes = div(n, n_folds) * ones(Int, n_folds)
     fold_sizes[1:mod(n, n_folds)] += 1

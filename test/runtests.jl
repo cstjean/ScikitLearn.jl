@@ -7,7 +7,7 @@ PyCall.pyimport_conda("sklearn", "scikit-learn")
 
 using ScikitLearn
 using Test
-using LinearAlgebra
+using LinearAlgebra, Random, Statistics
 
 @testset "ScikitLearnTests" begin
 
