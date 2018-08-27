@@ -13,15 +13,15 @@ data = DataFrame(pet=["cat", "dog", "dog", "fish", "cat", "dog", "cat", "fish"],
 mapper = DataFrameMapper([(:pet, LabelBinarizer()),
                           ([:children], StandardScaler())]);
 
-round.(fit_transform!(mapper, copy(data)), 2)
+round.(fit_transform!(mapper, copy(data)), digits=2)
 
 sample = DataFrame(pet= ["cat"], children= [5.])
-round.(transform(mapper, sample), 2)
+round.(transform(mapper, sample), digits=2)
 
 @sk_import decomposition: PCA
 mapper2 = DataFrameMapper([([:children, :salary], PCA(1))]);
 
-round.(fit_transform!(mapper2, copy(data)), 1)
+round.(fit_transform!(mapper2, copy(data)), digits=1)
 
 
 @sk_import preprocessing: (Imputer, StandardScaler)
@@ -43,6 +43,6 @@ using ScikitLearn.CrossValidation: cross_val_score
 pipe = Pipelines.Pipeline([
      (:featurize, mapper),
      (:lm, LinearRegression())])
-round.(cross_val_score(pipe, data, data[:salary]), 2)
+round.(cross_val_score(pipe, data, data[:salary]), digits=2)
 
 end
