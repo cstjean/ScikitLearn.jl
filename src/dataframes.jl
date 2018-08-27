@@ -115,7 +115,7 @@ function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
                     values = convert(Vector{sup_type(eltype(values))},
                                      copy(values))
                 end
-                values[na_inds] = NaN
+                values[na_inds] .= NaN
                 X[col] = values
             end
         end

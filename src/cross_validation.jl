@@ -176,7 +176,7 @@ function StratifiedKFold(y::AbstractArray; n_folds=3, shuffle=false,
         end
     end
     return folds_from_test_sets(n_samples,
-                                [find(test_folds.==i) for i in 1:n_folds])
+                                [findall(test_folds.==i) for i in 1:n_folds])
 end
 
 ################################################################################
