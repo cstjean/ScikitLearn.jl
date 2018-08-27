@@ -43,6 +43,7 @@ using LinearAlgebra, Random, Statistics
     exceptions = ["Density_Estimation_Julia.ipynb", #GaussianMixtures fails on 0.6 as of MAR17
                   "Plot_Kmeans_Digits_Julia.ipynb", # LowRankModels fails on 0.6 as of MAR17
                   "Simple_1D_Kernel_Density.ipynb", # https://github.com/JuliaPy/PyCall.jl/issues/372
+                  "Gaussian_Processes_Julia.ipynb", # not ready for Julia 0.7
                   ]
     function run_examples()
         ex_dir = "../examples/"
