@@ -218,15 +218,10 @@ function ParameterSampler(param_distributions, n_iter::Int;
                             RandomState(seed))
 end
 
-function Base.start(ps::ParameterSampler)
-    # Julia note: sklearn has some code to sample without replacement when
-    # all distributions are specified as lists. TODO
-    return 1
-end
-
-function Base.next(ps::ParameterSampler, state::Int)
+function Base.iterate(ps::ParameterSampler, state::Int=1)
     # state isn't used - we're sampling at random
     # Always sort the keys of a dictionary, for reproducibility
+    if state > ps.n_iter return nothing end
     items = sort(collect(ps.param_distributions), by=x->x[1])
     params = Dict()
     for (k, v) in items
@@ -241,8 +236,6 @@ function Base.next(ps::ParameterSampler, state::Int)
     end
     return params, state+1
 end
-
-Base.done(ps::ParameterSampler, state::Int) = state > ps.n_iter
 
 """Number of points that will be sampled."""
 Base.length(self::ParameterSampler) = self.n_iter
