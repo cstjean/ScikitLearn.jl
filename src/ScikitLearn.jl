@@ -37,30 +37,30 @@ macro reexportsk(identifiers...)
 end
 
 module CrossValidation
-using ..@reexportsk
+using ScikitLearn: @reexportsk
 using ScikitLearn.Skcore: @pyimport2
 @reexportsk(cross_val_score, cross_val_predict, train_test_split)
 
-using ..Skcore: cv_iterator_syms
+using ScikitLearn.Skcore: cv_iterator_syms
 
 @eval @reexportsk($(cv_iterator_syms...))
 end
 
 
 module Pipelines
-using ..@reexportsk
+using ScikitLearn: @reexportsk
 @reexportsk(Pipeline, make_pipeline, FeatureUnion, named_steps)
 end
 
 
 module GridSearch
-using ..@reexportsk
+using ScikitLearn: @reexportsk
 @reexportsk(GridSearchCV, RandomizedSearchCV)
 end
 
 
 module Utils
-using ..@reexportsk
+using ScikitLearn: @reexportsk
 using ScikitLearn.Skcore: @pyimport2
 @reexportsk(meshgrid, is_transformer, FitBit, isfit)
 export @pyimport2
