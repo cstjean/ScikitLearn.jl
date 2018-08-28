@@ -71,7 +71,7 @@ Parameters
     Objects that will be checked for consistent length.
 """
 function check_consistent_length(arrays...)
-    nuni = nunique([size(X, 1) for X in collect(filter(x->x!=nothing, arrays))])
+    nuni = nunique([size(X, 1) for X in filter(x->x!=nothing, collect(arrays))])
     if nuni > 1
         throw(ArgumentError("Found arrays with inconsistent numbers of samples: $nuni"))
     end
