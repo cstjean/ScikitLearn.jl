@@ -5,6 +5,6 @@ MacroTools 0.3.0
 Conda
 ScikitLearnBase 0.0.6
 StatsBase 0.8.0
-Iterators 0.1.9
+IterTools
 Compat 0.18.0
 DataFrames 0.11

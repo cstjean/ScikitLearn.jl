@@ -1,5 +1,5 @@
-using Iterators: chain
-import Iterators
+using IterTools: chain
+import IterTools
 import Compat
 
 
@@ -107,8 +107,7 @@ end
 
 combinations_with_replacement(arr, degree) =
     (degree == 0 ? [()] : # needs to special-case
-     # In 1.0, use Iterators.filter
-     Compat.Iterators.filter(issorted, Iterators.product(fill(arr, degree)...)))
+     filter(issorted, IterTools.product(fill(arr, degree)...)))
 
 function _combinations(n_features, degree, interaction_only, include_bias)
     comb = interaction_only ? combinations : combinations_with_replacement
