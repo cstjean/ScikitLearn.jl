@@ -14,10 +14,10 @@ Optimized for speed.
 - `eltype`: the element type of the coefficient array. `Float64` is generally
 best for numerical reasons.
 - `multi_output`: for maximum efficiency, specify `multi_output=true/false` """
-function LinearRegression(; eltype=Float64, multi_output=nothing)
+function LinearRegression(; eltype=Float64, multi_output::Union{Nothing, Bool}=nothing)
     if multi_output === nothing
         LinearRegression{Array{eltype}, eltype}()
-    elseif multi_output::Bool != nothing
+    else
         LinearRegression{Array{eltype, 2}, eltype}()
     end
 end
@@ -29,9 +29,10 @@ function ScikitLearnBase.fit!(lr::LinearRegression, X::AbstractArray{XT},
     if XT == Float32 || yT == Float32
         warn("Regression on Float32 is prone to inaccuracy")
     end
-    results = [ones(size(X, 2), 1) X'] \ y
+    results = [ones(size(X, 2), 1) X'] \ y'
     lr.intercepts = results[1,:];
     lr.coefs = results[2:end,:];
+    lr
 end
 
 ScikitLearnBase.predict(lr::LinearRegression, X) = lr.coefs' * X .+ lr.intercepts
