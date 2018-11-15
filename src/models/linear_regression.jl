@@ -1,9 +1,9 @@
 using Compat: @compat
 
-mutable struct LinearRegression{T <: Array} <: BaseRegressor
+mutable struct LinearRegression{T<:Array,Y<:Number} <: BaseRegressor
     coefs::T
-    intercept::Real
-    LinearRegression{T}() where T = new{T}()
+    intercepts::Array{Y, 1}
+    LinearRegression{T,Y}() where{T,Y} = new{T, Y}()
 end
 
 """    LinearRegression(; eltype=Float64, multi_output=nothing)
@@ -16,11 +16,9 @@ best for numerical reasons.
 - `multi_output`: for maximum efficiency, specify `multi_output=true/false` """
 function LinearRegression(; eltype=Float64, multi_output=nothing)
     if multi_output === nothing
-        LinearRegression{Array{eltype}}()
-    elseif multi_output::Bool
-        LinearRegression{Array{eltype, 2}}()
-    else
-        LinearRegression{Array{eltype, 1}}()
+        LinearRegression{Array{eltype}, eltype}()
+    elseif multi_output::Bool != nothing
+        LinearRegression{Array{eltype, 2}, eltype}()
     end
 end
 
@@ -32,8 +30,8 @@ function ScikitLearnBase.fit!(lr::LinearRegression, X::AbstractArray{XT},
         warn("Regression on Float32 is prone to inaccuracy")
     end
     results = [ones(size(X, 2), 1) X'] \ y
-    lr.intercept = results[1];
-    lr.coefs = results[2:end];
+    lr.intercepts = results[1,:];
+    lr.coefs = results[2:end,:];
 end
 
-ScikitLearnBase.predict(lr::LinearRegression, X) = lr.coefs' * X .+ lr.intercept
+ScikitLearnBase.predict(lr::LinearRegression, X) = lr.coefs' * X .+ lr.intercepts
