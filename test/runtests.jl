@@ -44,6 +44,7 @@ using LinearAlgebra, Random, Statistics
                   "Plot_Kmeans_Digits_Julia.ipynb", # LowRankModels fails on 0.6 as of MAR17
                   "Simple_1D_Kernel_Density.ipynb", # https://github.com/JuliaPy/PyCall.jl/issues/372
                   "Gaussian_Processes_Julia.ipynb", # not ready for Julia 0.7
+                  "Decision_Tree_Regression.ipynb", # PyCall#555
                   ]
     function run_examples()
         ex_dir = "../examples/"
