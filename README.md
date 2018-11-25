@@ -28,7 +28,7 @@ tour.
 
 ## Installation
 
-To install ScikitLearn.jl, run `Pkg.add("ScikitLearn")` at the REPL.
+To install ScikitLearn.jl, type `]add ScikitLearn` at the REPL.
 
 To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](http://scikitlearnjl.readthedocs.io/en/latest/models/#installation), which will be installed automatically when needed. Most of the examples use [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 
