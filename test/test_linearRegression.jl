@@ -1,5 +1,6 @@
 module TestingLinearRegression
 
+using Test
 using ScikitLearn.Models: LinearRegression
 
 close_enough(x0, x1, tol=1e-14) = abs(x0 - x1) <= tol ? true : false
