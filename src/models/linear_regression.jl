@@ -29,10 +29,10 @@ function ScikitLearnBase.fit!(lr::LinearRegression, X::AbstractArray{XT},
     if XT == Float32 || yT == Float32
         warn("Regression on Float32 is prone to inaccuracy")
     end
-    results = [ones(size(X, 2), 1) X'] \ y'
+    results = [ones(size(X, 1), 1) X] \ y
     lr.intercepts = results[1,:];
     lr.coefs = results[2:end,:];
     lr
 end
 
-ScikitLearnBase.predict(lr::LinearRegression, X) = lr.coefs' * X .+ lr.intercepts
+ScikitLearnBase.predict(lr::LinearRegression, X) = X * lr.coefs .+ lr.intercepts'
