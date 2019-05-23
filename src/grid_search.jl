@@ -213,7 +213,7 @@ function ParameterSampler(param_distributions, n_iter::Int;
     random_state = check_random_state(random_state)
     # We create a seed for the scipy RNG.
     seed = rand(random_state, 1:100000)
-    RandomState = pyimport("numpy.random")[:RandomState]
+    RandomState = pyimport("numpy.random").RandomState
     return ParameterSampler(param_distributions, n_iter, random_state,
                             RandomState(seed))
 end
@@ -228,7 +228,7 @@ function Base.iterate(ps::ParameterSampler, state::Int=1)
         # Julia note: That's how we detect numpy random distributions (gaussian,
         # ...) TODO: We should support Distributions.jl!
         if isa(v, PyObject)
-            params[k] = v[:rvs](random_state=ps.scipy_random_state)
+            params[k] = v.rvs(random_state=ps.scipy_random_state)
         else
             @assert isa(v, AbstractVector)
             params[k] = rand(ps.random_state, v)
