@@ -50,15 +50,15 @@ end
 
 
 # Note that I don't know the rationale for the `safe` argument - cstjean Feb2016
-clone(py_model::PyObject) = sklearn()[:clone](py_model, safe=true)
-is_classifier(py_model::PyObject) = sk_base()[:is_classifier](py_model)
+clone(py_model::PyObject) = sklearn().clone(py_model, safe=true)
+is_classifier(py_model::PyObject) = sk_base().is_classifier(py_model)
 
 is_pairwise(estimator) = false # global default - override for specific models
 is_pairwise(py_model::PyObject) =
-    haskey(py_model, "_pairwise") ? py_model[:_pairwise] : false
+    haskey(py_model, "_pairwise") ? py_model._pairwise : false
 
-get_classes(py_estimator::PyObject) = py_estimator[:classes_]
-get_components(py_estimator::PyObject) = py_estimator[:components_]
+get_classes(py_estimator::PyObject) = py_estimator.classes_
+get_components(py_estimator::PyObject) = py_estimator.components_
 
 # Not the cleanest of definitions
 is_transformer(estimator::Type) = !isempty(methods(transform, (estimator, Any)))
@@ -89,7 +89,7 @@ api_map = Dict(:decision_function => :decision_function,
 tweak_rval(x) = x
 function tweak_rval(x::PyObject)
     numpy = importpy("numpy")
-    if pyisinstance(x, numpy[:ndarray]) && length(x[:shape]) == 1
+    if pyisinstance(x, numpy.ndarray) && length(x.shape) == 1
         return collect(x)
     else
         x
@@ -98,13 +98,13 @@ end
 
 for (jl_fun, py_fun) in api_map
     @eval $jl_fun(py_model::PyObject, args...; kwargs...) =
-        tweak_rval(py_model[$(Expr(:quote, py_fun))](args...; kwargs...))
+        tweak_rval(py_model.$(py_fun)(args...; kwargs...))
 end
 
 """ `predict_nc(model, X)` calls predict on the Python `model`, but returns
 the result as a `PyArray`, which is more efficient than the usual path. See
 PyCall.jl """
-predict_nc(model::PyObject, X) = pycall(model[:predict], PyArray, X)
+predict_nc(model::PyObject, X) = pycall(model.predict, PyArray, X)
 predict_nc(model::Any, X) = predict(model, X) # default
 
 ################################################################################
@@ -117,7 +117,7 @@ import_already_warned = false
 function import_sklearn()
     global import_already_warned
     mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
-    version = VersionNumber(mod[:__version__])
+    version = VersionNumber(mod.__version__)
     min_version = v"0.18.0"
     if version < min_version && !import_already_warned
         @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
@@ -155,7 +155,7 @@ macro sk_import(expr)
         # module at macro-expansion-time, which happens before Skcore.import_sklearn().
         # The new `pyimport`-based implementation is cleaner - Mar'17
         mod_obj = pyimport($mod_string)
-        $([:(const $(esc(w)) = mod_obj[$(Expr(:quote, w))])
+        $([:(const $(esc(w)) = mod_obj.$(w))
            for w in members]...)
     end)
 end
