@@ -155,7 +155,7 @@ macro sk_import(expr)
         # module at macro-expansion-time, which happens before Skcore.import_sklearn().
         # The new `pyimport`-based implementation is cleaner - Mar'17
         mod_obj = pyimport($mod_string)
-        $([:(const $(esc(w)) = mod_obj.$(w))
+        $(.(const $(esc(w)) = mod_obj.$(w))
            for w in members]...)
     end)
 end
