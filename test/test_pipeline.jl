@@ -103,7 +103,7 @@ function test_pipeline_init()
 
     # Check that params are set
     set_params!(pipe, svc__C=0.1)
-    @test clf[:C]==0.1
+    @test clf.C==0.1
     # Smoke test the repr: Julia TODO
     # repr(pipe)
 
