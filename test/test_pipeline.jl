@@ -94,7 +94,7 @@ function test_pipeline_init()
     #repr(pipe) Julia TODO
 
     # Test with two objects
-    clf = SVC()
+    clf = SVC(gamma="auto")
     filter1 = SelectKBest(f_classif)
     pipe = Pipeline([("anova", filter1), ("svc", clf)])
 
@@ -134,7 +134,7 @@ function test_pipeline_methods_anova()
     X = iris["data"]
     y = iris["target"]
     # Test with Anova + LogisticRegression
-    clf = LogisticRegression()
+    clf = LogisticRegression(solver="lbfgs", multi_class="auto")
     filter1 = SelectKBest(f_classif, k=2)
     pipe = Pipeline([("anova", filter1), ("logistic", clf)])
     fit!(pipe, X, y)
@@ -169,7 +169,7 @@ function test_pipeline_methods_pca_svm()
     X = iris["data"]
     y = iris["target"]
     # Test with PCA + SVC
-    clf = SVC(probability=true, random_state=0)
+    clf = SVC(probability=true, random_state=0, gamma="auto")
     pca = PCA(n_components="mle", whiten=true)
     pipe = Pipeline([("pca", pca), ("svc", clf)])
     fit!(pipe, X, y)
@@ -189,7 +189,7 @@ function test_pipeline_methods_preprocessing_svm()
     n_classes = length(unique(y))
     scaler = StandardScaler()
     pca = PCA(n_components=2, whiten=true, svd_solver="randomized")
-    clf = SVC(probability=true, random_state=0)
+    clf = SVC(probability=true, random_state=0, gamma="auto")
 
     for preprocessing in [scaler, pca]
         pipe = Pipeline([("preprocess", preprocessing), ("svc", clf)])
@@ -347,7 +347,7 @@ function test_classes_property()
     fit!(reg, X, y)
     @test_throws(KeyError, get_classes(reg))
 
-    clf = make_pipeline(SelectKBest(k=1), LogisticRegression(random_state=0))
+    clf = make_pipeline(SelectKBest(k=1), LogisticRegression(solver="lbfgs", multi_class="auto", random_state=0))
     @test_throws(KeyError, get_classes(clf))
     fit!(clf, X, y)
     @test get_classes(clf) == unique(y)

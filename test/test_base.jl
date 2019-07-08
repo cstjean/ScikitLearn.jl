@@ -7,7 +7,7 @@ using ScikitLearn
 using ScikitLearn.GridSearch: GridSearchCV
 using ScikitLearn.Pipelines: Pipeline
 using ScikitLearn.Utils
-using PyCall: @pyimport, PyError
+using PyCall: pyimport, PyError
 
 @sk_import svm: SVC
 @sk_import feature_selection: (SelectFpr, f_classif)
