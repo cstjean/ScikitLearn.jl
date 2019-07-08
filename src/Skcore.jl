@@ -55,7 +55,7 @@ is_classifier(py_model::PyObject) = sk_base().is_classifier(py_model)
 
 is_pairwise(estimator) = false # global default - override for specific models
 is_pairwise(py_model::PyObject) =
-    haskey(py_model, "_pairwise") ? py_model._pairwise : false
+    hasproperty(py_model, "_pairwise") ? py_model._pairwise : false
 
 get_classes(py_estimator::PyObject) = py_estimator.classes_
 get_components(py_estimator::PyObject) = py_estimator.components_
