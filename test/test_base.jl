@@ -7,12 +7,12 @@ using ScikitLearn
 using ScikitLearn.GridSearch: GridSearchCV
 using ScikitLearn.Pipelines: Pipeline
 using ScikitLearn.Utils
-using PyCall: @pyimport, PyError
+using PyCall: pyimport, PyError
 
 @sk_import svm: SVC
 @sk_import feature_selection: (SelectFpr, f_classif)
 @sk_import tree: (DecisionTreeClassifier, DecisionTreeRegressor)
-@pyimport sklearn.datasets as datasets
+datasets = pyimport("sklearn.datasets")
 
 
 function test_is_classifier()
