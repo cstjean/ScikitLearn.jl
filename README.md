@@ -10,6 +10,8 @@ Julia. It supports both models from the Julia ecosystem and those of the
 [scikit-learn library](http://scikit-learn.org/stable/modules/classes.html)
 (via PyCall.jl).
 
+Would you rather use a quality machine-learning framework specially-designed for Julia? Check out [MLJ.jl](https://github.com/alan-turing-institute/MLJ.jl), from the Alan Turing institute.
+
 **Disclaimer**: ScikitLearn.jl borrows code and documentation from
 [scikit-learn](http://scikit-learn.org/stable/), but *it is not an official part
 of that project*. It is licensed under [BSD-3](LICENSE).
