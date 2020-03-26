@@ -41,7 +41,7 @@ GaussianProcesses = "0.11.2"
 IterTools = "1.3.0"
 NBInclude = "2.1.0"
 PyPlot = "2.8.2"
-RData = "0.7"
+RData = ">=0.6"
 RDatasets = ">=0.6"
 
 
