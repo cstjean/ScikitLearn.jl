@@ -17,10 +17,3 @@ git:
 env:
     global:
     - PYTHON=conda
-#before_install:
-    #install scikit-learn to test functionallity
-#  - julia -e 'Pkg.add("Conda")'
-#  - julia -e 'using Conda; Conda.add("scikit-learn")'
-#script:
-#    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#    - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("ScikitLearn"); Pkg.test("ScikitLearn"; coverage=true)'
