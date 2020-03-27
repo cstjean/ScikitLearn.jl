@@ -16,7 +16,7 @@ git:
 env:
     global:
     - PYTHON=conda
-before_install:
+#before_install:
     #install scikit-learn to test functionallity
 #  - julia -e 'Pkg.add("Conda")'
 #  - julia -e 'using Conda; Conda.add("scikit-learn")'
