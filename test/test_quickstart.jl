@@ -5,14 +5,14 @@ using RDatasets: dataset
 
 iris = dataset("datasets", "iris")
 
-X = convert(Array, iris[[:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]])
-y = convert(Array, iris[:Species])
+X = convert(Array, iris[!, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]])
+y = convert(Array, iris[!, :Species])
 
 using ScikitLearn
 
 @sk_import linear_model: LogisticRegression
 
-model = LogisticRegression(fit_intercept=true, random_state=20)
+model = LogisticRegression(fit_intercept=true, max_iter=200, random_state=20)
 
 fit!(model, X, y)
 
