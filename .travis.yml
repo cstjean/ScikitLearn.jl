@@ -1,26 +1,19 @@
+version: ~> 1.0
 language: julia
 os:
     - linux
     - osx
 julia:
-    - 0.7
-    - '1.0'
+    - 1.0
+    - 1.4
     - nightly
 notifications:
     email: false
 matrix:
     allow_failures:
-    - julia: '1.0'
     - julia: nightly
 git:
     depth: 99999
 env:
     global:
     - PYTHON=conda
-before_install:
-    #install scikit-learn to test functionallity
-#  - julia -e 'Pkg.add("Conda")'
-#  - julia -e 'using Conda; Conda.add("scikit-learn")'
-#script:
-#    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#    - julia --check-bounds=yes -e 'Pkg.clone(pwd()); Pkg.build("ScikitLearn"); Pkg.test("ScikitLearn"; coverage=true)'

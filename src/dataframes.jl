@@ -106,7 +106,7 @@ function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
         X = copy(X)
         # There might be a much simpler way of doing this with DataFrames
         for col in names(X)
-            values = X[col]
+            values = X[!, col]
             na_inds = ismissing.(values)
             # We can't put a NaN in an array of Int. This is ugly code, FIXME
             if any(na_inds)
@@ -116,7 +116,7 @@ function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
                                      copy(values))
                 end
                 values[na_inds] .= NaN
-                X[col] = values
+                X[!, col] = values
             end
         end
     end
@@ -208,7 +208,7 @@ function dummy_input(dfm::DataFrameMapper)
     df = DataFrame()
     for (cols, _) in dfm.features
         for col in cols
-            df[col] = rand(rng, N)
+            df[!, col] = rand(rng, N)
         end
     end
     df

@@ -24,8 +24,8 @@ mapper2 = DataFrameMapper([([:children, :salary], PCA(1))]);
 round.(fit_transform!(mapper2, copy(data)), digits=1)
 
 
-@sk_import preprocessing: (Imputer, StandardScaler)
-mapper3 = DataFrameMapper([([:age], [Imputer(),
+@sk_import impute: SimpleImputer
+mapper3 = DataFrameMapper([([:age], [SimpleImputer(),
                                      StandardScaler()])]; missing2NaN=true)
 data_3 = DataFrame(age= [1, missing, 3])
 fit_transform!(mapper3, data_3)
