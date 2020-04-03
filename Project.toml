@@ -1,6 +1,6 @@
 name = "ScikitLearn"
 uuid = "3646fa90-6ef7-5e7e-9f22-8aca16db6324"
-version = "0.6.0"
+version = "0.6.1"
 
 [deps]
 Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
