@@ -116,7 +116,7 @@ function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
                                      copy(values))
                 end
                 values[na_inds] .= NaN
-                X[!, col] = values
+                X[!, col] .= values
             end
         end
     end
