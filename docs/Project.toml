@@ -1,4 +1,5 @@
 [deps]
+Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 GaussianMixtures = "cc18c42c-b769-54ff-9e2a-b28141a64aae"
@@ -12,6 +13,7 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
+Conda = "1.4.1"
 DataFrames = "0.21"
 Documenter = "0.24.11"
 GaussianMixtures = "0.3"
