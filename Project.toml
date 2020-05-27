@@ -27,8 +27,8 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 VersionParsing = "81def892-9a0e-5fdd-b105-ffc91e053289"
 
 [compat]
-Conda = "1.4"
 Compat = "2.2, 3"
+Conda = "1.4"
 DataFrames = "0.20,0.21"
 DecisionTree = "0.8, 0.10"
 GaussianMixtures = "0.3"
