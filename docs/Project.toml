@@ -1,0 +1,23 @@
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+GaussianMixtures = "cc18c42c-b769-54ff-9e2a-b28141a64aae"
+GaussianProcesses = "891a1506-143c-57d2-908e-e1f8e92e6de9"
+JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+PyCallJLD = "de320387-30cd-5f83-91a8-a6e0ae8b8444"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[compat]
+DataFrames = "0.21"
+Documenter = "0.24.11"
+GaussianMixtures = "0.3"
+GaussianProcesses = "0.12"
+JLD = "0.9"
+PyCall = "1.91"
+PyCallJLD = "0.2"
+PyPlot = "2.9"
+RDatasets = "0.6.7"
