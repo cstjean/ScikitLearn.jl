@@ -31,7 +31,7 @@ function importpy(name::AbstractString)
         end
     end
 end
-        
+
 
 # These definitions are potentially costly. Get rid of the pywrap?
 sklearn() = importpy("sklearn")
@@ -113,23 +113,16 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
+import VersionParsing
+
 import_already_warned = false
 function import_sklearn()
     global import_already_warned
     mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
-    
-    version_ = if occursin(r"^\d+\.\d+\.\d+$", mod.__version__) #matches strings of form resembling 0.21.2 
-        mod.__version__
-    else
-        #since match above failed it assumes that the string must be of the form resembling 0.21.2.post1
-        #It then splits the string an extracts a string of the form 0.21.2 which is a legal version number
-        # version resembling 0.21.2 are similar to 0.21.2.post1 which adds bugs fixes to the release
-        rsplit(mod.__version__, ".", limit = 2)[1]
-    end     
-   version = VersionNumber(version_)
-       
-   min_version = v"0.18.0"
-   if version < min_version && !import_already_warned
+
+    version = VersionParsing.vparse(mod.__version__)
+    min_version = v"0.18.0"
+    if version < min_version && !import_already_warned
         @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
         import_already_warned = true
     end
