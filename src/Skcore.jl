@@ -11,7 +11,6 @@ using SparseArrays
 using PyCall
 using Parameters
 using Compat
-using VersionParsing
 
 for f in ScikitLearnBase.api
     # Used to be importall, but no longer exists in 0.7
@@ -26,15 +25,13 @@ function importpy(name::AbstractString)
         return pyimport(name)
     catch e
         if isa(e, PyCall.PyError)
-            error("This ScikitLearn.jl functionality ($name) requires "
-                    *"installing the Python scikit-learn library. See "
-                    *"instructions on https://github.com/cstjean/ScikitLearn.jl")
+            error("This ScikitLearn.jl functionality ($name) requires installing the Python scikit-learn library. See instructions on https://github.com/cstjean/ScikitLearn.jl")
         else
             rethrow()
         end
     end
 end
-        
+
 
 # These definitions are potentially costly. Get rid of the pywrap?
 sklearn() = importpy("sklearn")
@@ -53,7 +50,6 @@ end
 
 
 # Note that I don't know the rationale for the `safe` argument - cstjean Feb2016
-
 clone(py_model::PyObject) = sklearn().clone(py_model, safe=true)
 is_classifier(py_model::PyObject) = sk_base().is_classifier(py_model)
 
@@ -105,7 +101,6 @@ for (jl_fun, py_fun) in api_map
         tweak_rval(py_model.$(py_fun)(args...; kwargs...))
 end
 
-
 """ `predict_nc(model, X)` calls predict on the Python `model`, but returns
 the result as a `PyArray`, which is more efficient than the usual path. See
 PyCall.jl """
@@ -118,15 +113,16 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
+import VersionParsing
+
 import_already_warned = false
 function import_sklearn()
-   global import_already_warned
-   mod = PyCall.pyimport_conda("sklearn", "scikit-learn") 
-   version = vparse(mod.__version__)          
-   
-   min_version = v"0.18.0"
+    global import_already_warned
+    mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
 
-   if version < min_version && !import_already_warned
+    version = VersionParsing.vparse(mod.__version__)
+    min_version = v"0.18.0"
+    if version < min_version && !import_already_warned
         @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
         import_already_warned = true
     end
@@ -137,7 +133,6 @@ end
 @sk_import imports models from the Python version of scikit-learn. For instance, the
 Julia equivalent of
 `from sklearn.linear_model import LinearRegression, LogicisticRegression` is:
-
     @sk_import linear_model: (LinearRegression, LogisticRegression)
     model = fit!(LinearRegression(), X, y)
 """
