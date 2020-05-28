@@ -1,11 +1,11 @@
 using Pkg
 using Documenter
 using ScikitLearn
-import PyCall
+#import PyCall
 
 
-# Install scikit-learn if not installed
-PyCall.pyimport_conda("sklearn", "scikit-learn")
+## Install scikit-learn if not installed
+#PyCall.pyimport_conda("sklearn", "scikit-learn")
 
 pages = [
 	"Introduction" => "index.md",

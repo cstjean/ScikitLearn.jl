@@ -11,12 +11,14 @@ using SparseArrays
 using PyCall
 using Parameters
 using Compat
+import VersionParsing
 
 for f in ScikitLearnBase.api
     # Used to be importall, but no longer exists in 0.7
     @eval import ScikitLearnBase: $f
 end
 
+include("init.jl")
 include("sk_utils.jl")
 
 """ Like `pyimport` but gives a more informative error message """
@@ -113,21 +115,7 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
-import VersionParsing
 
-import_already_warned = false
-function import_sklearn()
-    global import_already_warned
-    mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
-
-    version = VersionParsing.vparse(mod.__version__)
-    min_version = v"0.18.0"
-    if version < min_version && !import_already_warned
-        @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
-        import_already_warned = true
-    end
-    return mod
-end
 
 """
 @sk_import imports models from the Python version of scikit-learn. For instance, the
@@ -152,7 +140,7 @@ macro sk_import(expr)
     mod_string = "sklearn.$mod"
     :(begin
         # Make sure that sklearn is installed.
-        $Skcore.import_sklearn()
+       # $Skcore.import_sklearn()
         # We used to rely on @pyimport2, but that macro unfortunately loads the Python
         # module at macro-expansion-time, which happens before Skcore.import_sklearn().
         # The new `pyimport`-based implementation is cleaner - Mar'17
