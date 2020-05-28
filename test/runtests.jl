@@ -5,8 +5,8 @@ import PyCall
 
 #use non-mkl versions of python packages (to allow MacOS tests pass)
 @static if Sys.isapple()
-    PyCall.Conda.add("nomkl")
-    PyCall.Conda.rm("mkl")
+    Conda.add("nomkl")
+    Conda.rm("mkl")
 end
 
 # Install scikit-learn if not installed
