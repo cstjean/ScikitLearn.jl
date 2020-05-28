@@ -5,7 +5,7 @@ os:
     - osx
 env:
     global:
-    - PYTHON=conda
+    - PYTHON=Conda
 julia:
     - 1.0
     - 1.4
