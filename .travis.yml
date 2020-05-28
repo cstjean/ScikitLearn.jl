@@ -5,7 +5,7 @@ os:
     - osx
 env:
     global:
-    - PYTHON=conda
+    - PYTHON=Conda
 julia:
     - 1.0
     - 1.4
@@ -20,7 +20,7 @@ jobs:
   include:
     - if: branch = master OR tag IS present
       stage: "Documentation"
-      julia: 1.2
+      julia: 1.4
       os: linux
       # disable global before_script in order not to install Compose twice
       before_script:
