@@ -7,21 +7,21 @@ Saving models to disk
 [PyCallJLD](https://github.com/JuliaPy/PyCallJLD.jl) as well.
 
 ```julia
+using PyCall, JLD, PyCallJLD
 using ScikitLearn
 using ScikitLearn.Pipelines
-using PyCall, JLD, PyCallJLD
-
 @sk_import decomposition: PCA
 @sk_import linear_model: LinearRegression
 
 pca = PCA()
 lm = LinearRegression()
 
+X=rand(10, 3); y=rand(10);
+
 pip = Pipeline([("PCA", pca), ("LinearRegression", lm)])
-fit!(pip, ...)   # fit to some dataset
+fit!(pip, X, y)   # fit to some dataset
 
 JLD.save("pipeline.jld", "pip", pip)
+pip = JLD.load("pipeline.jld", "pip") # Load back the pipeline
 
-# Load back the pipeline
-pip = JLD.load("pipeline.jld", "pip")
 ```
