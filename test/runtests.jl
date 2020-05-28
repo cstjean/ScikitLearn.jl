@@ -1,17 +1,7 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
-#import PyCall
-#import Conda
 
-#use non-mkl versions of python packages (to allow MacOS tests pass)
-#@static if Sys.isapple()
-#    Conda.add("nomkl")
-#    Conda.rm("mkl")
-#end
-
-## Install scikit-learn if not installed
-#PyCall.pyimport_conda("sklearn", "scikit-learn")
 
 using ScikitLearn
 using Test
