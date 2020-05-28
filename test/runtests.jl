@@ -2,6 +2,7 @@
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
 import PyCall
+import Conda
 
 #use non-mkl versions of python packages (to allow MacOS tests pass)
 @static if Sys.isapple()
