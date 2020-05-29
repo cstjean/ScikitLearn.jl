@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Quick Start Guide · ScikitLearn.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">ScikitLearn.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li class="is-active"><a class="tocitem" href>Quick Start Guide</a><ul class="internal"><li><a class="tocitem" href="#Quick-Example-1"><span>Quick Example</span></a></li><li><a class="tocitem" href="#Cross-validation-1"><span>Cross-validation</span></a></li><li><a class="tocitem" href="#Hyperparameter-tuning-1"><span>Hyperparameter tuning</span></a></li></ul></li><li><a class="tocitem" href="../api/">Model API</a></li><li><a class="tocitem" href="../python/">Reading the Scikit-learn Documentation</a></li><li><a class="tocitem" href="../examples_refer/">Example Gallery</a></li><li><a class="tocitem" href="../models/">Models</a></li><li><a class="tocitem" href="../cross_validation/">Cross-validation</a></li><li><a class="tocitem" href="../model_selection/">Model Selection</a></li><li><a class="tocitem" href="../pipelines/">Pipelines and FeatureUnion</a></li><li><a class="tocitem" href="../dataframes/">DataFrames</a></li><li><a class="tocitem" href="../jld/">Saving Models to Disk</a></li><li><a class="tocitem" href="../help/">Getting Help</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Quick Start Guide</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Quick Start Guide</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/cstjean/ScikitLearn.jl/blob/master/docs/src/man/quickstart.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Quick-start-guide-1"><a class="docs-heading-anchor" href="#Quick-start-guide-1">Quick start guide</a><a class="docs-heading-anchor-permalink" href="#Quick-start-guide-1" title="Permalink"></a></h1><h2 id="Quick-Example-1"><a class="docs-heading-anchor" href="#Quick-Example-1">Quick Example</a><a class="docs-heading-anchor-permalink" href="#Quick-Example-1" title="Permalink"></a></h2><p>Let&#39;s build a classifier for the classic iris dataset. If you don&#39;t have RDatasets, <code>Pkg.add</code> it.</p><pre><code class="language-julia-repl">julia&gt; using RDatasets: dataset
+
+julia&gt; iris = dataset(&quot;datasets&quot;, &quot;iris&quot;)
+150×5 DataFrames.DataFrame
+│ Row │ SepalLength │ SepalWidth │ PetalLength │ PetalWidth │ Species   │
+│     │ Float64     │ Float64    │ Float64     │ Float64    │ Cat…      │
+├─────┼─────────────┼────────────┼─────────────┼────────────┼───────────┤
+│ 1   │ 5.1         │ 3.5        │ 1.4         │ 0.2        │ setosa    │
+│ 2   │ 4.9         │ 3.0        │ 1.4         │ 0.2        │ setosa    │
+│ 3   │ 4.7         │ 3.2        │ 1.3         │ 0.2        │ setosa    │
+│ 4   │ 4.6         │ 3.1        │ 1.5         │ 0.2        │ setosa    │
+│ 5   │ 5.0         │ 3.6        │ 1.4         │ 0.2        │ setosa    │
+│ 6   │ 5.4         │ 3.9        │ 1.7         │ 0.4        │ setosa    │
+│ 7   │ 4.6         │ 3.4        │ 1.4         │ 0.3        │ setosa    │
+⋮
+│ 143 │ 5.8         │ 2.7        │ 5.1         │ 1.9        │ virginica │
+│ 144 │ 6.8         │ 3.2        │ 5.9         │ 2.3        │ virginica │
+│ 145 │ 6.7         │ 3.3        │ 5.7         │ 2.5        │ virginica │
+│ 146 │ 6.7         │ 3.0        │ 5.2         │ 2.3        │ virginica │
+│ 147 │ 6.3         │ 2.5        │ 5.0         │ 1.9        │ virginica │
+│ 148 │ 6.5         │ 3.0        │ 5.2         │ 2.0        │ virginica │
+│ 149 │ 6.2         │ 3.4        │ 5.4         │ 2.3        │ virginica │
+│ 150 │ 5.9         │ 3.0        │ 5.1         │ 1.8        │ virginica │
+ </code></pre><p>ScikitLearn.jl expects arrays, but DataFrames can also be used - see the corresponding <a href="../dataframes/">section</a> of the manual</p><pre><code class="language-julia-repl">julia&gt; X = convert(Array, iris[!, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]]) #subset of original data not a copy
+150×4 Array{Float64,2}:
+ 5.1  3.5  1.4  0.2
+ 4.9  3.0  1.4  0.2
+ 4.7  3.2  1.3  0.2
+ 4.6  3.1  1.5  0.2
+ 5.0  3.6  1.4  0.2
+ 5.4  3.9  1.7  0.4
+ 4.6  3.4  1.4  0.3
+ 5.0  3.4  1.5  0.2
+ 4.4  2.9  1.4  0.2
+ 4.9  3.1  1.5  0.1
+ ⋮
+ 6.9  3.1  5.1  2.3
+ 5.8  2.7  5.1  1.9
+ 6.8  3.2  5.9  2.3
+ 6.7  3.3  5.7  2.5
+ 6.7  3.0  5.2  2.3
+ 6.3  2.5  5.0  1.9
+ 6.5  3.0  5.2  2.0
+ 6.2  3.4  5.4  2.3
+ 5.9  3.0  5.1  1.8
+
+julia&gt; y = convert(Array, iris[!, :Species])
+150-element Array{String,1}:
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ &quot;setosa&quot;
+ ⋮
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+ &quot;virginica&quot;
+</code></pre><p>Next, we load the LogisticRegression model from scikit-learn&#39;s <a href="../models/">library</a>. This would require scikit-learn. See <a href="../models/#Installation-1">Installation</a></p><pre><code class="language-julia-repl">julia&gt; using ScikitLearn
+
+julia&gt; @sk_import linear_model: LogisticRegression
+PyObject &lt;class &#39;sklearn.linear_model._logistic.LogisticRegression&#39;&gt;</code></pre><p>Every model&#39;s constructor accepts hyperparameters (such as regression strength, whether to fit the intercept, the penalty type, etc.) as keyword arguments.  Check out <code>?LogisticRegression</code> for details.</p><pre><code class="language-julia-repl">julia&gt; model = LogisticRegression(fit_intercept=true, max_iter = 200)
+PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=200,
+                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
+                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
+                   warm_start=False)
+</code></pre><p>Then we train the model and evaluate its accuracy on the training set:</p><pre><code class="language-julia-repl">julia&gt; fit!(model, X, y);
+
+julia&gt; accuracy = score(model, X, y)
+0.9733333333333334
+
+julia&gt; println(&quot;accuracy: $accuracy&quot;)
+accuracy: 0.9733333333333334
+</code></pre><h2 id="Cross-validation-1"><a class="docs-heading-anchor" href="#Cross-validation-1">Cross-validation</a><a class="docs-heading-anchor-permalink" href="#Cross-validation-1" title="Permalink"></a></h2><p>This will train five models, on five train/test splits of X and y, and return the test-set accuracy of each:</p><pre><code class="language-julia-repl">julia&gt; using ScikitLearn.CrossValidation: cross_val_score
+
+julia&gt; cross_val_score(LogisticRegression(max_iter=130), X, y; cv=5)  # 5-fold
+5-element Array{Float64,1}:
+ 0.9666666666666667
+ 1.0
+ 0.9333333333333333
+ 0.9666666666666667
+ 1.0
+  </code></pre><p>See this <a href="http://scikit-learn.org/stable/modules/cross_validation.html">tutorial</a> for more information.</p><h2 id="Hyperparameter-tuning-1"><a class="docs-heading-anchor" href="#Hyperparameter-tuning-1">Hyperparameter tuning</a><a class="docs-heading-anchor-permalink" href="#Hyperparameter-tuning-1" title="Permalink"></a></h2><p><code>LogisticRegression</code> has a regularization-strength parameter <code>C</code> (smaller is stronger). We can use grid search algorithms to find the optimal <code>C</code>.</p><p><code>GridSearchCV</code> will try all values of <code>C</code> in <code>0.1:0.1:2.0</code> and will return the one with the highest cross-validation performance.</p><pre><code class="language-julia-repl">julia&gt; using ScikitLearn.GridSearch: GridSearchCV
+
+julia&gt; gridsearch = GridSearchCV(LogisticRegression(max_iter=200), Dict(:C =&gt; 0.1:0.1:2.0))
+GridSearchCV
+  estimator: PyCall.PyObject
+  param_grid: Dict{Symbol,StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}}
+  scoring: Nothing nothing
+  loss_func: Nothing nothing
+  score_func: Nothing nothing
+  fit_params: Dict{Any,Any}
+  n_jobs: Int64 1
+  iid: Bool true
+  refit: Bool true
+  cv: Nothing nothing
+  verbose: Int64 0
+  error_score: String &quot;raise&quot;
+  scorer_: Nothing nothing
+  best_params_: Nothing nothing
+  best_score_: Nothing nothing
+  grid_scores_: Nothing nothing
+  best_estimator_: Nothing nothing
+
+julia&gt; fit!(gridsearch, X, y);
+
+julia&gt; println(&quot;Best parameters: $(gridsearch.best_params_)&quot;)
+Best parameters: Dict{Symbol,Any}(:C =&gt; 0.6)
+</code></pre><p>Finally, we plot cross-validation accuracy vs. <code>C</code></p><pre><code class="language-julia-repl">julia&gt; using PyPlot, Statistics
+[ Info: Installing matplotlib via the Conda matplotlib package...
+[ Info: Running `conda install -q -y matplotlib` in root environment
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /home/travis/.julia/conda/3
+
+  added / updated specs:
+    - matplotlib
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    cycler-0.10.0              |           py37_0          13 KB
+    dbus-1.13.14               |       hb2f20db_0         504 KB
+    expat-2.2.6                |       he6710b0_0         146 KB
+    fontconfig-2.13.0          |       h9420a91_0         227 KB
+    freetype-2.9.1             |       h8a8886c_1         550 KB
+    glib-2.63.1                |       h5a9c865_0         2.9 MB
+    gst-plugins-base-1.14.0    |       hbbd80ab_1         4.8 MB
+    gstreamer-1.14.0           |       hb453b48_1         3.1 MB
+    icu-58.2                   |       he6710b0_3        10.5 MB
+    jpeg-9b                    |       h024ee3a_2         214 KB
+    kiwisolver-1.2.0           |   py37hfd86e86_0          84 KB
+    libpng-1.6.37              |       hbc83047_0         278 KB
+    libuuid-1.0.3              |       h1bed415_2          15 KB
+    libxcb-1.13                |       h1bed415_1         421 KB
+    libxml2-2.9.9              |       hea5a465_1         1.6 MB
+    matplotlib-3.1.3           |           py37_0          21 KB
+    matplotlib-base-3.1.3      |   py37hef1b27d_0         5.0 MB
+    pcre-8.43                  |       he6710b0_0         209 KB
+    pyparsing-2.4.7            |             py_0          65 KB
+    pyqt-5.9.2                 |   py37h05f1152_2         4.5 MB
+    python-dateutil-2.8.1      |             py_0         215 KB
+    qt-5.9.7                   |       h5867ecd_1        68.5 MB
+    sip-4.19.8                 |   py37hf484d3e_0         274 KB
+    tornado-6.0.4              |   py37h7b6447c_1         611 KB
+    ------------------------------------------------------------
+                                           Total:       104.6 MB
+
+The following NEW packages will be INSTALLED:
+
+  cycler             pkgs/main/linux-64::cycler-0.10.0-py37_0
+  dbus               pkgs/main/linux-64::dbus-1.13.14-hb2f20db_0
+  expat              pkgs/main/linux-64::expat-2.2.6-he6710b0_0
+  fontconfig         pkgs/main/linux-64::fontconfig-2.13.0-h9420a91_0
+  freetype           pkgs/main/linux-64::freetype-2.9.1-h8a8886c_1
+  glib               pkgs/main/linux-64::glib-2.63.1-h5a9c865_0
+  gst-plugins-base   pkgs/main/linux-64::gst-plugins-base-1.14.0-hbbd80ab_1
+  gstreamer          pkgs/main/linux-64::gstreamer-1.14.0-hb453b48_1
+  icu                pkgs/main/linux-64::icu-58.2-he6710b0_3
+  jpeg               pkgs/main/linux-64::jpeg-9b-h024ee3a_2
+  kiwisolver         pkgs/main/linux-64::kiwisolver-1.2.0-py37hfd86e86_0
+  libpng             pkgs/main/linux-64::libpng-1.6.37-hbc83047_0
+  libuuid            pkgs/main/linux-64::libuuid-1.0.3-h1bed415_2
+  libxcb             pkgs/main/linux-64::libxcb-1.13-h1bed415_1
+  libxml2            pkgs/main/linux-64::libxml2-2.9.9-hea5a465_1
+  matplotlib         pkgs/main/linux-64::matplotlib-3.1.3-py37_0
+  matplotlib-base    pkgs/main/linux-64::matplotlib-base-3.1.3-py37hef1b27d_0
+  pcre               pkgs/main/linux-64::pcre-8.43-he6710b0_0
+  pyparsing          pkgs/main/noarch::pyparsing-2.4.7-py_0
+  pyqt               pkgs/main/linux-64::pyqt-5.9.2-py37h05f1152_2
+  python-dateutil    pkgs/main/noarch::python-dateutil-2.8.1-py_0
+  qt                 pkgs/main/linux-64::qt-5.9.7-h5867ecd_1
+  sip                pkgs/main/linux-64::sip-4.19.8-py37hf484d3e_0
+  tornado            pkgs/main/linux-64::tornado-6.0.4-py37h7b6447c_1
+
+
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+julia&gt; plot([cv_res.parameters[:C] for cv_res in gridsearch.grid_scores_],
+            [mean(cv_res.cv_validation_scores) for cv_res in gridsearch.grid_scores_])
+1-element Array{PyCall.PyObject,1}:
+ PyObject &lt;matplotlib.lines.Line2D object at 0x7ff453c47950&gt;</code></pre><p><img src="../gridplot.svg" alt/></p><h3 id="Saving-the-model-to-disk-1"><a class="docs-heading-anchor" href="#Saving-the-model-to-disk-1">Saving the model to disk</a><a class="docs-heading-anchor-permalink" href="#Saving-the-model-to-disk-1" title="Permalink"></a></h3><p>Both Python and Julia models can be <a href="../jld/">saved to disk</a></p><pre><code class="language-julia-repl">julia&gt; import JLD, PyCallJLD
+
+julia&gt; JLD.save(&quot;my_model.jld&quot;, &quot;model&quot;, model)
+
+julia&gt; model = JLD.load(&quot;my_model.jld&quot;, &quot;model&quot;)    # Load it back
+┌ Warning: type PyCallJLD.PyObjectSerialization not present in workspace; reconstructing
+└ @ JLD ~/.julia/packages/JLD/uVJmd/src/jld_types.jl:722
+getfield(JLD, Symbol(&quot;##PyCallJLD.PyObjectSerialization#371&quot;))(UInt8[0x80, 0x03, 0x63, 0x73, 0x6b, 0x6c, 0x65, 0x61, 0x72, 0x6e  …  0x2e, 0x32, 0x32, 0x2e, 0x31, 0x71, 0x43, 0x75, 0x62, 0x2e])
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Introduction</a><a class="docs-footer-nextpage" href="../api/">Model API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 29 May 2020 13:09">Friday 29 May 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
