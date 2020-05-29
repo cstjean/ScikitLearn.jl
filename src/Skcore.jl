@@ -136,6 +136,9 @@ function import_sklearn()
           catch
               error("scikit-learn isn't properly installed."*
                     "Please use PyCall default Conda or non-conda local python")
+          end
+
+      end
 
     else 
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
