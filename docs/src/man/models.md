@@ -42,7 +42,7 @@ julia> predict(log_reg, X_test)
 Reminder: `?LogisticRegression` contains a lot of information about the model
 parameters.
 
-### Installation
+### Installation and importing Python models
 
 Importing the Python models requires Python 3.x with numpy, and the
 scikit-learn library. This is easiest to get through [Conda.jl](https://github.com/Luthaf/Conda.jl), which is already
@@ -51,8 +51,9 @@ manually with `Conda.add("scikit-learn")`. If you have other issues, please
 refer to [PyCall.jl](https://github.com/stevengj/PyCall.jl#installation), or
 [post an issue](https://github.com/cstjean/ScikitLearn.jl/issues/new)
 
-## Julia models
 
+
+## Julia models
 
 Julia models are hosted in other packages, and need to be installed separately
 with `Pkg.add` or `Pkg.checkout` (to get the latest version - sometimes
@@ -68,7 +69,7 @@ hyperparameter information in their `?docstrings`.
     using ScikitLearn: fit!, predict
     
     ```
-
+    
 ### ScikitLearn in-built models
 
 - `ScikitLearn.Models.LinearRegression()` implements linear regression using
@@ -164,7 +165,8 @@ Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl
     Documentation at [LowRankModels.jl](https://github.com/madeleineudell/LowRankModels.jl#scikitlearn). Example: [KMeans Digit Classifier](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Plot_Kmeans_Digits_Julia.ipynb).
 
 
-## Contributing
+
+## Contributing new models
 
 To make your Julia model compatible with ScikitLearn.jl, you need to implement
 the scikit-learn interface. See [ScikitLearnBase.jl](https://github.com/cstjean/ScikitLearnBase.jl)
