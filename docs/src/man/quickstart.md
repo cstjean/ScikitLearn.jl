@@ -7,28 +7,19 @@ RDatasets, `Pkg.add` it.
 ```jldoctest quickstart
 julia> using RDatasets: dataset
 
-julia> iris = dataset("datasets", "iris")
-150×5 DataFrames.DataFrame
-│ Row │ SepalLength │ SepalWidth │ PetalLength │ PetalWidth │ Species   │
-│     │ Float64     │ Float64    │ Float64     │ Float64    │ Cat…      │
-├─────┼─────────────┼────────────┼─────────────┼────────────┼───────────┤
-│ 1   │ 5.1         │ 3.5        │ 1.4         │ 0.2        │ setosa    │
-│ 2   │ 4.9         │ 3.0        │ 1.4         │ 0.2        │ setosa    │
-│ 3   │ 4.7         │ 3.2        │ 1.3         │ 0.2        │ setosa    │
-│ 4   │ 4.6         │ 3.1        │ 1.5         │ 0.2        │ setosa    │
-│ 5   │ 5.0         │ 3.6        │ 1.4         │ 0.2        │ setosa    │
-│ 6   │ 5.4         │ 3.9        │ 1.7         │ 0.4        │ setosa    │
-│ 7   │ 4.6         │ 3.4        │ 1.4         │ 0.3        │ setosa    │
-⋮
-│ 143 │ 5.8         │ 2.7        │ 5.1         │ 1.9        │ virginica │
-│ 144 │ 6.8         │ 3.2        │ 5.9         │ 2.3        │ virginica │
-│ 145 │ 6.7         │ 3.3        │ 5.7         │ 2.5        │ virginica │
-│ 146 │ 6.7         │ 3.0        │ 5.2         │ 2.3        │ virginica │
-│ 147 │ 6.3         │ 2.5        │ 5.0         │ 1.9        │ virginica │
-│ 148 │ 6.5         │ 3.0        │ 5.2         │ 2.0        │ virginica │
-│ 149 │ 6.2         │ 3.4        │ 5.4         │ 2.3        │ virginica │
-│ 150 │ 5.9         │ 3.0        │ 5.1         │ 1.8        │ virginica │
- 
+julia> iris = dataset("datasets", "iris");
+
+julia> first(iris, 5)
+5×5 DataFrames.DataFrame
+│ Row │ SepalLength │ SepalWidth │ PetalLength │ PetalWidth │ Species │
+│     │ Float64     │ Float64    │ Float64     │ Float64    │ Cat…    │
+├─────┼─────────────┼────────────┼─────────────┼────────────┼─────────┤
+│ 1   │ 5.1         │ 3.5        │ 1.4         │ 0.2        │ setosa  │
+│ 2   │ 4.9         │ 3.0        │ 1.4         │ 0.2        │ setosa  │
+│ 3   │ 4.7         │ 3.2        │ 1.3         │ 0.2        │ setosa  │
+│ 4   │ 4.6         │ 3.1        │ 1.5         │ 0.2        │ setosa  │
+│ 5   │ 5.0         │ 3.6        │ 1.4         │ 0.2        │ setosa  │
+
 ```
 ScikitLearn.jl expects arrays, but DataFrames can also be used - see the corresponding [section](dataframes.md) of the manual
 
