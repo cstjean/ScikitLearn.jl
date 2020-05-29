@@ -18,7 +18,6 @@ for f in ScikitLearnBase.api
     @eval import ScikitLearnBase: $f
 end
 
-include("init.jl")
 include("sk_utils.jl")
 
 """ Like `pyimport` but gives a more informative error message """
@@ -115,7 +114,42 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
+import_already_warned = false
+function import_sklearn()
+    global import_already_warned
 
+    @static if Sys.isapple()
+      try
+        mod = pyimport("sklearn")
+      catch
+          @info "Installing non-mkl versions of sci-kit learn"
+
+          try
+            if PyCall.conda
+            #use non-mkl versions of python packages when Conda is used
+            #when a different non-conda local python is used everthing works fine
+              Conda.add("nomkl")
+              Conda.rm("mkl")
+            end
+            #PyCall installs scikit-learn using it's internal logic
+            mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+          catch
+              error("scikit-learn isn't properly installed."*
+                    "Please use PyCall default Conda or non-conda local python")
+
+    else 
+        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+    end
+    
+    version = VersionParsing.vparse(mod.__version__)
+    min_version = v"0.18.0"
+    if version < min_version && !import_already_warned
+        @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
+        import_already_warned = true
+    end
+
+    return mod
+end
 
 """
 @sk_import imports models from the Python version of scikit-learn. For instance, the
@@ -132,7 +166,7 @@ macro sk_import(expr)
     if :sklearn in symbols_in(expr)
         error("Bad @sk_import: please remove `sklearn.` (it is implicit)")
     end
-    if isa(what, Symbol)
+    if isa(what, Symbol)    
         members = [what]
     else
         @assert @capture(what, ((members__),)) "Bad @sk_import statement"
@@ -140,7 +174,7 @@ macro sk_import(expr)
     mod_string = "sklearn.$mod"
     :(begin
         # Make sure that sklearn is installed.
-       # $Skcore.import_sklearn()
+        $Skcore.import_sklearn()
         # We used to rely on @pyimport2, but that macro unfortunately loads the Python
         # module at macro-expansion-time, which happens before Skcore.import_sklearn().
         # The new `pyimport`-based implementation is cleaner - Mar'17
