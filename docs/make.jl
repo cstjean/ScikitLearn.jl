@@ -1,11 +1,13 @@
 using Pkg
 using Documenter
 using ScikitLearn
+using PyPlot #pre-installs matplotlib
 #import PyCall
 
 
 ## Install scikit-learn if not installed
 #PyCall.pyimport_conda("sklearn", "scikit-learn")
+
 
 pages = [
 	"Introduction" => "index.md",
@@ -35,6 +37,8 @@ makedocs(
 			),
 	)
 
-#deploydocs(
-#	repo = "github.com/cstjean/ScikitLearn.jl.git"
-#	)
+deploydocs(
+	repo = "github.com/cstjean/ScikitLearn.jl.git"
+	)
+
+

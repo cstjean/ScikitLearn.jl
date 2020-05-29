@@ -2,7 +2,8 @@
 
 # ScikitLearn.jl
 [![Build Status](https://travis-ci.org/cstjean/ScikitLearn.jl.svg?branch=master)](https://travis-ci.org/cstjean/ScikitLearn.jl)
-[![Documentation Status](https://readthedocs.org/projects/scikitlearnjl/badge/?version=latest)](http://scikitlearnjl.readthedocs.org/en/latest/?badge=latest)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://cstjean.github.io/ScikitLearn.jl/dev/)
+
 
 ScikitLearn.jl implements the popular
 [scikit-learn](http://scikit-learn.org/stable/) interface and algorithms in
