@@ -11,6 +11,7 @@ using SparseArrays
 using PyCall
 using Parameters
 using Compat
+import Conda
 import VersionParsing
 
 for f in ScikitLearnBase.api
