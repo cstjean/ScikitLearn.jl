@@ -38,3 +38,5 @@ makedocs(
 deploydocs(
 	repo = "github.com/cstjean/ScikitLearn.jl.git"
 	)
+
+
