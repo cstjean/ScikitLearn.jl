@@ -134,8 +134,9 @@ function import_sklearn()
             #PyCall installs scikit-learn using it's internal logic
             mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
           catch
-              error("scikit-learn isn't properly installed."*
+              @info("scikit-learn isn't properly installed."*
                     "Please use PyCall default Conda or non-conda local python")
+              rethrow()
           end
 
       end
