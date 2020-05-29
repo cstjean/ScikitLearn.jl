@@ -42,7 +42,7 @@ julia> predict(log_reg, X_test)
 Reminder: `?LogisticRegression` contains a lot of information about the model
 parameters.
 
-### Installation and importing Python models
+#### Installation and importing Python models
 
 Importing the Python models requires Python 3.x with numpy, and the
 scikit-learn library. This is easiest to get through [Conda.jl](https://github.com/Luthaf/Conda.jl), which is already
@@ -70,12 +70,12 @@ hyperparameter information in their `?docstrings`.
     
     ```
     
-### ScikitLearn in-built models
+#### ScikitLearn in-built models
 
 - `ScikitLearn.Models.LinearRegression()` implements linear regression using
   `\`, optimized for speed. See `?LinearRegression` for fitting options.
 
-### GaussianMixtures.jl
+#### GaussianMixtures.jl
 
 ```jldoctest models
 julia> using GaussianMixtures: GMM #remember to install package first
@@ -105,7 +105,7 @@ julia> predict_proba(gmm, X_test)
 
 Documentation at [GaussianMixtures.jl](https://github.com/davidavdav/GaussianMixtures.jl). Example: [density estimation](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Density_Estimation_Julia.ipynb)
 
-### GaussianProcesses.jl
+#### GaussianProcesses.jl
 
 ```jldoctest models
 julia> using GaussianProcesses: GPE, MeanZero, SE #remember to install package first
@@ -139,7 +139,7 @@ Documentation at [GaussianProcesses.jl](https://github.com/STOR-i/GaussianProces
 Gaussian Processes have a lot of hyperparameters, see `get_params(GP)`
 for a list. They can all be [tuned](model_selection.md)
 
-### DecisionTree.jl
+#### DecisionTree.jl
 
 - `DecisionTreeClassifier`
 - `DecisionTreeRegressor`
@@ -149,7 +149,7 @@ for a list. They can all be [tuned](model_selection.md)
 
 Documentation at [DecisionTree.jl](https://github.com/bensadeghi/DecisionTree.jl#scikitlearnjl). Examples: [Classifier Comparison](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Classifier_Comparison_Julia.ipynb), [Decision Tree Regression](https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Decision_Tree_Regression_Julia.ipynb) notebooks.
 
-### LowRankModels.jl
+#### LowRankModels.jl
 
 - `SkGLRM`: Generalized Low Rank Model
 - `PCA`: Principal Component Analysis
