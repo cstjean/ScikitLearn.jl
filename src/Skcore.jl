@@ -120,8 +120,8 @@ function import_sklearn()
     global import_already_warned
 
     @static if Sys.isapple()
-      try
-        mod = pyimport("sklearn")
+      mod = try
+        pyimport("sklearn")
       catch
           @info "Installing non-mkl versions of sci-kit learn"
 
@@ -133,7 +133,7 @@ function import_sklearn()
               Conda.rm("mkl")
             end
             #PyCall installs scikit-learn using it's internal logic
-            mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+            PyCall.pyimport_conda("sklearn", "scikit-learn")
           catch
               @info("scikit-learn isn't properly installed."*
                     "Please use PyCall default Conda or non-conda local python")
