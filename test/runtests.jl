@@ -1,9 +1,7 @@
 # Adapted from scikit-learn
 # Copyright (c) 2007–2016 The scikit-learn developers.
 
-# Install scikit-learn if not installed
-import PyCall
-PyCall.pyimport_conda("sklearn", "scikit-learn")
+
 
 using ScikitLearn
 using Test
@@ -69,3 +67,4 @@ using LinearAlgebra, Random, Statistics
 end
 
 nothing
+

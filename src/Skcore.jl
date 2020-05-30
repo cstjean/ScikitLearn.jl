@@ -11,6 +11,8 @@ using SparseArrays
 using PyCall
 using Parameters
 using Compat
+import Conda
+import VersionParsing
 
 for f in ScikitLearnBase.api
     # Used to be importall, but no longer exists in 0.7
@@ -31,7 +33,7 @@ function importpy(name::AbstractString)
         end
     end
 end
-        
+
 
 # These definitions are potentially costly. Get rid of the pywrap?
 sklearn() = importpy("sklearn")
@@ -116,23 +118,41 @@ symbols_in(::Any) = Set()
 import_already_warned = false
 function import_sklearn()
     global import_already_warned
-    mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+
+    @static if Sys.isapple()
+      mod = try
+        pyimport("sklearn")
+      catch
+          @info "Installing non-mkl versions of sci-kit learn"
+
+          try
+            if PyCall.conda
+            #use non-mkl versions of python packages when Conda is used
+            #when a different non-conda local python is used everthing works fine
+              Conda.add("nomkl")
+              Conda.rm("mkl")
+            end
+            #PyCall installs scikit-learn using it's internal logic
+            PyCall.pyimport_conda("sklearn", "scikit-learn")
+          catch
+              @info("scikit-learn isn't properly installed."*
+                    "Please use PyCall default Conda or non-conda local python")
+              rethrow()
+          end
+
+      end
+
+    else 
+        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+    end
     
-    version_ = if occursin(r"^\d+\.\d+\.\d+$", mod.__version__) #matches strings of form resembling 0.21.2 
-        mod.__version__
-    else
-        #since match above failed it assumes that the string must be of the form resembling 0.21.2.post1
-        #It then splits the string an extracts a string of the form 0.21.2 which is a legal version number
-        # version resembling 0.21.2 are similar to 0.21.2.post1 which adds bugs fixes to the release
-        rsplit(mod.__version__, ".", limit = 2)[1]
-    end     
-   version = VersionNumber(version_)
-       
-   min_version = v"0.18.0"
-   if version < min_version && !import_already_warned
+    version = VersionParsing.vparse(mod.__version__)
+    min_version = v"0.18.0"
+    if version < min_version && !import_already_warned
         @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
         import_already_warned = true
     end
+
     return mod
 end
 
@@ -140,7 +160,6 @@ end
 @sk_import imports models from the Python version of scikit-learn. For instance, the
 Julia equivalent of
 `from sklearn.linear_model import LinearRegression, LogicisticRegression` is:
-
     @sk_import linear_model: (LinearRegression, LogisticRegression)
     model = fit!(LinearRegression(), X, y)
 """
@@ -152,7 +171,7 @@ macro sk_import(expr)
     if :sklearn in symbols_in(expr)
         error("Bad @sk_import: please remove `sklearn.` (it is implicit)")
     end
-    if isa(what, Symbol)
+    if isa(what, Symbol)    
         members = [what]
     else
         @assert @capture(what, ((members__),)) "Bad @sk_import statement"

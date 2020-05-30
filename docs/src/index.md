@@ -11,7 +11,7 @@ both Julia- and Python-defined models together into the scikit-learn framework.
 
 This library uses docstrings extensively (type `?function_name` at the
 REPL). The primary source of information, tutorial, etc. is at
-[scikit-learn.org](http://scikit-learn.org/stable/documentation.html), but
-please see [how to read the Python documentation](python) beforehand.
+[scikit-learn](http://scikit-learn.org/stable/documentation.html), but
+please see [how to read the Python documentation](man/python.md) beforehand.
 
-Note: ScikitLearn.jl is not associated to the [scikit-learn.org](scikit-learn.org) organization. All issues should be filed [here](https://github.com/cstjean/ScikitLearn.jl/issues)
+Note: ScikitLearn.jl is not associated to the [scikit-learn](http://scikit-learn.org/) organization. All issues should be filed [here](https://github.com/cstjean/ScikitLearn.jl/issues)

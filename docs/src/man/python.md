@@ -1,5 +1,6 @@
-Relationship to scikit-learn
-----
+# Reading the Scikit-Learn Documentation.
+
+## Relationship to scikit-learn
 
 ScikitLearn.jl aims to mirror the Python scikit-learn project, but the API had to be adapted to Julia, and follows Julia's conventions. When reading the Python [documentation](http://scikit-learn.org/stable/documentation.html), keep in mind:
 
@@ -10,14 +11,19 @@ ScikitLearn.jl aims to mirror the Python scikit-learn project, but the API had t
 - A few of the Python submodules were translated into Julia to support
   Julia models: `ScikitLearn.Pipelines`, `ScikitLearn.CrossValidation`, and `ScikitLearn.GridSearch`
 
-To access the class members and methods of a Python object
-(i.e. all models imported through `@sk_import`), use `obj[:member_name]`. For
+
+You can access the class members and methods of a Python object
+(i.e. all models imported through `@sk_import`) using `obj.member_name`. For
 example:
 
-```
+```@repl
+using ScikitLearn #hide
+X=rand(10,4);y=rand(10);
+
 @sk_import linear_model: Lasso
 lm = fit!(Lasso(), X, y)
-println(lm[:n_iter_])   # equivalent to lm.n_iter_ in Python
+println(lm.n_iter_)
+
 ```
 
 This is rarely necessary, because the most important/frequently-used methods

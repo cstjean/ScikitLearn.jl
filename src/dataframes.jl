@@ -103,20 +103,21 @@ function _maybe_convert_missing(dfm::DataFrameMapper, X::DataFrame)
     sup_type(::Type{<:Number}) = Float64
     sup_type(::Type) = Any
     if dfm.missing2NaN
-        X = copy(X)
+        X = deepcopy(X)
         # There might be a much simpler way of doing this with DataFrames
         for col in names(X)
             values = X[!, col]
             na_inds = ismissing.(values)
             # We can't put a NaN in an array of Int. This is ugly code, FIXME
             if any(na_inds)
-                values = copy(values) # since we'll modify it
                 if !(eltype(values) <: AbstractFloat)
                     values = convert(Vector{sup_type(eltype(values))},
                                      copy(values))
+                else
+                    values = copy(values) # since we'll modify it
                 end
                 values[na_inds] .= NaN
-                X[!, col] = values
+                X[!, col] .= values
             end
         end
     end
