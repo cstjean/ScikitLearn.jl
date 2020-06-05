@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>DataFrames · ScikitLearn.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">ScikitLearn.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../quickstart/">Quick Start Guide</a></li><li><a class="tocitem" href="../api/">Model API</a></li><li><a class="tocitem" href="../python/">Reading the Scikit-learn Documentation</a></li><li><a class="tocitem" href="../examples_refer/">Example Gallery</a></li><li><a class="tocitem" href="../models/">Models</a></li><li><a class="tocitem" href="../cross_validation/">Cross-validation</a></li><li><a class="tocitem" href="../model_selection/">Model Selection</a></li><li><a class="tocitem" href="../pipelines/">Pipelines and FeatureUnion</a></li><li class="is-active"><a class="tocitem" href>DataFrames</a><ul class="internal"><li><a class="tocitem" href="#Transformation-Mapping-1"><span>Transformation Mapping</span></a></li><li><a class="tocitem" href="#Cross-validation-1"><span>Cross-validation</span></a></li></ul></li><li><a class="tocitem" href="../jld/">Saving Models to Disk</a></li><li><a class="tocitem" href="../help/">Getting Help</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>DataFrames</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>DataFrames</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/cstjean/ScikitLearn.jl/blob/master/docs/src/man/dataframes.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><p><em>Credits: this code and documentation was adapted from Paul Butler&#39;s <a href="https://github.com/paulgb/sklearn-pandas">sklearn-pandas</a></em></p><h1 id="DataFrames-1"><a class="docs-heading-anchor" href="#DataFrames-1">DataFrames</a><a class="docs-heading-anchor-permalink" href="#DataFrames-1" title="Permalink"></a></h1><p>It is possible to use a <a href="https://github.com/JuliaStats/DataFrames.jl">dataframe</a> as a training set, but it needs to be converted to an array first. <code>DataFrameMapper</code> is used to specify how this conversion proceeds. For example, PCA might be applied to some numerical dataframe columns, and one-hot-encoding to a categorical column.</p><h2 id="Transformation-Mapping-1"><a class="docs-heading-anchor" href="#Transformation-Mapping-1">Transformation Mapping</a><a class="docs-heading-anchor-permalink" href="#Transformation-Mapping-1" title="Permalink"></a></h2><p>Consider this dataset:</p><pre><code class="language-julia-repl">julia&gt; using ScikitLearn
+
+julia&gt; using DataFrames: DataFrame, missing
+
+julia&gt; @sk_import preprocessing: (LabelBinarizer, StandardScaler)
+PyObject &lt;class &#39;sklearn.preprocessing._data.StandardScaler&#39;&gt;
+
+julia&gt; data = DataFrame(pet=[&quot;cat&quot;, &quot;dog&quot;, &quot;dog&quot;, &quot;fish&quot;, &quot;cat&quot;, &quot;dog&quot;, &quot;cat&quot;, &quot;fish&quot;],
+                 children=[4., 6, 3, 3, 2, 3, 5, 4],
+                 salary=[90, 24, 44, 27, 32, 59, 36, 27])
+8×3 DataFrames.DataFrame
+│ Row │ pet    │ children │ salary │
+│     │ String │ Float64  │ Int64  │
+├─────┼────────┼──────────┼────────┤
+│ 1   │ cat    │ 4.0      │ 90     │
+│ 2   │ dog    │ 6.0      │ 24     │
+│ 3   │ dog    │ 3.0      │ 44     │
+│ 4   │ fish   │ 3.0      │ 27     │
+│ 5   │ cat    │ 2.0      │ 32     │
+│ 6   │ dog    │ 3.0      │ 59     │
+│ 7   │ cat    │ 5.0      │ 36     │
+│ 8   │ fish   │ 4.0      │ 27     │
+
+</code></pre><h3 id="Map-the-Columns-to-Transformations-1"><a class="docs-heading-anchor" href="#Map-the-Columns-to-Transformations-1">Map the Columns to Transformations</a><a class="docs-heading-anchor-permalink" href="#Map-the-Columns-to-Transformations-1" title="Permalink"></a></h3><p>The mapper takes a list of pairs. The first is a column name from the DataFrame, or a list containing one or multiple columns (we will see an example with multiple columns later). The second is an object which will perform the transformation which will be applied to that column:</p><p>Note: <code>ScikitLearn.DataFrameMapper</code> won&#39;t be available until <code>DataFrames</code> is imported</p><pre><code class="language-julia-repl">julia&gt; mapper = DataFrameMapper([(:pet, LabelBinarizer()),
+                          ([:children], StandardScaler())]);</code></pre><p>The difference between specifying the column selector as <code>:column</code> (as a single symbol) and <code>[:column]</code> (as a list with one element) is the shape of the array that is passed to the transformer. In the first case, a one dimensional array with be passed, while in the second case it will be a 2-dimensional array with one column, i.e. a column vector.</p><h3 id="Test-the-Transformation-1"><a class="docs-heading-anchor" href="#Test-the-Transformation-1">Test the Transformation</a><a class="docs-heading-anchor-permalink" href="#Test-the-Transformation-1" title="Permalink"></a></h3><p>We can use the <code>fit_transform!</code> shortcut to both fit the model and see what transformed data looks like. In this and the other examples, output is rounded to two digits with <code>round</code> to account for rounding errors on different hardware:</p><pre><code class="language-julia-repl">julia&gt; round.(fit_transform!(mapper, copy(data)), digits=2)
+8×4 Array{Float64,2}:
+ 1.0  0.0  0.0   0.21
+ 0.0  1.0  0.0   1.88
+ 0.0  1.0  0.0  -0.63
+ 0.0  0.0  1.0  -0.63
+ 1.0  0.0  0.0  -1.46
+ 0.0  1.0  0.0  -0.63
+ 1.0  0.0  0.0   1.04
+ 0.0  0.0  1.0   0.21
+</code></pre><p>Note that the first three columns are the output of the LabelBinarizer (corresponding to <code>cat</code>, <code>dog</code>, and <code>fish</code>  respectively) and the fourth column is the standardized value for the number of children. In general, the columns are ordered according to the order given when the DataFrameMapper is constructed.</p><p>Now that the transformation is trained, we confirm that it works on new data:</p><pre><code class="language-julia-repl">julia&gt; sample = DataFrame(pet = [&quot;cat&quot;], children = [5.])
+1×2 DataFrames.DataFrame
+│ Row │ pet    │ children │
+│     │ String │ Float64  │
+├─────┼────────┼──────────┤
+│ 1   │ cat    │ 5.0      │
+
+julia&gt; round.(transform(mapper, sample), digits=2)
+1×4 Array{Float64,2}:
+ 1.0  0.0  0.0  1.04
+</code></pre><h3 id="Transform-Multiple-Columns-1"><a class="docs-heading-anchor" href="#Transform-Multiple-Columns-1">Transform Multiple Columns</a><a class="docs-heading-anchor-permalink" href="#Transform-Multiple-Columns-1" title="Permalink"></a></h3><p>Transformations may require multiple input columns. In these cases, the column names can be specified in a list:</p><pre><code class="language-julia-repl">julia&gt; @sk_import decomposition: PCA
+PyObject &lt;class &#39;sklearn.decomposition._pca.PCA&#39;&gt;
+
+julia&gt; mapper2 = DataFrameMapper([([:children, :salary], PCA(1))]);
+</code></pre><p>Now running <code>fit_transform!</code> will run PCA on the <code>children</code> and <code>salary</code> columns and return the first principal component:</p><pre><code class="language-julia-repl">julia&gt; round.(fit_transform!(mapper2, copy(data)), digits=1)
+8×1 Array{Float64,2}:
+  47.6
+ -18.4
+   1.6
+ -15.4
+ -10.4
+  16.6
+  -6.4
+ -15.4
+</code></pre><h3 id="Multiple-transformers-for-the-same-column-1"><a class="docs-heading-anchor" href="#Multiple-transformers-for-the-same-column-1">Multiple transformers for the same column</a><a class="docs-heading-anchor-permalink" href="#Multiple-transformers-for-the-same-column-1" title="Permalink"></a></h3><p>Multiple transformers can be applied to the same column specifying them in a list:</p><pre><code class="language-julia-repl">julia&gt; @sk_import impute: SimpleImputer
+PyObject &lt;class &#39;sklearn.impute._base.SimpleImputer&#39;&gt;
+
+julia&gt; mapper3 = DataFrameMapper([([:age], [SimpleImputer(),
+                                     StandardScaler()])]; missing2NaN=true);
+
+julia&gt; data_3 = DataFrame(age= [1, missing, 3]);
+
+julia&gt; fit_transform!(mapper3, data_3)
+3×1 Array{Float64,2}:
+ -1.224744871391589
+  0.0
+  1.224744871391589
+</code></pre><h3 id="Columns-that-don&#39;t-need-any-transformation-1"><a class="docs-heading-anchor" href="#Columns-that-don&#39;t-need-any-transformation-1">Columns that don&#39;t need any transformation</a><a class="docs-heading-anchor-permalink" href="#Columns-that-don&#39;t-need-any-transformation-1" title="Permalink"></a></h3><p>Only columns that are listed in the <code>DataFrameMapper</code> are kept. To keep a column but don&#39;t apply any transformation to it, use <code>nothing</code> as transformer:</p><pre><code class="language-julia-repl">julia&gt; mapper3 = DataFrameMapper([(:pet, LabelBinarizer()), (:children, nothing)]);
+
+julia&gt; round.(fit_transform!(mapper3, copy(data)))
+8×4 Array{Float64,2}:
+ 1.0  0.0  0.0  4.0
+ 0.0  1.0  0.0  6.0
+ 0.0  1.0  0.0  3.0
+ 0.0  0.0  1.0  3.0
+ 1.0  0.0  0.0  2.0
+ 0.0  1.0  0.0  3.0
+ 1.0  0.0  0.0  5.0
+ 0.0  0.0  1.0  4.0
+</code></pre><h2 id="Cross-validation-1"><a class="docs-heading-anchor" href="#Cross-validation-1">Cross-validation</a><a class="docs-heading-anchor-permalink" href="#Cross-validation-1" title="Permalink"></a></h2><p>Now that we can combine features from a DataFrame, we may want to use cross-validation to see whether our model works.</p><pre><code class="language-julia-repl">julia&gt; @sk_import linear_model: LinearRegression
+PyObject &lt;class &#39;sklearn.linear_model._base.LinearRegression&#39;&gt;
+
+julia&gt; using ScikitLearn.CrossValidation: cross_val_score
+
+julia&gt; pipe = Pipelines.Pipeline([(:featurize, mapper), (:lm, LinearRegression())]);
+
+julia&gt; round.(cross_val_score(pipe, data, data[!,:salary]), digits=2)
+3-element Array{Float64,1}:
+  -1.09
+  -5.3
+ -15.38
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../pipelines/">« Pipelines and FeatureUnion</a><a class="docs-footer-nextpage" href="../jld/">Saving Models to Disk »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 5 June 2020 10:38">Friday 5 June 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

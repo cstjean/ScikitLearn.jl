@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Pipelines and FeatureUnion · ScikitLearn.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">ScikitLearn.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../quickstart/">Quick Start Guide</a></li><li><a class="tocitem" href="../api/">Model API</a></li><li><a class="tocitem" href="../python/">Reading the Scikit-learn Documentation</a></li><li><a class="tocitem" href="../examples_refer/">Example Gallery</a></li><li><a class="tocitem" href="../models/">Models</a></li><li><a class="tocitem" href="../cross_validation/">Cross-validation</a></li><li><a class="tocitem" href="../model_selection/">Model Selection</a></li><li class="is-active"><a class="tocitem" href>Pipelines and FeatureUnion</a><ul class="internal"><li><a class="tocitem" href="#Pipelines-1"><span>Pipelines</span></a></li><li><a class="tocitem" href="#Feature-Unions-1"><span>Feature Unions</span></a></li></ul></li><li><a class="tocitem" href="../dataframes/">DataFrames</a></li><li><a class="tocitem" href="../jld/">Saving Models to Disk</a></li><li><a class="tocitem" href="../help/">Getting Help</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Pipelines and FeatureUnion</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Pipelines and FeatureUnion</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/cstjean/ScikitLearn.jl/blob/master/docs/src/man/pipelines.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><p>Most data science and machine learning problems involve several steps of data preprocessing and transformation. ScikitLearn.jl provides two types to facilitate this task.</p><h2 id="Pipelines-1"><a class="docs-heading-anchor" href="#Pipelines-1">Pipelines</a><a class="docs-heading-anchor-permalink" href="#Pipelines-1" title="Permalink"></a></h2><p>Pipeline can be used to chain multiple estimators into one. This is useful as there is often a fixed sequence of steps in processing the data, for example feature selection, normalization and classification.</p><pre><code class="language-julia-repl">julia&gt; using ScikitLearn
+
+julia&gt; using ScikitLearn.Pipelines: Pipeline, make_pipeline
+
+julia&gt; @sk_import decomposition: PCA
+PyObject &lt;class &#39;sklearn.decomposition._pca.PCA&#39;&gt;
+
+julia&gt; @sk_import linear_model: LogisticRegression 
+PyObject &lt;class &#39;sklearn.linear_model._logistic.LogisticRegression&#39;&gt;
+
+julia&gt; using RDatasets: dataset
+
+julia&gt; iris = dataset(&quot;datasets&quot;, &quot;iris&quot;);
+
+julia&gt; X = convert(Array, iris[!, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]]);
+
+julia&gt; y = convert(Array, iris[!,:Species]);
+
+julia&gt; estimators = [(&quot;reduce_dim&quot;, PCA()), (&quot;logistic_regression&quot;, LogisticRegression())]
+2-element Array{Tuple{String,PyCall.PyObject},1}:
+ (&quot;reduce_dim&quot;, PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False))
+ (&quot;logistic_regression&quot;, PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
+                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
+                   warm_start=False))
+
+julia&gt; clf = Pipeline(estimators)
+Pipeline(Tuple{Any,Any}[(&quot;reduce_dim&quot;, PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False)), (&quot;logistic_regression&quot;, PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
+                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
+                   warm_start=False))], Any[PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False), PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
+                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
+                   warm_start=False)])
+
+julia&gt; fit!(clf, X, y)
+Pipeline(Tuple{Any,Any}[(&quot;reduce_dim&quot;, PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False)), (&quot;logistic_regression&quot;, PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
+                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
+                   warm_start=False))], Any[PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False), PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
+                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
+                   warm_start=False)])</code></pre><p>See <code>?Pipeline</code>, <code>?make_pipeline</code> and the <a href="http://scikit-learn.org/stable/modules/pipeline.html">user guide</a> for details.</p><h3 id="Examples-1"><a class="docs-heading-anchor" href="#Examples-1">Examples</a><a class="docs-heading-anchor-permalink" href="#Examples-1" title="Permalink"></a></h3><ul><li><a href="https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Pipeline_PCA_Logistic.ipynb">Pipelining: chaining a PCA and a logistic regression</a></li><li><a href="https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/RBM.ipynb">Restricted Boltzmann Machine features for digit classification</a></li></ul><h2 id="Feature-Unions-1"><a class="docs-heading-anchor" href="#Feature-Unions-1">Feature Unions</a><a class="docs-heading-anchor-permalink" href="#Feature-Unions-1" title="Permalink"></a></h2><p>FeatureUnion combines several transformer objects into a new transformer that combines their output. A FeatureUnion takes a list of transformer objects. During fitting, each of these is fit to the data independently. For transforming data, the transformers are applied in parallel, and the sample vectors they output are concatenated end-to-end into larger vectors.</p><pre><code class="language-julia-repl">julia&gt; using ScikitLearn.Pipelines: FeatureUnion
+
+julia&gt; @sk_import decomposition: KernelPCA
+PyObject &lt;class &#39;sklearn.decomposition._kernel_pca.KernelPCA&#39;&gt;
+
+julia&gt; estimators = [(&quot;linear_pca&quot;, PCA()), (&quot;kernel_pca&quot;, KernelPCA())]
+2-element Array{Tuple{String,PyCall.PyObject},1}:
+ (&quot;linear_pca&quot;, PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False))
+ (&quot;kernel_pca&quot;, PyObject KernelPCA(alpha=1.0, coef0=1, copy_X=True, degree=3, eigen_solver=&#39;auto&#39;,
+          fit_inverse_transform=False, gamma=None, kernel=&#39;linear&#39;,
+          kernel_params=None, max_iter=None, n_components=None, n_jobs=None,
+          random_state=None, remove_zero_eig=False, tol=0))
+
+julia&gt; combined = FeatureUnion(estimators)
+FeatureUnion(Tuple{Any,Any}[(&quot;linear_pca&quot;, PyObject PCA(copy=True, iterated_power=&#39;auto&#39;, n_components=None, random_state=None,
+    svd_solver=&#39;auto&#39;, tol=0.0, whiten=False)), (&quot;kernel_pca&quot;, PyObject KernelPCA(alpha=1.0, coef0=1, copy_X=True, degree=3, eigen_solver=&#39;auto&#39;,
+          fit_inverse_transform=False, gamma=None, kernel=&#39;linear&#39;,
+          kernel_params=None, max_iter=None, n_components=None, n_jobs=None,
+          random_state=None, remove_zero_eig=False, tol=0))], 1, nothing)
+</code></pre><p>See <code>?FeatureUnion</code> and <a href="http://scikit-learn.org/stable/modules/pipeline.html#featureunion-composite-feature-spaces">the user guide</a> for more.</p><h3 id="Examples-2"><a class="docs-heading-anchor" href="#Examples-2">Examples</a><a class="docs-heading-anchor-permalink" href="#Examples-2" title="Permalink"></a></h3><ul><li><a href="https://github.com/cstjean/ScikitLearn.jl/blob/master/examples/Feature_Stacker.ipynb">Concatenating multiple feature extraction methods</a></li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../model_selection/">« Model Selection</a><a class="docs-footer-nextpage" href="../dataframes/">DataFrames »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 5 June 2020 10:38">Friday 5 June 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
