@@ -115,33 +115,39 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
+
+mkl_checked= false #neccessary for hack
 function import_sklearn()
-    global import_already_warned
+    global mkl_checked
 
     @static if Sys.isapple()
       mod = try
-        pyimport("sklearn")
-      catch
-          @info "Installing non-mkl versions of sci-kit learn"
+            if PyCall.conda && !mkl_checked
+               try
+                pyimport("mkl") #checks existence of mkl-service
 
-          try
-            if PyCall.conda
-            #use non-mkl versions of python packages when Conda is used
-            #when a different non-conda local python is used everthing works fine
-              Conda.add("nomkl")
-              Conda.add("scikit-learn")
-              Conda.add("numexpr")
-              Conda.rm("mkl")
+               #following Code only if mkl-service exists otherwise jumps to catch 
+                @info "Installing non-mkl versions of sci-kit learn via Conda"
+               #use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
+               #when a different non-conda local python is used everthing works fine
+                  Conda.add("nomkl")
+                  #force reinstall of scikit-learn replacing any previous mkl version
+                  Conda.add("scikit-learn")
+                  Conda.rm("mkl")
+                  Conda.rm("mkl-service")
+                  mkl_checked = true
+               catch
+                  mkl_checked = true
+               end
+              
             end
-            #PyCall installs scikit-learn using it's internal logic
             PyCall.pyimport_conda("sklearn", "scikit-learn")
+            
           catch
               @info("scikit-learn isn't properly installed."*
                     "Please use PyCall default Conda or non-conda local python")
               rethrow()
           end
-
-      end
 
     else 
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
