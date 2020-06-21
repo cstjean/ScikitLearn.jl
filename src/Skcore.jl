@@ -149,7 +149,7 @@ function import_sklearn()
     min_version = v"0.18.0"
     if version < min_version
         @warn("Your Python's scikit-learn has version $version."
-            "We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.", maxlog=1)
+            *"We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.", maxlog=1)
     end
 
     return mod
