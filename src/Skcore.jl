@@ -115,7 +115,6 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
-import_already_warned = false
 function import_sklearn()
     global import_already_warned
 
@@ -148,9 +147,9 @@ function import_sklearn()
     
     version = VersionParsing.vparse(mod.__version__)
     min_version = v"0.18.0"
-    if version < min_version && !import_already_warned
-        @warn("Your Python's scikit-learn has version $version. We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.")
-        import_already_warned = true
+    if version < min_version
+        @warn("Your Python's scikit-learn has version $version."
+            "We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.", maxlog=1)
     end
 
     return mod
