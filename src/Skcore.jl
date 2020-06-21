@@ -129,6 +129,8 @@ function import_sklearn()
             #use non-mkl versions of python packages when Conda is used
             #when a different non-conda local python is used everthing works fine
               Conda.add("nomkl")
+              Conda.add("scikit-learn")
+              Conda.add("numexpr")
               Conda.rm("mkl")
             end
             #PyCall installs scikit-learn using it's internal logic
