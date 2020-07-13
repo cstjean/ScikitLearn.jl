@@ -10,7 +10,7 @@ julia> using RDatasets: dataset
 julia> iris = dataset("datasets", "iris");
 
 julia> first(iris, 5)
-5×5 DataFrames.DataFrame
+5×5 DataFrame
 │ Row │ SepalLength │ SepalWidth │ PetalLength │ PetalWidth │ Species │
 │     │ Float64     │ Float64    │ Float64     │ Float64    │ Cat…    │
 ├─────┼─────────────┼────────────┼─────────────┼────────────┼─────────┤
@@ -88,12 +88,7 @@ keyword arguments.  Check out `?LogisticRegression` for details.
 
 ```jldoctest quickstart
 julia> model = LogisticRegression(fit_intercept=true, max_iter = 200)
-PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=200,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)
-
+PyObject LogisticRegression(max_iter=200)
 ```
 
 Then we train the model and evaluate its accuracy on the training set:
@@ -203,6 +198,6 @@ julia> JLD.save("my_model.jld", "model", model)
 julia> model = JLD.load("my_model.jld", "model")    # Load it back
 ┌ Warning: type PyCallJLD.PyObjectSerialization not present in workspace; reconstructing
 └ @ JLD ~/.julia/packages/JLD/uVJmd/src/jld_types.jl:722
-getfield(JLD, Symbol("##PyCallJLD.PyObjectSerialization#371"))(UInt8[0x80, 0x03, 0x63, 0x73, 0x6b, 0x6c, 0x65, 0x61, 0x72, 0x6e  …  0x2e, 0x32, 0x32, 0x2e, 0x31, 0x71, 0x43, 0x75, 0x62, 0x2e])
+JLD.var"##PyCallJLD.PyObjectSerialization#253"(UInt8[0x80, 0x03, 0x63, 0x73, 0x6b, 0x6c, 0x65, 0x61, 0x72, 0x6e  …  0x2e, 0x32, 0x32, 0x2e, 0x31, 0x71, 0x43, 0x75, 0x62, 0x2e])
 
 ```
