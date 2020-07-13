@@ -13,9 +13,9 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 DataFrames = "0.21"
-Documenter = "0.25.0"
+Documenter = "0.25"
 GaussianMixtures = "0.3"
-GaussianProcesses = "0.12"
+GaussianProcesses = "0.12.1"
 JLD = "0.9"
 PyCall = "1.91"
 PyCallJLD = "0.2"
