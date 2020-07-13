@@ -19,25 +19,25 @@ of that project*. It is licensed under [BSD-3](LICENSE).
 
 Main features:
 
-- Around 150 [Julia](http://scikitlearnjl.readthedocs.io/en/latest/models/#julia-models) and [Python](http://scikitlearnjl.readthedocs.io/en/latest/models/#python-models) models accessed through a uniform [interface](http://scikitlearnjl.readthedocs.org/en/latest/api/)
-- [Pipelines and FeatureUnions](http://scikitlearnjl.readthedocs.org/en/latest/pipelines/)
-- [Cross-validation](http://scikitlearnjl.readthedocs.org/en/latest/cross_validation/)
-- [Hyperparameter tuning](http://scikitlearnjl.readthedocs.org/en/latest/model_selection/)
-- [DataFrames support](http://scikitlearnjl.readthedocs.org/en/latest/dataframes/)
+- Around 150 [Julia](https://cstjean.github.io/ScikitLearn.jl/dev/man/models/#Julia-models-1) and [Python](https://cstjean.github.io/ScikitLearn.jl/dev/man/models/#Python-models-1) models accessed through a uniform [interface](https://cstjean.github.io/ScikitLearn.jl/dev/man/api/)
+- [Pipelines and FeatureUnions](https://cstjean.github.io/ScikitLearn.jl/dev/man/pipelines/)
+- [Cross-validation](https://cstjean.github.io/ScikitLearn.jl/dev/man/cross_validation/)
+- [Hyperparameter tuning](https://cstjean.github.io/ScikitLearn.jl/dev/man/model_selection/)
+- [DataFrames support](https://cstjean.github.io/ScikitLearn.jl/dev/man/dataframes/)
 
 Check out the [Quick-Start
-Guide](http://scikitlearnjl.readthedocs.org/en/latest/quickstart/) for a
+Guide](https://cstjean.github.io/ScikitLearn.jl/dev/man/quickstart/) for a
 tour.
 
 ## Installation
 
 To install ScikitLearn.jl, type `]add ScikitLearn` at the REPL.
 
-To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](http://scikitlearnjl.readthedocs.io/en/latest/models/#installation), which will be installed automatically when needed. Most of the examples use [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
+To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](https://cstjean.github.io/ScikitLearn.jl/dev/man/models/#Installation-and-importing-Python-models-1), which will be installed automatically when needed. Most of the examples use [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 
 ## Documentation
 
-See the [manual](https://cstjean.github.io/ScikitLearn.jl/master/) and
+See the [manual](https://cstjean.github.io/ScikitLearn.jl/dev/) and
 [example gallery](docs/src/man/examples.md).
 
 ## Goal
