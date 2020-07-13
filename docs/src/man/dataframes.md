@@ -20,7 +20,7 @@ PyObject <class 'sklearn.preprocessing._data.StandardScaler'>
 julia> data = DataFrame(pet=["cat", "dog", "dog", "fish", "cat", "dog", "cat", "fish"],
                  children=[4., 6, 3, 3, 2, 3, 5, 4],
                  salary=[90, 24, 44, 27, 32, 59, 36, 27])
-8×3 DataFrames.DataFrame
+8×3 DataFrame
 │ Row │ pet    │ children │ salary │
 │     │ String │ Float64  │ Int64  │
 ├─────┼────────┼──────────┼────────┤
@@ -77,7 +77,7 @@ Now that the transformation is trained, we confirm that it works on new data:
 
 ```jldoctest dataframes
 julia> sample = DataFrame(pet = ["cat"], children = [5.])
-1×2 DataFrames.DataFrame
+1×2 DataFrame
 │ Row │ pet    │ children │
 │     │ String │ Float64  │
 ├─────┼────────┼──────────┤
