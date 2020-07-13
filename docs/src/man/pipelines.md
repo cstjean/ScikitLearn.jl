@@ -30,39 +30,14 @@ julia> y = convert(Array, iris[!,:Species]);
 
 julia> estimators = [("reduce_dim", PCA()), ("logistic_regression", LogisticRegression())]
 2-element Array{Tuple{String,PyCall.PyObject},1}:
- ("reduce_dim", PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False))
- ("logistic_regression", PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False))
-
+ ("reduce_dim", PyObject PCA())
+ ("logistic_regression", PyObject LogisticRegression())
+ 
 julia> clf = Pipeline(estimators)
-Pipeline(Tuple{Any,Any}[("reduce_dim", PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False)), ("logistic_regression", PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False))], Any[PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False), PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)])
+Pipeline(Tuple{Any,Any}[("reduce_dim", PyObject PCA()), ("logistic_regression", PyObject LogisticRegression())], Any[PyObject PCA(), PyObject LogisticRegression()])
 
 julia> fit!(clf, X, y)
-Pipeline(Tuple{Any,Any}[("reduce_dim", PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False)), ("logistic_regression", PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False))], Any[PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False), PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=100,
-                   multi_class='auto', n_jobs=None, penalty='l2',
-                   random_state=None, solver='lbfgs', tol=0.0001, verbose=0,
-                   warm_start=False)])
+ Pipeline(Tuple{Any,Any}[("reduce_dim", PyObject PCA()), ("logistic_regression", PyObject LogisticRegression())], Any[PyObject PCA(), PyObject LogisticRegression()])
 ```
 
 See `?Pipeline`, `?make_pipeline` and the [user guide](http://scikit-learn.org/stable/modules/pipeline.html) for details.
@@ -88,19 +63,11 @@ PyObject <class 'sklearn.decomposition._kernel_pca.KernelPCA'>
 
 julia> estimators = [("linear_pca", PCA()), ("kernel_pca", KernelPCA())]
 2-element Array{Tuple{String,PyCall.PyObject},1}:
- ("linear_pca", PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False))
- ("kernel_pca", PyObject KernelPCA(alpha=1.0, coef0=1, copy_X=True, degree=3, eigen_solver='auto',
-          fit_inverse_transform=False, gamma=None, kernel='linear',
-          kernel_params=None, max_iter=None, n_components=None, n_jobs=None,
-          random_state=None, remove_zero_eig=False, tol=0))
+ ("linear_pca", PyObject PCA())
+ ("kernel_pca", PyObject KernelPCA())
 
 julia> combined = FeatureUnion(estimators)
-FeatureUnion(Tuple{Any,Any}[("linear_pca", PyObject PCA(copy=True, iterated_power='auto', n_components=None, random_state=None,
-    svd_solver='auto', tol=0.0, whiten=False)), ("kernel_pca", PyObject KernelPCA(alpha=1.0, coef0=1, copy_X=True, degree=3, eigen_solver='auto',
-          fit_inverse_transform=False, gamma=None, kernel='linear',
-          kernel_params=None, max_iter=None, n_components=None, n_jobs=None,
-          random_state=None, remove_zero_eig=False, tol=0))], 1, nothing)
+FeatureUnion(Tuple{Any,Any}[("linear_pca", PyObject PCA()), ("kernel_pca", PyObject KernelPCA())], 1, nothing)
 
 ```
 
