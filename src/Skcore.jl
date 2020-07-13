@@ -122,46 +122,48 @@ function import_sklearn()
 
     @static if Sys.isapple()
       mod = try
-            if PyCall.conda && !mkl_checked
-               try
-                #check for existence of mkl-service. Numpy, sklearn, etc. 
-                # requires either mkl or no-mkl to run (By default Conda comes with mkl)  
-                pyimport("mkl")
+               if PyCall.conda && !mkl_checked
+                 try
+                   # check for existence of mkl-service. 
+                   # Numpy, sklearn, etc. requires either `mkl` or `no-mkl` service to run
+                   # By default Conda comes with mkl
+                   # For this package to run on MacOS the `no-mkl` versions of Numpy, sklearn is needed   
+                   pyimport("mkl")
                     
-               #following Code runs only if mkl-service exists otherwise jumps to catch 
-                @info "Installing non-mkl versions of sci-kit learn via Conda"
-               #use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
-               #when a different non-conda local python is used everthing works fine
-                  Conda.add("nomkl")
-                  #force reinstall of scikit-learn replacing any previous mkl version
-                  Conda.add("scikit-learn")
-                  Conda.rm("mkl")#This also removes mkl-service
+                   #following Code runs only if mkl-service exists otherwise jumps to catch branch
+                   @info "Installing non-mkl versions of sci-kit learn via Conda"
+                   #use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
+                   #when a different non-conda local python is used everthing works fine
+                   Conda.add("nomkl")
+                   #force reinstall of scikit-learn replacing any previous mkl version
+                   Conda.add("scikit-learn")
+                   Conda.rm("mkl")#This also removes mkl-service
+                   mkl_checked = true
+                catch
                   mkl_checked = true
-               catch
-                  mkl_checked = true
-               end   
+                end   
+              end
+            
+              PyCall.pyimport_conda("sklearn", "scikit-learn")
+            
+            catch
+                @info("scikit-learn isn't properly installed."*
+                      "Please use PyCall default Conda or non-conda local python")
+                rethrow()
             end
-            
-            PyCall.pyimport_conda("sklearn", "scikit-learn")
-            
-          catch
-              @info("scikit-learn isn't properly installed."*
-                    "Please use PyCall default Conda or non-conda local python")
-              rethrow()
-          end
 
-    else 
-        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
-    end
+   else 
+       mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+   end
     
-    version = VersionParsing.vparse(mod.__version__)
-    min_version = v"0.18.0"
-    if version < min_version
+   version = VersionParsing.vparse(mod.__version__)
+   min_version = v"0.18.0"
+   if version < min_version
         @warn("Your Python's scikit-learn has version $version."
             *"We recommend updating to $min_version or higher for best compatibility with ScikitLearn.jl.", maxlog=1)
-    end
+   end
 
-    return mod
+   return mod
 end
 
 """
