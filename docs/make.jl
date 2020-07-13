@@ -35,7 +35,8 @@ makedocs(
 	)
 
 deploydocs(
-	repo = "github.com/cstjean/ScikitLearn.jl.git"
+	repo   = "github.com/cstjean/ScikitLearn.jl.git"
+	devurl = "dev"
 	)
 
 
