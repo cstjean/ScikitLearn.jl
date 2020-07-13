@@ -4,7 +4,7 @@
 julia&gt; iris = dataset(&quot;datasets&quot;, &quot;iris&quot;);
 
 julia&gt; first(iris, 5)
-5×5 DataFrames.DataFrame
+5×5 DataFrame
 │ Row │ SepalLength │ SepalWidth │ PetalLength │ PetalWidth │ Species │
 │     │ Float64     │ Float64    │ Float64     │ Float64    │ Cat…    │
 ├─────┼─────────────┼────────────┼─────────────┼────────────┼─────────┤
@@ -62,12 +62,7 @@ julia&gt; y = convert(Array, iris[!, :Species])
 
 julia&gt; @sk_import linear_model: LogisticRegression
 PyObject &lt;class &#39;sklearn.linear_model._logistic.LogisticRegression&#39;&gt;</code></pre><p>Every model&#39;s constructor accepts hyperparameters (such as regression strength, whether to fit the intercept, the penalty type, etc.) as keyword arguments.  Check out <code>?LogisticRegression</code> for details.</p><pre><code class="language-julia-repl">julia&gt; model = LogisticRegression(fit_intercept=true, max_iter = 200)
-PyObject LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                   intercept_scaling=1, l1_ratio=None, max_iter=200,
-                   multi_class=&#39;auto&#39;, n_jobs=None, penalty=&#39;l2&#39;,
-                   random_state=None, solver=&#39;lbfgs&#39;, tol=0.0001, verbose=0,
-                   warm_start=False)
-</code></pre><p>Then we train the model and evaluate its accuracy on the training set:</p><pre><code class="language-julia-repl">julia&gt; fit!(model, X, y);
+PyObject LogisticRegression(max_iter=200)</code></pre><p>Then we train the model and evaluate its accuracy on the training set:</p><pre><code class="language-julia-repl">julia&gt; fit!(model, X, y);
 
 julia&gt; accuracy = score(model, X, y)
 0.9733333333333334
@@ -114,12 +109,12 @@ Best parameters: Dict{Symbol,Any}(:C =&gt; 0.6)
 julia&gt; plot([cv_res.parameters[:C] for cv_res in gridsearch.grid_scores_],
             [mean(cv_res.cv_validation_scores) for cv_res in gridsearch.grid_scores_])
 1-element Array{PyCall.PyObject,1}:
- PyObject &lt;matplotlib.lines.Line2D object at 0x7f139d6ccbd0&gt;</code></pre><p><img src="../gridplot.svg" alt/></p><h3 id="Saving-the-model-to-disk-1"><a class="docs-heading-anchor" href="#Saving-the-model-to-disk-1">Saving the model to disk</a><a class="docs-heading-anchor-permalink" href="#Saving-the-model-to-disk-1" title="Permalink"></a></h3><p>Both Python and Julia models can be <a href="../jld/">saved to disk</a></p><pre><code class="language-julia-repl">julia&gt; import JLD, PyCallJLD
+ PyObject &lt;matplotlib.lines.Line2D object at 0x7f9da6774b50&gt;</code></pre><p><img src="../gridplot.svg" alt/></p><h3 id="Saving-the-model-to-disk-1"><a class="docs-heading-anchor" href="#Saving-the-model-to-disk-1">Saving the model to disk</a><a class="docs-heading-anchor-permalink" href="#Saving-the-model-to-disk-1" title="Permalink"></a></h3><p>Both Python and Julia models can be <a href="../jld/">saved to disk</a></p><pre><code class="language-julia-repl">julia&gt; import JLD, PyCallJLD
 
 julia&gt; JLD.save(&quot;my_model.jld&quot;, &quot;model&quot;, model)
 
 julia&gt; model = JLD.load(&quot;my_model.jld&quot;, &quot;model&quot;)    # Load it back
 ┌ Warning: type PyCallJLD.PyObjectSerialization not present in workspace; reconstructing
 └ @ JLD ~/.julia/packages/JLD/uVJmd/src/jld_types.jl:722
-getfield(JLD, Symbol(&quot;##PyCallJLD.PyObjectSerialization#371&quot;))(UInt8[0x80, 0x03, 0x63, 0x73, 0x6b, 0x6c, 0x65, 0x61, 0x72, 0x6e  …  0x2e, 0x32, 0x32, 0x2e, 0x31, 0x71, 0x43, 0x75, 0x62, 0x2e])
-</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Introduction</a><a class="docs-footer-nextpage" href="../api/">Model API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 13 July 2020 17:41">Monday 13 July 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+JLD.var&quot;##PyCallJLD.PyObjectSerialization#253&quot;(UInt8[0x80, 0x03, 0x63, 0x73, 0x6b, 0x6c, 0x65, 0x61, 0x72, 0x6e  …  0x2e, 0x32, 0x32, 0x2e, 0x31, 0x71, 0x43, 0x75, 0x62, 0x2e])
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../">« Introduction</a><a class="docs-footer-nextpage" href="../api/">Model API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 13 July 2020 17:58">Monday 13 July 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
