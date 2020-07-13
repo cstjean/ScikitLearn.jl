@@ -37,8 +37,8 @@ To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Py
 
 ## Documentation
 
-See the [manual](http://scikitlearnjl.readthedocs.org/en/latest/) and
-[example gallery](docs/examples.md).
+See the [manual](https://cstjean.github.io/ScikitLearn.jl/master/) and
+[example gallery](docs/src/man/examples.md).
 
 ## Goal
 
