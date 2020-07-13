@@ -9,7 +9,7 @@ PyObject &lt;class &#39;sklearn.preprocessing._data.StandardScaler&#39;&gt;
 julia&gt; data = DataFrame(pet=[&quot;cat&quot;, &quot;dog&quot;, &quot;dog&quot;, &quot;fish&quot;, &quot;cat&quot;, &quot;dog&quot;, &quot;cat&quot;, &quot;fish&quot;],
                  children=[4., 6, 3, 3, 2, 3, 5, 4],
                  salary=[90, 24, 44, 27, 32, 59, 36, 27])
-8×3 DataFrames.DataFrame
+8×3 DataFrame
 │ Row │ pet    │ children │ salary │
 │     │ String │ Float64  │ Int64  │
 ├─────┼────────┼──────────┼────────┤
@@ -34,7 +34,7 @@ julia&gt; data = DataFrame(pet=[&quot;cat&quot;, &quot;dog&quot;, &quot;dog&quot
  1.0  0.0  0.0   1.04
  0.0  0.0  1.0   0.21
 </code></pre><p>Note that the first three columns are the output of the LabelBinarizer (corresponding to <code>cat</code>, <code>dog</code>, and <code>fish</code>  respectively) and the fourth column is the standardized value for the number of children. In general, the columns are ordered according to the order given when the DataFrameMapper is constructed.</p><p>Now that the transformation is trained, we confirm that it works on new data:</p><pre><code class="language-julia-repl">julia&gt; sample = DataFrame(pet = [&quot;cat&quot;], children = [5.])
-1×2 DataFrames.DataFrame
+1×2 DataFrame
 │ Row │ pet    │ children │
 │     │ String │ Float64  │
 ├─────┼────────┼──────────┤
@@ -94,4 +94,4 @@ julia&gt; round.(cross_val_score(pipe, data, data[!,:salary]), digits=2)
   -1.09
   -5.3
  -15.38
-</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../pipelines/">« Pipelines and FeatureUnion</a><a class="docs-footer-nextpage" href="../jld/">Saving Models to Disk »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 13 July 2020 18:40">Monday 13 July 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../pipelines/">« Pipelines and FeatureUnion</a><a class="docs-footer-nextpage" href="../jld/">Saving Models to Disk »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 13 July 2020 19:04">Monday 13 July 2020</span>. Using Julia version 1.4.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
