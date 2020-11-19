@@ -29,7 +29,7 @@ MacroTools = "0.5"
 Parameters = "0.12"
 PyCall = "1.91"
 ScikitLearnBase = "0.5"
-StatsBase = "0.32,0.33"
+StatsBase = "0.33"
 VersionParsing = "1.2"
 
 [extras]
