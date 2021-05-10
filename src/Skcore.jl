@@ -120,6 +120,8 @@ mkl_checked= false #neccessary for hack
 function import_sklearn()
     global mkl_checked
 
+    scikit_learn_pkg = "scikit-learn=0.23"
+
     @static if Sys.isapple()
       mod = try
                if PyCall.conda && !mkl_checked
@@ -136,7 +138,7 @@ function import_sklearn()
                    #when a different non-conda local python is used everthing works fine
                    Conda.add("nomkl")
                    #force reinstall of scikit-learn replacing any previous mkl version
-                   Conda.add("scikit-learn")
+                   Conda.add(scikit_learn_pkg)
                    Conda.rm("mkl")#This also removes mkl-service
                    mkl_checked = true
                 catch
@@ -144,7 +146,7 @@ function import_sklearn()
                 end   
               end
             
-              PyCall.pyimport_conda("sklearn", "scikit-learn")
+              PyCall.pyimport_conda("sklearn", scikit_learn_pkg)
             
             catch
                 @info("scikit-learn isn't properly installed."*
@@ -153,7 +155,7 @@ function import_sklearn()
             end
 
    else 
-       mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+       mod = PyCall.pyimport_conda("sklearn", scikit_learn_pkg)
    end
     
    version = VersionParsing.vparse(mod.__version__)
