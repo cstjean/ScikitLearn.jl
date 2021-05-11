@@ -6,7 +6,7 @@ using RDatasets: dataset
 iris = dataset("datasets", "iris")
 
 X = Array(iris[!, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]])
-y = iris[:, :Species]
+y = convert(Array, iris[:, :Species])
 
 using ScikitLearn
 
