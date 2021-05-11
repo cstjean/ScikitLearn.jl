@@ -5,8 +5,8 @@ using RDatasets: dataset
 
 iris = dataset("datasets", "iris")
 
-X = convert(Array, iris[!, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]])
-y = convert(Array, iris[!, :Species])
+X = Array(iris[!, [:SepalLength, :SepalWidth, :PetalLength, :PetalWidth]])
+y = convert(Array, iris[:, :Species])
 
 using ScikitLearn
 

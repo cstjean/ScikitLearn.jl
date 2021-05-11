@@ -87,7 +87,7 @@ function _get_col_subset(X, cols::Vector{Symbol}; return_vector=false)
     end
 
     try
-        return convert(Array, return_vector ? X[:, cols[1]] : X[:, cols])
+        return Array(return_vector ? X[:, cols[1]] : X[:, cols])
     catch e
         if isa(e, KeyError)
             throw(KeyError("DataFrameMapper: in dataframe (size=$(size(X)), cols=$(names(X))), $cols")) # not found
@@ -142,7 +142,7 @@ function ScikitLearnBase.transform(self::DataFrameMapper, X::DataFrame)
         # DataFrame indexing handles both
         Xt = _get_col_subset(X, columns)
         if transformers !== nothing
-            Xt = convert(self.output_type, transform(transformers, Xt))
+            Xt = self.output_type(transform(transformers, Xt))
         end
         push!(extracted, _handle_feature(Xt))
     end
@@ -192,7 +192,7 @@ ScikitLearnBase.clone(dfcs::DataFrameColSelector) =
     DataFrameColSelector(dfcs.cols; output_type=dfcs.output_type)
 ScikitLearnBase.fit!(dfcs::DataFrameColSelector, X, y=nothing) = dfcs
 ScikitLearnBase.transform(dfcs::DataFrameColSelector, X::AbstractDataFrame) =
-    convert(dfcs.output_type, X[:, dfcs.cols])
+    dfcs.output_type(X[:, dfcs.cols])
 
 ScikitLearnBase.transform(dfcs::DataFrameColSelector, X) =
     _transform(dfcs, X, dfcs.output_type)
