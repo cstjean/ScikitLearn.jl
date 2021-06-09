@@ -122,6 +122,7 @@ function import_sklearn()
 
     @static if Sys.isapple()
       mod = try
+     #=
                if PyCall.conda && !mkl_checked
                  try
                    # check for existence of mkl-service. 
@@ -143,7 +144,7 @@ function import_sklearn()
                   mkl_checked = true
                 end   
               end
-            
+       =#     
               PyCall.pyimport_conda("sklearn", "scikit-learn")
             
             catch
