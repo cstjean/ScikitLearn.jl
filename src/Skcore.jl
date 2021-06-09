@@ -139,12 +139,14 @@ function import_sklearn()
                    Conda.rm("mkl")#This also removes mkl-service
                    #force reinstall of scikit-learn replacing any previous mkl version
                    Conda.add("scikit-learn")
+                   Conda.add("openblas")
                    mkl_checked = true
                 catch
                   mkl_checked = true
                 end   
               end
-       =#     
+       #     
+         
               PyCall.pyimport_conda("sklearn", "scikit-learn")
             
             catch
