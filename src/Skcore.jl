@@ -140,6 +140,7 @@ function import_sklearn()
                    #force reinstall of scikit-learn replacing any previous mkl version
                    Conda.add("scikit-learn")
                    Conda.add("openblas")
+                   Conda.add("llvm-openmp", channel = "conda-forge")
                    mkl_checked = true
                 catch
                   mkl_checked = true
