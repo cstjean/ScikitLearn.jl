@@ -122,7 +122,7 @@ function import_sklearn()
 
     @static if Sys.isapple()
       mod = try
-     #=
+     #
                if PyCall.conda && !mkl_checked
                  try
                    # check for existence of mkl-service. 
@@ -136,9 +136,9 @@ function import_sklearn()
                    #use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
                    #when a different non-conda local python is used everthing works fine
                    Conda.add("nomkl")
+                   Conda.rm("mkl")#This also removes mkl-service
                    #force reinstall of scikit-learn replacing any previous mkl version
                    Conda.add("scikit-learn")
-                   Conda.rm("mkl")#This also removes mkl-service
                    mkl_checked = true
                 catch
                   mkl_checked = true
