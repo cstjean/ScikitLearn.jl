@@ -8,7 +8,8 @@ on:
   release:
 
 env:
-  PYTHON: Conda
+  PYTHON: Conda 
+  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$HOME/.julia/conda/3/lib
 
 jobs:
   test:
