@@ -156,10 +156,20 @@ function import_sklearn()
                 rethrow()
             end
 
-   else 
-       mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
-   end
-    
+    elseif Sys.islinux()
+        if Base.VERSION <= v"1.6.2" 
+            # GLIBCXX_3.4.26 
+            Conda.add("libstdcxx-ng>=3.4,<9.2", channel="conda-forge")
+        else 
+            # GLIBCXX_3.4.29 
+            # checked up to v1.8.0 
+            Conda.add("libstdcxx-ng>=3.4,<11.4", channel="conda-forge")
+        end 
+        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+    else
+        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+    end
+
    version = VersionParsing.vparse(mod.__version__)
    min_version = v"0.18.0"
    if version < min_version
