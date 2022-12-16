@@ -158,7 +158,6 @@ function _compatible_libstdcxx_ng_version()
     end
 end
 
-
 mkl_checked= false #neccessary for hack
 function import_sklearn()
     global mkl_checked
@@ -214,34 +213,6 @@ function import_sklearn()
 
    return mod
 end
-
-
-"""
-    _compatible_libstdcxx_ng_version()
-Version of libstdcxx-ng compatible with the libstdc++ loaded into Julia.
-Specifying the package "libstdcxx-ng" with version "<=julia" will replace the version with
-this one. This should be used by anything which embeds Python into the Julia process - for
-instance it is used by PythonCall.
-"""
-function _compatible_libstdcxx_ng_version()
-    if !Sys.islinux()
-        return
-    end
-    # bound = get(ENV, "JULIA_CONDAPKG_LIBSTDCXX_VERSION_BOUND", "")
-    # if bound != ""
-    #     return bound
-    # end
-    loaded_libstdcxx_version = Base.BinaryPlatforms.detect_libstdcxx_version()
-    if loaded_libstdcxx_version === nothing
-        return
-    end
-    for (version, bound) in _compatible_libstdcxx_ng_versions
-        if loaded_libstdcxx_version ≥ version
-            return bound
-        end
-    end
-end
-
 
 """
 @sk_import imports models from the Python version of scikit-learn. For instance, the
