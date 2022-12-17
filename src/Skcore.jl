@@ -159,8 +159,10 @@ function _compatible_libstdcxx_ng_version()
 end
 
 mkl_checked= false #neccessary for hack
+libstdcxx_solved = false # skip libstdcxx install if it was already done
 function import_sklearn()
     global mkl_checked
+    global libstdcxx_solved
 
     @static if Sys.isapple()
       mod = try
@@ -197,8 +199,11 @@ function import_sklearn()
         end
 
     elseif Sys.islinux()
-        version = _compatible_libstdcxx_ng_version()
-        Conda.add("libstdcxx-ng$version", channel="conda-forge")
+        if !libstdcxx_solved
+            version = _compatible_libstdcxx_ng_version()
+            Conda.add("libstdcxx-ng$version", channel="conda-forge")
+            libstdcxx_solved = true
+        end
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
     else
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
