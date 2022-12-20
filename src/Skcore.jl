@@ -199,13 +199,18 @@ function import_sklearn()
         end
 
     elseif Sys.islinux()
+        libstdcxx_ng_versions = _compatible_libstdcxx_ng_version()
         if !libstdcxx_solved
-            version = _compatible_libstdcxx_ng_version()
             Conda.add("conda", channel="anaconda")
-            Conda.add("libstdcxx-ng$version", channel="conda-forge")
+            Conda.add("libstdcxx-ng$libstdcxx_ng_versions", channel="conda-forge")
             libstdcxx_solved = true
         end
-        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+
+        if libstdcxx_ng_versions == ">=3.4,<12.0" # https://github.com/scikit-learn/scikit-learn/pull/23990
+            mod = PyCall.pyimport_conda("sklearn<=1.0", "scikit-learn")
+        else
+            mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+        end
     else
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
     end
