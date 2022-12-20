@@ -59,7 +59,7 @@ function test_score_sample_weight()
     estimators = [DecisionTreeClassifier(max_depth=2),
                   DecisionTreeRegressor(max_depth=2)]
     sets = Any[datasets.load_iris(),
-               datasets.load_boston()]
+               datasets.fetch_california_housing()]
 
     for (est, ds) in zip(estimators, sets)
         fit!(est, ds["data"], ds["target"])
