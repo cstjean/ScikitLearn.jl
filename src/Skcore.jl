@@ -134,6 +134,7 @@ const _compatible_libstdcxx_ng_versions = [
 
 """
     _compatible_libstdcxx_ng_version()
+
 Version of libstdcxx-ng compatible with the libstdc++ loaded into Julia.
 Specifying the package "libstdcxx-ng" with version "<=julia" will replace the version with
 this one. This should be used by anything which embeds Python into the Julia process - for
@@ -149,13 +150,14 @@ function _compatible_libstdcxx_ng_version()
     # end
     loaded_libstdcxx_version = Base.BinaryPlatforms.detect_libstdcxx_version()
     if loaded_libstdcxx_version === nothing
-        return
+        return 
     end
     for (version, bound) in _compatible_libstdcxx_ng_versions
         if loaded_libstdcxx_version ≥ version
             return bound
         end
     end
+    return "" # no bound for unknown libstcxx versions
 end
 
 mkl_checked= false #neccessary for hack
