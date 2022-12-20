@@ -207,7 +207,7 @@ function import_sklearn()
         end
 
         if libstdcxx_ng_versions == ">=3.4,<12.0" # https://github.com/scikit-learn/scikit-learn/pull/23990
-            mod = PyCall.pyimport_conda("sklearn<=1.0", "scikit-learn")
+            mod = PyCall.pyimport_conda("sklearn", "scikit-learn<=1.0")
         else
             mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
         end
