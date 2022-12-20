@@ -205,7 +205,7 @@ function import_sklearn()
             Conda.add("libstdcxx-ng$version", channel="conda-forge")
             libstdcxx_solved = true
         end
-        mod = PyCall.pyimport_conda("sklearn", "scikit-learn", "conda-forge")
+        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
     else
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
     end
