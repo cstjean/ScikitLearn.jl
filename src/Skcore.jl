@@ -201,10 +201,11 @@ function import_sklearn()
     elseif Sys.islinux()
         if !libstdcxx_solved
             version = _compatible_libstdcxx_ng_version()
+            Conda.add("conda", channel="anaconda")
             Conda.add("libstdcxx-ng$version", channel="conda-forge")
             libstdcxx_solved = true
         end
-        mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
+        mod = PyCall.pyimport_conda("sklearn", "scikit-learn", "conda-forge")
     else
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
     end
