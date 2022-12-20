@@ -48,8 +48,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: julia-actions/setup-julia@v1
         with:
-          version: ${{ matrix.julia-version }}
-          arch: ${{ matrix.julia-arch }}
+          version: 1.6
+          arch: x64
       - uses: julia-actions/cache@v1 # https://github.com/julia-actions/cache
       - uses: julia-actions/julia-docdeploy@releases/v1
         env:
