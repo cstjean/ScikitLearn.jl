@@ -115,56 +115,103 @@ symbols_in(e::Expr) = union(symbols_in(e.head), map(symbols_in, e.args)...)
 symbols_in(e::Symbol) = Set([e])
 symbols_in(::Any) = Set()
 
+# https://github.com/cjdoris/CondaPkg.jl/blob/main/src/resolve.jl#L77
+const _compatible_libstdcxx_ng_versions = [
+    (v"3.4.31", ">=3.4,<=13.1"),
+    (v"3.4.30", ">=3.4,<13.0"),
+    (v"3.4.29", ">=3.4,<12.0"),
+    (v"3.4.28", ">=3.4,<11.0"),
+    (v"3.4.27", ">=3.4,<9.3"),
+    (v"3.4.26", ">=3.4,<9.2"),
+    (v"3.4.25", ">=3.4,<9.0"),
+    (v"3.4.24", ">=3.4,<8.0"),
+    (v"3.4.23", ">=3.4,<7.2"),
+    (v"3.4.22", ">=3.4,<7.0"),
+    (v"3.4.21", ">=3.4,<6.0"),
+    (v"3.4.20", ">=3.4,<5.0"),
+    (v"3.4.19", ">=3.4,<4.9"),
+]
+
+"""
+    _compatible_libstdcxx_ng_version()
+
+Version of libstdcxx-ng compatible with the libstdc++ loaded into Julia.
+Specifying the package "libstdcxx-ng" with version "<=julia" will replace the version with
+this one. This should be used by anything which embeds Python into the Julia process - for
+instance it is used by PythonCall.
+"""
+function _compatible_libstdcxx_ng_version()
+    if !Sys.islinux()
+        return
+    end
+    # bound = get(ENV, "JULIA_CONDAPKG_LIBSTDCXX_VERSION_BOUND", "")
+    # if bound != ""
+    #     return bound
+    # end
+    loaded_libstdcxx_version = Base.BinaryPlatforms.detect_libstdcxx_version()
+    if loaded_libstdcxx_version === nothing
+        return 
+    end
+    for (version, bound) in _compatible_libstdcxx_ng_versions
+        if loaded_libstdcxx_version ≥ version
+            return bound
+        end
+    end
+    return "" # no bound for unknown libstcxx versions
+end
 
 mkl_checked= false #neccessary for hack
+libstdcxx_solved = false # skip libstdcxx install if it was already done
 function import_sklearn()
     global mkl_checked
+    global libstdcxx_solved
 
     @static if Sys.isapple()
       mod = try
-     #
-               if PyCall.conda && !mkl_checked
-                 try
-                   # check for existence of mkl-service. 
-                   # Numpy, sklearn, etc. requires either `mkl` or `no-mkl` service to run
-                   # By default Conda comes with mkl
-                   # For this package to run on MacOS the `no-mkl` versions of Numpy, sklearn is needed   
-                   pyimport("mkl")
+            if PyCall.conda && !mkl_checked
+                try
+                    # check for existence of mkl-service. 
+                    # Numpy, sklearn, etc. requires either `mkl` or `no-mkl` service to run
+                    # By default Conda comes with mkl
+                    # For this package to run on MacOS the `no-mkl` versions of Numpy, sklearn is needed   
+                    pyimport("mkl")
                     
-                   #following Code runs only if mkl-service exists otherwise jumps to catch branch
-                   @info "Installing non-mkl versions of sci-kit learn via Conda"
-                   #use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
-                   #when a different non-conda local python is used everthing works fine
-                   Conda.add("nomkl")
-                   Conda.rm("mkl")#This also removes mkl-service
-                   #force reinstall of scikit-learn replacing any previous mkl version
-                   Conda.add("scikit-learn")
-                   Conda.add("openblas")
-                   Conda.add("llvm-openmp", channel = "conda-forge")
-                   mkl_checked = true
+                    #following Code runs only if mkl-service exists otherwise jumps to catch branch
+                    @info "Installing non-mkl versions of sci-kit learn via Conda"
+                    #use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
+                    #when a different non-conda local python is used everthing works fine
+                    Conda.add("nomkl")
+                    Conda.rm("mkl")#This also removes mkl-service
+                    #force reinstall of scikit-learn replacing any previous mkl version
+                    Conda.add("scikit-learn")
+                    Conda.add("openblas")
+                    Conda.add("llvm-openmp", channel = "conda-forge")
+                    mkl_checked = true
                 catch
-                  mkl_checked = true
+                    mkl_checked = true
                 end   
-              end
-       #     
-              Conda.add("llvm-openmp", channel = "conda-forge")
-              PyCall.pyimport_conda("sklearn", "scikit-learn")
-            
-            catch
-                @info("scikit-learn isn't properly installed."*
-                      "Please use PyCall default Conda or non-conda local python")
-                rethrow()
             end
+            Conda.add("llvm-openmp", channel = "conda-forge")
+            PyCall.pyimport_conda("sklearn", "scikit-learn")
+        
+        catch
+            @info("scikit-learn isn't properly installed."*
+                    "Please use PyCall default Conda or non-conda local python")
+            rethrow()
+        end
 
     elseif Sys.islinux()
-        if Base.VERSION <= v"1.6.2" 
-            # GLIBCXX_3.4.26 
-            Conda.add("libstdcxx-ng>=3.4,<9.2", channel="conda-forge")
-        else 
-            # GLIBCXX_3.4.29 
-            # checked up to v1.8.0 
-            Conda.add("libstdcxx-ng>=3.4,<11.4", channel="conda-forge")
-        end 
+        if !libstdcxx_solved
+            version = _compatible_libstdcxx_ng_version()
+            Conda.add("conda", channel="anaconda")
+            Conda.add("libstdcxx-ng$version", channel="conda-forge")
+            if version == ">=3.4,<12.0" 
+                # https://github.com/scikit-learn/scikit-learn/pull/23990
+                Conda.add("scikit-learn<1.1", channel="conda-forge") 
+            end
+            libstdcxx_solved = true
+        end
+
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
     else
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn")
