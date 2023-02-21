@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         julia-version:
-          - "1.7"
+          - "1.6"
           - "1"
           - "nightly"
         os:
@@ -36,6 +36,12 @@ jobs:
           arch: ${{ matrix.julia-arch }}
       - uses: julia-actions/cache@v1 # https://github.com/julia-actions/cache
       - uses: julia-actions/julia-buildpkg@latest
+      - name: "Install Conda"
+        run: |
+              if ["$RUNNER_OS" == "Linux"]; then
+                  julia -e 'using Pkg; Pkg.add("Conda");'
+                  cd $LD_LIBRARY_PATH
+              fi
       - uses: julia-actions/julia-runtest@latest
       - uses: julia-actions/julia-uploadcodecov@v0.1
         continue-on-error: true
