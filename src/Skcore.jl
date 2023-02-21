@@ -166,8 +166,8 @@ function import_sklearn()
     global mkl_checked
     global libstdcxx_solved
 
-    @static if Sys.isapple()
-      mod = try
+    mod = try
+        @static if Sys.isapple()
             if PyCall.conda && !mkl_checked
                 try
                     # check for existence of mkl-service. 
@@ -191,31 +191,32 @@ function import_sklearn()
                 #Conda.add("llvm-openmp", channel = "conda-forge")
                 mkl_checked = true
             end
-            PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
-        
-        catch
-            @info("scikit-learn isn't properly installed."*
-                    "Please use PyCall default Conda or non-conda local python")
-            rethrow()
-        end
-
-    else 
-        
-        @static if Sys.islinux() && !libstdcxx_solved
-            version = _compatible_libstdcxx_ng_version()
-            Conda.add("conda", channel="anaconda")
-            Conda.add("libstdcxx-ng$version", channel="conda-forge")
-            #=
-            if version == ">=3.4,<12.0" 
-                # https://github.com/scikit-learn/scikit-learn/pull/23990
-                Conda.add("scikit-learn>=1.2,<1.3", channel="conda-forge") 
+            #PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
+        else
+            @static if Sys.islinux() && !libstdcxx_solved
+                version = _compatible_libstdcxx_ng_version()
+                Conda.add("conda", channel="anaconda")
+                Conda.add("libstdcxx-ng$version", channel="conda-forge")
+                #=
+                if version == ">=3.4,<12.0" 
+                    # https://github.com/scikit-learn/scikit-learn/pull/23990
+                    Conda.add("scikit-learn>=1.2,<1.3", channel="conda-forge") 
+                end
+                =#
+                libstdcxx_solved = true
             end
-            =#
-            libstdcxx_solved = true
-            
         end
-
-        mod = PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
+        PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
+    catch
+        INFO_MSG = "scikit-learn isn't properly installed."*
+        "Please use PyCall default Conda or non-conda local python."
+        @static if Sys.islinux()
+            INFO_MSG = INFO_MSG * 
+                "\n libstdcxx is a known issue on earlier versions on Julia." *
+                "Please consider upgrading to Julia v>=1.8.4."
+        end
+        @info(INFO_MSG)
+        rethrow()
     end
 
    version = VersionParsing.vparse(mod.__version__)
