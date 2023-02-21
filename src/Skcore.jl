@@ -183,7 +183,7 @@ function import_sklearn()
                     Conda.add("nomkl")
                     Conda.rm("mkl")#This also removes mkl-service
                     #force reinstall of scikit-learn replacing any previous mkl version
-                    Conda.add("scikit-learn")
+                    Conda.add("scikit-learn<=1.2", channel="conda-forge")
                     Conda.add("openblas")
                     Conda.add("llvm-openmp", channel = "conda-forge")
                     mkl_checked = true
@@ -207,7 +207,7 @@ function import_sklearn()
             Conda.add("libstdcxx-ng$version", channel="conda-forge")
             if version == ">=3.4,<12.0" 
                 # https://github.com/scikit-learn/scikit-learn/pull/23990
-                Conda.add("scikit-learn<1.1", channel="conda-forge") 
+                Conda.add("scikit-learn<=1.2", channel="conda-forge") 
             end
             libstdcxx_solved = true
         end
