@@ -212,6 +212,7 @@ function import_sklearn()
             end
             =#
             libstdcxx_solved = true
+            
         end
 
         mod = PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
