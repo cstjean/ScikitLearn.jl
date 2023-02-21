@@ -9,7 +9,7 @@ on:
 
 env:
   PYTHON: Conda 
-  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$HOME/.julia/conda/3/lib
+  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$HOME/.julia/conda/3/x86_64/lib
   
 jobs:
   test:

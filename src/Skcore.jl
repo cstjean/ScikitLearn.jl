@@ -202,7 +202,7 @@ function import_sklearn()
     else 
         if Sys.islinux() && !libstdcxx_solved
             version = _compatible_libstdcxx_ng_version()
-            Conda.add("conda", channel="anaconda")
+            #Conda.add("conda", channel="anaconda")
             Conda.add("libstdcxx-ng$version", channel="conda-forge")
             #if version == ">=3.4,<12.0" 
             #    # https://github.com/scikit-learn/scikit-learn/pull/23990
