@@ -30,7 +30,7 @@ PyCall = "1.92, 1.93, 1.94"
 ScikitLearnBase = "0.5"
 StatsBase = "0.33"
 VersionParsing = "1.2"
-julia = "1.6"
+julia = "1.7"
 
 [extras]
 DecisionTree = "7806a523-6efd-50cb-b5f6-3fa6f1930dbb"
