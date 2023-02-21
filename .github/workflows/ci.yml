@@ -40,7 +40,7 @@ jobs:
         if: ${{matrix.os == 'ubuntu-latest' && matrix.julia-version == '1.6'}}
         run: |
               julia -e 'using Pkg; Pkg.add("Conda");'
-              export  LD_LIBRARY_PATH = $LD_LIBRARY_PATH
+              export LD_PRELOAD=$LD_LIBRARY_PATH
       - uses: julia-actions/julia-runtest@latest
       - uses: julia-actions/julia-uploadcodecov@v0.1
         continue-on-error: true
