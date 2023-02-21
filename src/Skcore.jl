@@ -193,7 +193,8 @@ function import_sklearn()
             end
             #PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
         else
-            @static if Sys.islinux() && !libstdcxx_solved
+            @static if Sys.islinux()
+                if !libstdcxx_solved
                 version = _compatible_libstdcxx_ng_version()
                 Conda.add("conda", channel="anaconda")
                 Conda.add("libstdcxx-ng$version", channel="conda-forge")
@@ -204,6 +205,7 @@ function import_sklearn()
                 end
                 =#
                 libstdcxx_solved = true
+                end
             end
         end
         PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
