@@ -186,12 +186,12 @@ function import_sklearn()
                     ## This block is reached when `mkl` pkg isn't installed.
                 end
                 # force reinstall of scikit-learn replacing any previous mkl version
-                Conda.add("scikit-learn<=1.2", channel="conda-forge")
+                Conda.add("scikit-learn>=1.2,<1.3", channel="conda-forge")
                 #Conda.add("openblas")
                 #Conda.add("llvm-openmp", channel = "conda-forge")
                 mkl_checked = true
             end
-            PyCall.pyimport_conda("sklearn", "scikit-learn<=1.2", "conda-forge")
+            PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
         
         catch
             @info("scikit-learn isn't properly installed."*
@@ -206,7 +206,7 @@ function import_sklearn()
             Conda.add("libstdcxx-ng$version", channel="conda-forge")
             if version == ">=3.4,<12.0" 
                 # https://github.com/scikit-learn/scikit-learn/pull/23990
-                Conda.add("scikit-learn<=1.2", channel="conda-forge") 
+                Conda.add("scikit-learn>=1.2,<1.3", channel="conda-forge") 
             end
             libstdcxx_solved = true
         end
