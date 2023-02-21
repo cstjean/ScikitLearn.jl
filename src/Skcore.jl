@@ -211,11 +211,18 @@ function import_sklearn()
         PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
     catch
         INFO_MSG = "scikit-learn isn't properly installed."*
-        "Please use PyCall default Conda or non-conda local python."
+        "Please make sure PyCall is using the default Conda or non-conda local python."
         @static if Sys.islinux()
-            INFO_MSG = INFO_MSG * 
-                "\n libstdcxx is a known issue on earlier versions on Julia." *
-                "Please consider upgrading to Julia v>=1.8.4."
+            if libstdcxx_solved
+                INFO_MSG = INFO_MSG * 
+                    "\nIf you are experiencing Conda package conflicts, this may "*
+                    "be because the version libstdcxx loaded by Julia $(Base.VERSION) "*
+                    "isn't compatible with the version of scikit-learn installed by "*
+                    "Conda. To resolve this, we recommend upgrading to Julia v>=1.8.4.\n"*
+                    "If you must stick with your current julia version you can "*
+                    "also resolve this issue by pre-appending `$(CONDA.ROOTENV)/lib` to "*
+                    "your system's `LD_LIBRARY_PATH` enviroment variable."
+            end
         end
         @info(INFO_MSG)
         rethrow()
