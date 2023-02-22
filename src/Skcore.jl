@@ -174,21 +174,30 @@ function import_sklearn()
                     # Numpy, sklearn, etc. requires either `mkl` or `no-mkl` service to run
                     # By default Conda comes with mkl
                     # For this package to run on MacOS, the `no-mkl` versions of Numpy, sklearn are needed   
-                    pyimport("mkl") # jumps to the finally block if "mkl" doesn't exist on the users Mac
+                    pyimport("mkl") # jumps to catch block if "mkl" doesn't exist on the users Mac
                     
-                    # following Code runs only if mkl-service exists otherwise jumps to finally branch
-                    @info "Installing non-mkl versions of sci-kit learn via Conda"
-                    # Use non-mkl versions of python packages when ENV["PYTHON"]="Conda" or "" is used
+                    # following Code runs only if mkl-service exists otherwise jumps to catch branch
+                    @info(
+                        "Uninstalling mkl and Installing "*
+                        "non-mkl versions of sci-kit learn via Conda"
+                    )
+                    # Use non-mkl versions of python packages when ENV["PYTHON"]="Conda" 
+                    # or "" is used.
                     # When a different non-conda local python is used everthing works fine
                     Conda.add("nomkl")
                     Conda.rm("mkl")#This also removes mkl-service
-                finally
-                    # force reinstall of scikit-learn replacing any previous mkl version
-                    Conda.add("scikit-learn>=1.2,<1.3", channel="conda-forge")
-                    #Conda.add("openblas")
-                    #Conda.add("llvm-openmp", channel = "conda-forge")
-                    mkl_checked = true
+                catch err
+                    ## This block is reached when `mkl` pkg isn't installed.
+                    @info(
+                        "mkl not found, proceeding to installing non-mkl versions "*
+                        "of sci-kit learn via Conda"
+                    )
                 end
+                # force reinstall of scikit-learn replacing any previous mkl version
+                Conda.add("scikit-learn>=1.2,<1.3", channel="conda-forge")
+                #Conda.add("openblas")
+                #Conda.add("llvm-openmp", channel = "conda-forge")
+                mkl_checked = true
             end
             #PyCall.pyimport_conda("sklearn", "scikit-learn>=1.2,<1.3", "conda-forge")
         else
