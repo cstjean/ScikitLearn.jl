@@ -9,7 +9,7 @@ on:
 
 env:
   PYTHON: Conda 
-  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$HOME/.julia/conda/3/lib
+  LD_LIBRARY_PATH: /home/runner/.julia/conda/3/x86_64/lib # used by linux os only
   
 jobs:
   test:
@@ -36,6 +36,9 @@ jobs:
           arch: ${{ matrix.julia-arch }}
       - uses: julia-actions/cache@v1 # https://github.com/julia-actions/cache
       - uses: julia-actions/julia-buildpkg@latest
+      - name: "Export LD_LIBRARY_PATH envrioment variable"
+        if: ${{matrix.os == 'ubuntu-latest' && matrix.julia-version == '1.6'}}
+        run: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH
       - uses: julia-actions/julia-runtest@latest
       - uses: julia-actions/julia-uploadcodecov@v0.1
         continue-on-error: true

@@ -35,6 +35,15 @@ To install ScikitLearn.jl, type `]add ScikitLearn` at the REPL.
 
 To import Python models (optional), ScikitLearn.jl requires [the scikit-learn Python library](https://cstjean.github.io/ScikitLearn.jl/dev/man/models/#Installation-and-importing-Python-models-1), which will be installed automatically when needed. Most of the examples use [PyPlot.jl](https://github.com/stevengj/PyPlot.jl)
 
+## Known issue
+
+On Linux builds, importing python models via `@sk_import` is known to fail for Julia v<0.8.4 when the `PYTHON` enviroment variable from `PyCall.jl` is set to `""` or `conda`. This is becuase the version libstdcxx loaded by Julia v<0.8.4 isn't compatible with the version of scikit-learn installed via Conda.
+The easiest and recommended way to resolve this is to upgrade to Julia v>=1.8.4. If you must stick with your current julia version you can also resolve this issue by pre-appending your system's `LD_LIBRARY_PATH` enviroment variable as shown below
+```bash
+ROOT_ENV=`julia -e "using Conda; print(Conda.ROOTENV)`
+export LD_LIBRARY_PATH=$ROOT_ENV"/lib":$LD_LIBRARY_PATH
+```
+
 ## Documentation
 
 See the [manual](https://cstjean.github.io/ScikitLearn.jl/dev/) and
