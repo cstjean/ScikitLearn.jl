@@ -203,12 +203,12 @@ function import_sklearn()
         else
             @static if Sys.islinux()
                 if !libstdcxx_solved
-                version = _compatible_libstdcxx_ng_version()
-                if version !== nothing
-                    Conda.add("conda", channel="anaconda")
-                    Conda.add("libstdcxx-ng$version", channel="conda-forge")
-                end
-                libstdcxx_solved = true
+                    version = _compatible_libstdcxx_ng_version()
+                    if version !== nothing
+                        Conda.add("conda", channel="anaconda")
+                        Conda.add("libstdcxx-ng$version", channel="conda-forge")
+                    end
+                    libstdcxx_solved = true
                 end
             end
         end
