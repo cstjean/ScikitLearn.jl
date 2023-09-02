@@ -28,7 +28,7 @@ MacroTools = "0.5"
 Parameters = "0.12"
 PyCall = "1.92, 1.93, 1.94"
 ScikitLearnBase = "0.5"
-StatsBase = "0.33"
+StatsBase = "0.33, 0.34"
 VersionParsing = "1.2"
 julia = "1.6"
 
